@@ -1,0 +1,9 @@
+.cache
+package-lock.json
+dist
+
+# *INFO: ignore all JS files
+*.js
+.env
+.editorconfig
+.eslintrc
