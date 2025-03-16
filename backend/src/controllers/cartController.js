@@ -99,3 +99,8 @@ export const removeFromCart = async (req, res) => {
     res.status(400).json({ message: 'Error removing from cart' })
   }
 }
+
+export const getAllCarts = async (req, res) => {
+  const carts = await Cart.find().populate('user').populate('items.product')
+  res.json(carts)
+}

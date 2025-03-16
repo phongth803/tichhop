@@ -1,6 +1,6 @@
 import express from 'express'
 import { auth, adminAuth } from '../middleware/auth.js'
-import { getCart, addToCart, updateCartItem, removeFromCart } from '../controllers/cartController.js'
+import { getCart, addToCart, updateCartItem, removeFromCart, getAllCarts } from '../controllers/cartController.js'
 
 const router = express.Router()
 
@@ -111,13 +111,6 @@ router.get('/', auth, getCart)
 router.post('/add', auth, addToCart)
 router.put('/update', auth, updateCartItem)
 router.delete('/:productId', auth, removeFromCart)
-router.get('/all', auth, adminAuth, async (req, res) => {
-  try {
-    const carts = await Cart.find().populate('user').populate('items.product')
-    res.json(carts)
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching carts' })
-  }
-})
+router.get('/all', auth, adminAuth, getAllCarts)
 
 export default router

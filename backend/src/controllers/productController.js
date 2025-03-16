@@ -143,8 +143,12 @@ export const deleteImage = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' })
     }
 
+    if (!product.images.includes(imageUrl)) {
+      return res.status(404).json({ message: 'Image not found' })
+    }
+
     // Xóa ảnh từ Cloudinary
-    const publicId = imageUrl.split('/').pop().split('.')[0]
+    const publicId = `ecommerce/${imageUrl.split('/').pop().split('.')[0]}`
     await cloudinary.uploader.destroy(publicId)
 
     // Xóa URL ảnh khỏi mảng images

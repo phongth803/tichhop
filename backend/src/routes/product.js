@@ -182,6 +182,7 @@ const router = express.Router()
  *       403:
  *         description: Admin access required
  *
+ * /products/{id}/images/{imageUrl}:
  *   delete:
  *     summary: Delete product image (Admin only)
  *     tags: [Products]
@@ -193,11 +194,13 @@ const router = express.Router()
  *         required: true
  *         schema:
  *           type: string
+ *         description: Product ID
  *       - in: path
  *         name: imageUrl
  *         required: true
  *         schema:
  *           type: string
+ *         description: Image filename from Cloudinary URL (e.g., 'example.jpg')
  *     responses:
  *       200:
  *         description: Image deleted successfully
@@ -205,6 +208,8 @@ const router = express.Router()
  *         description: Unauthorized
  *       403:
  *         description: Admin access required
+ *       404:
+ *         description: Image not found
  */
 
 // Routes
