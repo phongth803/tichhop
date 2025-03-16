@@ -12,7 +12,7 @@ import {
   useToast,
   InputGroup,
   InputRightElement,
-  IconButton,
+  IconButton
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
@@ -26,7 +26,7 @@ const Login = observer(() => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm()
 
   const { authStore } = useStore()
@@ -41,7 +41,7 @@ const Login = observer(() => {
       toast({
         title: 'Login successful',
         status: 'success',
-        duration: 3000,
+        duration: 3000
       })
 
       if (authStore.isAdmin) {
@@ -54,7 +54,7 @@ const Login = observer(() => {
         title: 'Login failed',
         description: error.message,
         status: 'error',
-        duration: 3000,
+        duration: 3000
       })
     } finally {
       setIsLoading(false)
@@ -62,34 +62,34 @@ const Login = observer(() => {
   }
 
   return (
-    <Box maxW="md" mx="auto" mt="8">
-      <Stack spacing="8">
-        <Stack align="center">
-          <Heading fontSize="2xl">Sign in to your account</Heading>
-          <Text fontSize="md" color="gray.600">
+    <Box maxW='md' mx='auto' mt='8'>
+      <Stack spacing='8'>
+        <Stack align='center'>
+          <Heading fontSize='2xl'>Sign in to your account</Heading>
+          <Text fontSize='md' color='gray.600'>
             Don't have an account?{' '}
-            <Text as={RouterLink} to="/register" color="blue.400">
+            <Text as={RouterLink} to='/register' color='blue.400'>
               Register
             </Text>
           </Text>
         </Stack>
 
-        <Box as="form" onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing="4">
+        <Box as='form' onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing='4'>
             <FormControl isRequired isInvalid={errors.email}>
               <FormLabel>Email</FormLabel>
               <Input
-                type="email"
+                type='email'
                 {...register('email', {
                   required: 'Email is required',
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Invalid email address',
-                  },
+                    message: 'Invalid email address'
+                  }
                 })}
               />
               {errors.email && (
-                <Text color="red.500" fontSize="sm">
+                <Text color='red.500' fontSize='sm'>
                   {errors.email.message}
                 </Text>
               )}
@@ -104,27 +104,27 @@ const Login = observer(() => {
                     required: 'Password is required',
                     minLength: {
                       value: 6,
-                      message: 'Password must be at least 6 characters',
-                    },
+                      message: 'Password must be at least 6 characters'
+                    }
                   })}
                 />
                 <InputRightElement>
                   <IconButton
                     icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
                     onClick={() => setShowPassword(!showPassword)}
-                    variant="ghost"
+                    variant='ghost'
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   />
                 </InputRightElement>
               </InputGroup>
               {errors.password && (
-                <Text color="red.500" fontSize="sm">
+                <Text color='red.500' fontSize='sm'>
                   {errors.password.message}
                 </Text>
               )}
             </FormControl>
 
-            <Button type="submit" colorScheme="blue" size="lg" fontSize="md" isLoading={isLoading}>
+            <Button type='submit' colorScheme='blue' size='lg' fontSize='md' isLoading={isLoading}>
               Sign in
             </Button>
           </Stack>

@@ -5,9 +5,9 @@ import { Outlet } from 'react-router-dom'
 
 const Layout = () => {
   return (
-    <Box minH="100vh" display="flex" flexDirection="column">
+    <Box minH='100vh' display='flex' flexDirection='column'>
       <Header />
-      <Box flex="1" as="main" py={8} px={4}>
+      <Box flex='1' as='main' py={8} px={4}>
         <Outlet />
       </Box>
       <Footer />

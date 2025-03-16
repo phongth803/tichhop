@@ -12,11 +12,11 @@ const ProtectedRoute = ({ children, admin = false }) => {
   const { isAuthenticated, isAdmin } = rootStore.authStore
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" />
+    return <Navigate to='/login' />
   }
 
   if (admin && !isAdmin) {
-    return <Navigate to="/" />
+    return <Navigate to='/' />
   }
 
   return children
@@ -27,13 +27,13 @@ const AppRoutes = observer(() => {
     <Routes>
       {/* Public Routes */}
       <Route element={<Layout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path='/' element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
       </Route>
 
       {/* Catch all - redirect to home */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path='*' element={<Navigate to='/' replace />} />
     </Routes>
   )
 })

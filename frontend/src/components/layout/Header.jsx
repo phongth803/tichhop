@@ -9,7 +9,7 @@ import {
   useDisclosure,
   IconButton,
   Stack,
-  Text,
+  Text
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
@@ -22,45 +22,45 @@ const Header = observer(() => {
   const { isAuthenticated, isAdmin, user, logout } = authStore
 
   return (
-    <Box bg="white" px={4} borderBottom={1} borderStyle="solid" borderColor="gray.200">
-      <Flex h={16} alignItems="center" justifyContent="space-between">
+    <Box bg='white' px={4} borderBottom={1} borderStyle='solid' borderColor='gray.200'>
+      <Flex h={16} alignItems='center' justifyContent='space-between'>
         <IconButton
-          size="md"
+          size='md'
           icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-          aria-label="Open Menu"
+          aria-label='Open Menu'
           display={{ md: 'none' }}
           onClick={onToggle}
         />
 
-        <Box as={RouterLink} to="/" fontWeight="bold">
+        <Box as={RouterLink} to='/' fontWeight='bold'>
           Logo
         </Box>
 
-        <Flex display={{ base: 'none', md: 'flex' }} alignItems="center">
-          <Button as={RouterLink} to="/products" variant="ghost">
+        <Flex display={{ base: 'none', md: 'flex' }} alignItems='center'>
+          <Button as={RouterLink} to='/products' variant='ghost'>
             Products
           </Button>
 
           {isAuthenticated ? (
             <>
-              <Button as={RouterLink} to="/cart" variant="ghost">
+              <Button as={RouterLink} to='/cart' variant='ghost'>
                 Cart
               </Button>
 
               <Menu>
-                <MenuButton as={Button} variant="ghost">
+                <MenuButton as={Button} variant='ghost'>
                   {user.fullName}
                 </MenuButton>
                 <MenuList>
                   {isAdmin && (
-                    <MenuItem as={RouterLink} to="/admin">
+                    <MenuItem as={RouterLink} to='/admin'>
                       Admin Dashboard
                     </MenuItem>
                   )}
-                  <MenuItem as={RouterLink} to="/orders">
+                  <MenuItem as={RouterLink} to='/orders'>
                     My Orders
                   </MenuItem>
-                  <MenuItem as={RouterLink} to="/profile">
+                  <MenuItem as={RouterLink} to='/profile'>
                     Profile
                   </MenuItem>
                   <MenuItem onClick={logout}>Logout</MenuItem>
@@ -68,11 +68,11 @@ const Header = observer(() => {
               </Menu>
             </>
           ) : (
-            <Stack direction="row" spacing={4}>
-              <Button as={RouterLink} to="/login">
+            <Stack direction='row' spacing={4}>
+              <Button as={RouterLink} to='/login'>
                 Login
               </Button>
-              <Button as={RouterLink} to="/register" colorScheme="blue">
+              <Button as={RouterLink} to='/register' colorScheme='blue'>
                 Register
               </Button>
             </Stack>
