@@ -1,12 +1,13 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 import rootStore from '../stores/rootStore'
+import Layout from '../components/layout/Layout'
+import AuthLayout from '../components/layout/AuthLayout'
 
 // Public pages
 import Home from '../pages/Home'
 import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
-import Layout from '../components/layout/Layout'
 
 const ProtectedRoute = ({ children, admin = false }) => {
   const { isAuthenticated, isAdmin } = rootStore.authStore
@@ -25,14 +26,15 @@ const ProtectedRoute = ({ children, admin = false }) => {
 const AppRoutes = observer(() => {
   return (
     <Routes>
-      {/* Public Routes */}
       <Route element={<Layout />}>
+        <Route element={<AuthLayout />}>
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+        </Route>
+
         <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
       </Route>
 
-      {/* Catch all - redirect to home */}
       <Route path='*' element={<Navigate to='/' replace />} />
     </Routes>
   )

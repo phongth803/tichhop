@@ -29,7 +29,8 @@ const Navigation = () => {
               height: '2px',
               bg: 'black',
               transition: 'transform 0.2s ease-in-out'
-            }}>
+            }}
+          >
             {label}
           </Button>
         </Link>
