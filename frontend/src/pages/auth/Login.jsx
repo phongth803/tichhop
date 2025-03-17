@@ -1,27 +1,29 @@
 import { useState } from 'react'
-import { observer } from 'mobx-react-lite'
+import { useForm } from 'react-hook-form'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import {
-  Box,
-  Button,
+  Stack,
   FormControl,
   FormLabel,
   Input,
-  Stack,
+  Button,
   Heading,
   Text,
-  useToast,
   InputGroup,
   InputRightElement,
-  IconButton
+  IconButton,
+  FormErrorMessage,
+  Box
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { useStore } from '../../stores/rootStore'
-import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
-const Login = observer(() => {
+const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const { authStore } = useStore()
+  const navigate = useNavigate()
+  const { isLoading } = authStore
 
   const {
     register,
@@ -29,57 +31,41 @@ const Login = observer(() => {
     formState: { errors }
   } = useForm()
 
-  const { authStore } = useStore()
-  const navigate = useNavigate()
-  const toast = useToast()
-
   const onSubmit = async (data) => {
-    setIsLoading(true)
-
     try {
-      await authStore.login(data)
-      toast({
-        title: 'Login successful',
-        status: 'success',
-        duration: 3000
-      })
-
-      if (authStore.isAdmin) {
-        navigate('/admin')
-      } else {
+      const { email, password } = data
+      const payload = { email, password }
+      const isLogin = await authStore.login(payload)
+      if (isLogin) {
+        toast.success('Login successful')
         navigate('/')
       }
     } catch (error) {
-      toast({
-        title: 'Login failed',
-        description: error.message,
-        status: 'error',
-        duration: 3000
-      })
-    } finally {
-      setIsLoading(false)
+      console.log(error)
+      toast.error(error.response.data.message)
     }
   }
 
   return (
-    <Box maxW='md' mx='auto' mt='8'>
-      <Stack spacing='8'>
-        <Stack align='center'>
-          <Heading fontSize='2xl'>Sign in to your account</Heading>
-          <Text fontSize='md' color='gray.600'>
+    <Box px={6}>
+      <Stack spacing={8}>
+        <Stack spacing={3}>
+          <Heading fontSize='3xl' fontWeight='bold'>
+            Sign In
+          </Heading>
+          <Text color='gray.600'>
             Don't have an account?{' '}
-            <Text as={RouterLink} to='/register' color='blue.400'>
-              Register
+            <Text as={RouterLink} to='/register' color='blue.500' _hover={{ textDecoration: 'underline' }}>
+              Sign Up
             </Text>
           </Text>
         </Stack>
 
-        <Box as='form' onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing='4'>
-            <FormControl isRequired isInvalid={errors.email}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={6}>
+            <FormControl isInvalid={errors.email}>
               <FormLabel>Email</FormLabel>
               <Input
-                type='email'
                 {...register('email', {
                   required: 'Email is required',
                   pattern: {
@@ -88,14 +74,10 @@ const Login = observer(() => {
                   }
                 })}
               />
-              {errors.email && (
-                <Text color='red.500' fontSize='sm'>
-                  {errors.email.message}
-                </Text>
-              )}
+              <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isRequired isInvalid={errors.password}>
+            <FormControl isInvalid={errors.password}>
               <FormLabel>Password</FormLabel>
               <InputGroup>
                 <Input
@@ -110,28 +92,24 @@ const Login = observer(() => {
                 />
                 <InputRightElement>
                   <IconButton
+                    variant='ghost'
                     icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
                     onClick={() => setShowPassword(!showPassword)}
-                    variant='ghost'
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   />
                 </InputRightElement>
               </InputGroup>
-              {errors.password && (
-                <Text color='red.500' fontSize='sm'>
-                  {errors.password.message}
-                </Text>
-              )}
+              <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
             </FormControl>
 
             <Button type='submit' colorScheme='blue' size='lg' fontSize='md' isLoading={isLoading}>
-              Sign in
+              Sign In
             </Button>
           </Stack>
-        </Box>
+        </form>
       </Stack>
     </Box>
   )
-})
+}
 
 export default Login

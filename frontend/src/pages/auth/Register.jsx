@@ -1,82 +1,69 @@
 import { useState } from 'react'
-import { observer } from 'mobx-react-lite'
+import { useForm } from 'react-hook-form'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import {
-  Box,
-  Button,
+  Stack,
   FormControl,
   FormLabel,
   Input,
-  Stack,
+  Button,
   Heading,
   Text,
-  useToast,
   InputGroup,
   InputRightElement,
-  IconButton
+  IconButton,
+  FormErrorMessage,
+  Box
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { useStore } from '../../stores/rootStore'
-import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
-const Register = observer(() => {
+const Register = () => {
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const { authStore } = useStore()
+  const navigate = useNavigate()
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    watch
+    watch,
+    formState: { errors, isSubmitting }
   } = useForm()
 
-  const { authStore } = useStore()
-  const navigate = useNavigate()
-  const toast = useToast()
-
   const onSubmit = async (data) => {
-    setIsLoading(true)
     try {
-      await authStore.register({
-        fullName: data.fullName,
-        email: data.email,
-        password: data.password
-      })
-
-      toast({
-        title: 'Registration successful',
-        status: 'success',
-        duration: 3000
-      })
-      navigate('/')
+      const { email, password, fullName } = data
+      const payload = { email, password, fullName }
+      const isRegister = await authStore.register(payload)
+      if (isRegister) {
+        toast.success('Register successful')
+        navigate('/login')
+      }
     } catch (error) {
-      toast({
-        title: 'Registration failed',
-        description: error.message,
-        status: 'error',
-        duration: 3000
-      })
-    } finally {
-      setIsLoading(false)
+      console.log(error)
+      toast.error(error.response.data.message)
     }
   }
 
   return (
-    <Box maxW='md' mx='auto' mt='8'>
-      <Stack spacing='8'>
-        <Stack align='center'>
-          <Heading fontSize='2xl'>Create an account</Heading>
-          <Text fontSize='md' color='gray.600'>
+    <Box px={6}>
+      <Stack spacing={8}>
+        <Stack spacing={3}>
+          <Heading fontSize='3xl' fontWeight='bold'>
+            Sign Up
+          </Heading>
+          <Text color='gray.600'>
             Already have an account?{' '}
-            <Text as={RouterLink} to='/login' color='blue.400'>
-              Sign in
+            <Text as={RouterLink} to='/login' color='blue.500' _hover={{ textDecoration: 'underline' }}>
+              Sign In
             </Text>
           </Text>
         </Stack>
 
-        <Box as='form' onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing='4'>
-            <FormControl isRequired isInvalid={errors.fullName}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={6}>
+            <FormControl isInvalid={errors.fullName}>
               <FormLabel>Full Name</FormLabel>
               <Input
                 {...register('fullName', {
@@ -87,17 +74,12 @@ const Register = observer(() => {
                   }
                 })}
               />
-              {errors.fullName && (
-                <Text color='red.500' fontSize='sm'>
-                  {errors.fullName.message}
-                </Text>
-              )}
+              <FormErrorMessage>{errors.fullName && errors.fullName.message}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isRequired isInvalid={errors.email}>
+            <FormControl isInvalid={errors.email}>
               <FormLabel>Email</FormLabel>
               <Input
-                type='email'
                 {...register('email', {
                   required: 'Email is required',
                   pattern: {
@@ -106,14 +88,10 @@ const Register = observer(() => {
                   }
                 })}
               />
-              {errors.email && (
-                <Text color='red.500' fontSize='sm'>
-                  {errors.email.message}
-                </Text>
-              )}
+              <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isRequired isInvalid={errors.password}>
+            <FormControl isInvalid={errors.password}>
               <FormLabel>Password</FormLabel>
               <InputGroup>
                 <Input
@@ -128,44 +106,40 @@ const Register = observer(() => {
                 />
                 <InputRightElement>
                   <IconButton
+                    variant='ghost'
                     icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
                     onClick={() => setShowPassword(!showPassword)}
-                    variant='ghost'
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   />
                 </InputRightElement>
               </InputGroup>
-              {errors.password && (
-                <Text color='red.500' fontSize='sm'>
-                  {errors.password.message}
-                </Text>
-              )}
+              <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
             </FormControl>
 
-            <FormControl isRequired isInvalid={errors.confirmPassword}>
+            <FormControl isInvalid={errors.confirmPassword}>
               <FormLabel>Confirm Password</FormLabel>
               <Input
                 type={showPassword ? 'text' : 'password'}
                 {...register('confirmPassword', {
                   required: 'Please confirm your password',
-                  validate: (value) => value === watch('password') || 'Passwords do not match'
+                  validate: (val) => {
+                    if (watch('password') !== val) {
+                      return 'Passwords do not match'
+                    }
+                  }
                 })}
               />
-              {errors.confirmPassword && (
-                <Text color='red.500' fontSize='sm'>
-                  {errors.confirmPassword.message}
-                </Text>
-              )}
+              <FormErrorMessage>{errors.confirmPassword && errors.confirmPassword.message}</FormErrorMessage>
             </FormControl>
 
-            <Button type='submit' colorScheme='blue' size='lg' fontSize='md' isLoading={isLoading}>
+            <Button type='submit' colorScheme='blue' size='lg' fontSize='md' isLoading={isSubmitting}>
               Create Account
             </Button>
           </Stack>
-        </Box>
+        </form>
       </Stack>
     </Box>
   )
-})
+}
 
 export default Register

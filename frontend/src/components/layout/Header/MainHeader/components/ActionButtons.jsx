@@ -31,7 +31,8 @@ const ActionButtons = () => {
           bg='red.500'
           borderRadius='full'
           minW='18px'
-          textAlign='center'>
+          textAlign='center'
+        >
           0
         </Box>
       </Box>

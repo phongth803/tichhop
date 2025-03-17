@@ -15,7 +15,8 @@ const LanguageSelector = () => {
           color: 'black',
           bg: 'white'
         }
-      }}>
+      }}
+    >
       {LANGUAGES.map(({ code, label }) => (
         <option key={code} value={code}>
           {label}

@@ -1,11 +1,10 @@
 import { makeAutoObservable } from 'mobx'
-import axiosInstance from '../utils/axios'
+import { login, register } from '../apis/auth'
 
 class AuthStore {
   user = null
   isAuthenticated = false
   loading = false
-  error = null
 
   constructor(rootStore) {
     this.rootStore = rootStore
@@ -19,14 +18,24 @@ class AuthStore {
 
   login = async (credentials) => {
     this.loading = true
-    this.error = null
     try {
-      const { data } = await axiosInstance.post('/auth/login', credentials)
-      localStorage.setItem('token', data.token)
+      const { data } = await login(credentials)
+      data.token && localStorage.setItem('token', data.token)
       this.setUser(data.user)
-      return data
+      return true
     } catch (error) {
-      this.error = error.response?.data?.message || 'Login failed'
+      throw error
+    } finally {
+      this.loading = false
+    }
+  }
+
+  register = async (credentials) => {
+    this.loading = true
+    try {
+      await register(credentials)
+      return true
+    } catch (error) {
       throw error
     } finally {
       this.loading = false

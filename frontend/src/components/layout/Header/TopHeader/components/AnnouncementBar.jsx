@@ -11,7 +11,8 @@ const AnnouncementBar = () => {
         cursor='pointer'
         _hover={{ color: 'gray.200' }}
         transition='color 0.2s'
-        fontWeight='bold'>
+        fontWeight='bold'
+      >
         ShopNow
       </Text>
     </Text>
