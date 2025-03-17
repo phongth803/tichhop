@@ -1,0 +1,105 @@
+@startuml
+
+' Định nghĩa style
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' Định nghĩa enum
+enum UserRole {
+    USER
+    ADMIN
+}
+
+enum OrderStatus {
+    PENDING
+    PROCESSING
+    SHIPPED
+    DELIVERED
+    CANCELLED
+}
+
+' Định nghĩa entities
+entity "User" {
+    *_id: ObjectId <<PK>>
+    --
+    email: String <<unique>>
+    password: String
+    fullName: String
+    phone: String
+    role: UserRole <<enum>>
+    createdAt: Date
+    updatedAt: Date
+}
+
+entity "Product" {
+    *_id: ObjectId <<PK>>
+    --
+    *categoryId: ObjectId <<FK>>
+    name: String
+    description: String
+    price: Number
+    stock: Number
+    images: Array
+    thumbnail: String
+    isActive: Boolean
+    averageRating: Number
+    createdAt: Date
+    updatedAt: Date
+}
+
+entity "ProductCategory" {
+    *_id: ObjectId <<PK>>
+    --
+    name: String <<unique>>
+    description: String
+    isActive: Boolean
+    createdAt: Date
+    updatedAt: Date
+}
+
+entity "Order" {
+    *_id: ObjectId <<PK>>
+    --
+    *userId: ObjectId <<FK>>
+    items: Array
+    totalAmount: Number
+    status: OrderStatus <<enum>>
+    shippingAddress: Object
+    createdAt: Date
+    updatedAt: Date
+}
+
+entity "Cart" {
+    *_id: ObjectId <<PK>>
+    --
+    *userId: ObjectId <<FK>>
+}
+
+entity "CartItem" {
+    *_id: ObjectId <<PK>>
+    --
+    *cartId: ObjectId <<FK>>
+    *productId: ObjectId <<FK>>
+    quantity: Number
+    createdAt: Date
+    updatedAt: Date
+}
+
+' Định nghĩa relationships chính
+User ||--o{ Order : places
+User ||--o| Cart : has
+Product }o--|| ProductCategory : belongs_to
+Cart ||--o{ CartItem : contains
+CartItem }o--|| Product : refers_to
+
+' Định nghĩa relationships với enum
+User .. UserRole
+Order .. OrderStatus
+
+@enduml 
+
+
+
