@@ -1,18 +1,16 @@
 import { HStack, IconButton, Box } from '@chakra-ui/react'
 import { FiHeart, FiShoppingCart } from 'react-icons/fi'
 
-const ActionButtons = ({ isMobile }) => {
+const ActionButtons = () => {
   return (
-    <HStack spacing={isMobile ? 2 : 4}>
-      {!isMobile && (
-        <IconButton
-          aria-label='Wishlist'
-          icon={<FiHeart size={20} />}
-          variant='ghost'
-          _hover={{ bg: 'gray.100' }}
-          transition='all 0.2s'
-        />
-      )}
+    <HStack spacing={4}>
+      <IconButton
+        aria-label='Wishlist'
+        icon={<FiHeart size={20} />}
+        variant='ghost'
+        _hover={{ bg: 'gray.100' }}
+        transition='all 0.2s'
+      />
       <Box position='relative'>
         <IconButton
           aria-label='Cart'

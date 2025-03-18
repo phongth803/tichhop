@@ -1,9 +1,9 @@
 import { InputGroup, Input, InputRightElement } from '@chakra-ui/react'
 import { SearchIcon } from '@chakra-ui/icons'
 
-const SearchBar = ({ isMobile }) => {
+const SearchBar = () => {
   return (
-    <InputGroup size='md' w={isMobile ? '100%' : '250px'}>
+    <InputGroup size='md' w='250px'>
       <Input
         placeholder='What are you looking for?'
         bg='gray.50'
