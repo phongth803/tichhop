@@ -8,6 +8,8 @@ import AuthLayout from '../components/layout/AuthLayout'
 import Home from '../pages/Home'
 import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
+import Contact from '../pages/Contact'
+import NotFound from '../pages/NotFound'
 
 const ProtectedRoute = ({ children, admin = false }) => {
   const { isAuthenticated, isAdmin } = rootStore.authStore
@@ -31,11 +33,14 @@ const AppRoutes = observer(() => {
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
         </Route>
+          <Route path='/not-found' element={<NotFound />} />
+          <Route path='/contact' element={<Contact />} />
 
         <Route path='/' element={<Home />} />
       </Route>
 
-      <Route path='*' element={<Navigate to='/' replace />} />
+      <Route path='*' element={<Navigate to='/not-found' replace />} />
+      
     </Routes>
   )
 })
