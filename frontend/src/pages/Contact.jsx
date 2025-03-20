@@ -14,19 +14,27 @@ import {
 } from '@chakra-ui/react'
 import { PhoneIcon, EmailIcon } from '@chakra-ui/icons'
 import { useForm } from 'react-hook-form'
+import { useStore } from '../stores/rootStore'
+import { toast } from 'react-toastify'
 
 export default function ContactForm() {
+  const { contactStore } = useStore()
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting }
   } = useForm()
 
   const onSubmit = async (data) => {
     try {
-      console.log(data)
+      const success = await contactStore.sendMessage(data)
+      if (success) {
+        toast.success('Message sent successfully!')
+        reset()
+      }
     } catch (error) {
-      console.error('Error:', error)
+      toast.error(error.response?.data?.message || 'Error sending message')
     }
   }
 
