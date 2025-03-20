@@ -1,10 +1,12 @@
 import { makeAutoObservable } from 'mobx'
 import AuthStore from './AuthStore'
 import { createContext, useContext } from 'react'
+import ContactStore from './contactStore'
 
 class RootStore {
   constructor() {
     this.authStore = new AuthStore(this)
+    this.contactStore = new ContactStore(this)
     makeAutoObservable(this)
   }
 }

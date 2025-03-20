@@ -11,6 +11,7 @@ import productRoutes from './routes/product.js'
 import cartRoutes from './routes/cart.js'
 import orderRoutes from './routes/order.js'
 import categoryRoutes from './routes/category.js'
+import contactRoutes from './routes/contactRoutes.js'
 
 dotenv.config()
 
@@ -27,6 +28,7 @@ app.use('/api/products', productRoutes)
 app.use('/api/cart', cartRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/categories', categoryRoutes)
+app.use('/api/contact', contactRoutes)
 
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs))
