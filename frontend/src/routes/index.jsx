@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite'
 import rootStore from '../stores/rootStore'
 import Layout from '../components/layout/Layout'
 import AuthLayout from '../components/layout/AuthLayout'
+import Breadcrumbs from '../components/Breadcrumbs'
 
 // Public pages
 import Home from '../pages/Home'
@@ -35,9 +36,18 @@ const AppRoutes = observer(() => {
           <Route path='/register' element={<Register />} />
         </Route>
         <Route path='/not-found' element={<NotFound />} />
-        <Route path='/contact' element={<Contact />} />
-        <Route path='/about' element={<About />} />
-
+        <Route path='/contact' element={
+          <>
+            <Breadcrumbs />
+            <Contact />
+          </>
+        } />
+        <Route path='/about' element={
+          <>
+            <Breadcrumbs />
+            <About />
+          </>
+        } />
         <Route path='/' element={<Home />} />
       </Route>
 
