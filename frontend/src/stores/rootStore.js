@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import AuthStore from './AuthStore'
+import AuthStore from './authStore'
 import { createContext, useContext } from 'react'
 import ContactStore from './contactStore'
 
@@ -11,18 +11,7 @@ class RootStore {
   }
 }
 
-const rootStore = new RootStore()
-
-// Create a React context for the store
-const StoreContext = createContext(rootStore)
-
-// Create a hook to use the store
-export const useStore = () => {
-  const store = useContext(StoreContext)
-  if (!store) {
-    throw new Error('useStore must be used within a StoreProvider')
-  }
-  return store
-}
-
+export const rootStore = new RootStore()
+export const StoreContext = createContext(rootStore)
+export const useStore = () => useContext(StoreContext)
 export default rootStore

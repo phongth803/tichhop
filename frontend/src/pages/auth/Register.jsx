@@ -33,8 +33,8 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     try {
-      const { email, password, fullName } = data
-      const payload = { email, password, fullName }
+      const { email, password, firstName, lastName } = data
+      const payload = { email, password, firstName, lastName }
       const isRegister = await authStore.register(payload)
       if (isRegister) {
         toast.success('Register successful')
@@ -63,23 +63,30 @@ const Register = () => {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={6}>
-            <FormControl isInvalid={errors.fullName}>
-              <FormLabel>Full Name</FormLabel>
+            <FormControl isInvalid={errors.firstName}>
+              <FormLabel>First Name</FormLabel>
               <Input
-                {...register('fullName', {
-                  required: 'Full name is required',
-                  minLength: {
-                    value: 2,
-                    message: 'Full name must be at least 2 characters'
-                  }
+                {...register('firstName', {
+                  required: 'First name is required'
                 })}
               />
-              <FormErrorMessage>{errors.fullName && errors.fullName.message}</FormErrorMessage>
+              <FormErrorMessage>{errors.firstName?.message}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl isInvalid={errors.lastName}>
+              <FormLabel>Last Name</FormLabel>
+              <Input
+                {...register('lastName', {
+                  required: 'Last name is required'
+                })}
+              />
+              <FormErrorMessage>{errors.lastName?.message}</FormErrorMessage>
             </FormControl>
 
             <FormControl isInvalid={errors.email}>
               <FormLabel>Email</FormLabel>
               <Input
+                type='email'
                 {...register('email', {
                   required: 'Email is required',
                   pattern: {
@@ -132,7 +139,7 @@ const Register = () => {
               <FormErrorMessage>{errors.confirmPassword && errors.confirmPassword.message}</FormErrorMessage>
             </FormControl>
 
-            <Button type='submit' colorScheme='blue' size='lg' fontSize='md' isLoading={isSubmitting}>
+            <Button type='submit' colorScheme='red' size='lg' fontSize='md' isLoading={isSubmitting}>
               Create Account
             </Button>
           </Stack>
