@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import { faker } from '@faker-js/faker'
+import bcrypt from 'bcryptjs'
 import User from '../models/User.js'
 import Product from '../models/Product.js'
 import ProductCategory from '../models/ProductCategory.js'
@@ -36,12 +37,14 @@ const populateDatabase = async () => {
     const users = []
     for (let i = 0; i < 10; i++) {
       const email = faker.internet.email()
+      const plainPassword = email.toLowerCase()
+      const hashedPassword = await bcrypt.hash(plainPassword, 10)
       users.push(
         new User({
           firstName: faker.person.firstName(),
           lastName: faker.person.lastName(),
           email: email,
-          password: email, // Password is the same as email
+          password: hashedPassword,
           address: faker.location.streetAddress(),
           role: 'user'
         })
