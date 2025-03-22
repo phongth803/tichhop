@@ -238,7 +238,12 @@ const options = {
           bearerFormat: 'JWT'
         }
       }
-    }
+    },
+    security: [
+      {
+        bearerAuth: []
+      }
+    ]
   },
   apis: ['./src/routes/*.js'] // đường dẫn tới các file routes
 }
