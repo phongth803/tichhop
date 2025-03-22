@@ -2,8 +2,8 @@ import User from '../models/User.js'
 import jwt from 'jsonwebtoken'
 
 // Các hàm helper trong cùng file
-const createToken = userId => {
-  return jwt.sign({ _id: userId }, process.env.JWT_SECRET, { expiresIn: '7d' })
+const createToken = (userId, role) => {
+  return jwt.sign({ _id: userId, role }, process.env.JWT_SECRET, { expiresIn: '7d' })
 }
 
 const validateProfileInput = (firstName, lastName) => {
@@ -33,7 +33,7 @@ export const register = async (req, res) => {
     const user = new User({ email, password, firstName, lastName })
     await user.save()
 
-    const token = createToken(user._id)
+    const token = createToken(user._id, user.role)
     const userResponse = {
       _id: user._id,
       email: user.email,
@@ -85,7 +85,7 @@ export const login = async (req, res) => {
       })
     }
 
-    const token = createToken(user._id)
+    const token = createToken(user._id, user.role)
     const userResponse = {
       _id: user._id,
       email: user.email,

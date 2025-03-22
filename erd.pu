@@ -27,8 +27,10 @@ entity "User" {
     --
     email: String <<unique>>
     password: String
-    fullName: String
+    firstName: String
+    lastName: String
     phone: String
+    address: String
     role: UserRole <<enum>>
     createdAt: Date
     updatedAt: Date
