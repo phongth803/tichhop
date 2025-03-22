@@ -1,9 +1,13 @@
 import Cart from '../models/Cart.js'
 import Product from '../models/Product.js'
+import CartItem from '../models/CartItem.js'
 
 export const getCart = async (req, res) => {
   try {
-    let cart = await Cart.findOne({ user: req.user._id }).populate('items.product')
+    let cart = await Cart.findOne({ user: req.user._id }).populate({
+      path: 'items',
+      populate: { path: 'productId' }
+    })
     if (!cart) {
       cart = new Cart({ user: req.user._id, items: [] })
       await cart.save()
@@ -37,16 +41,21 @@ export const addToCart = async (req, res) => {
       cart = new Cart({ user: req.user._id, items: [] })
     }
 
-    const existingItem = cart.items.find(item => item.product.toString() === productId)
+    let cartItem = await CartItem.findOne({ cartId: cart._id, productId })
 
-    if (existingItem) {
-      existingItem.quantity += quantity
+    if (cartItem) {
+      cartItem.quantity += quantity
     } else {
-      cart.items.push({ product: productId, quantity })
+      cartItem = new CartItem({ cartId: cart._id, productId, quantity })
+      cart.items.push(cartItem._id)
     }
 
+    await cartItem.save()
     await cart.save()
-    await cart.populate('items.product')
+    await cart.populate({
+      path: 'items',
+      populate: { path: 'productId' }
+    })
     res.json(cart)
   } catch (error) {
     res.status(400).json({ message: 'Error adding to cart' })
@@ -63,16 +72,19 @@ export const updateCartItem = async (req, res) => {
       return
     }
 
-    const item = cart.items.find(item => item.product.toString() === productId)
+    const cartItem = await CartItem.findOne({ cartId: cart._id, productId })
 
-    if (!item) {
+    if (!cartItem) {
       res.status(404).json({ message: 'Item not found in cart' })
       return
     }
 
-    item.quantity = quantity
-    await cart.save()
-    await cart.populate('items.product')
+    cartItem.quantity = quantity
+    await cartItem.save()
+    await cart.populate({
+      path: 'items',
+      populate: { path: 'productId' }
+    })
     res.json(cart)
   } catch (error) {
     res.status(400).json({ message: 'Error updating cart item' })
@@ -89,11 +101,19 @@ export const removeFromCart = async (req, res) => {
       return
     }
 
-    const filteredItems = cart.items.filter(item => item.product.toString() !== productId)
-    cart.items = filteredItems
+    const cartItem = await CartItem.findOneAndDelete({ cartId: cart._id, productId })
 
+    if (!cartItem) {
+      res.status(404).json({ message: 'Item not found in cart' })
+      return
+    }
+
+    cart.items = cart.items.filter(item => item.toString() !== cartItem._id.toString())
     await cart.save()
-    await cart.populate('items.product')
+    await cart.populate({
+      path: 'items',
+      populate: { path: 'productId' }
+    })
     res.json(cart)
   } catch (error) {
     res.status(400).json({ message: 'Error removing from cart' })
@@ -101,6 +121,11 @@ export const removeFromCart = async (req, res) => {
 }
 
 export const getAllCarts = async (req, res) => {
-  const carts = await Cart.find().populate('user').populate('items.product')
+  const carts = await Cart.find()
+    .populate('user')
+    .populate({
+      path: 'items',
+      populate: { path: 'productId' }
+    })
   res.json(carts)
 }
