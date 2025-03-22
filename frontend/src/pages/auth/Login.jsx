@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom'
 import {
   Stack,
   FormControl,
@@ -13,7 +13,8 @@ import {
   InputRightElement,
   IconButton,
   FormErrorMessage,
-  Box
+  Box,
+  Checkbox
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useStore } from '../../stores/rootStore'
@@ -21,28 +22,31 @@ import { toast } from 'react-toastify'
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const { authStore } = useStore()
   const navigate = useNavigate()
-  const { isLoading } = authStore
+  const location = useLocation()
 
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, isSubmitting }
   } = useForm()
 
   const onSubmit = async (data) => {
     try {
       const { email, password } = data
-      const payload = { email, password }
-      const isLogin = await authStore.login(payload)
+      const isLogin = await authStore.login({
+        email,
+        password,
+        rememberMe
+      })
       if (isLogin) {
         toast.success('Login successful')
-        navigate('/')
+        navigate(location.state?.from || '/', { replace: true })
       }
     } catch (error) {
-      console.log(error)
-      toast.error(error.response.data.message)
+      toast.error(error.response?.data?.message || 'Login failed')
     }
   }
 
@@ -102,7 +106,13 @@ const Login = () => {
               <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
             </FormControl>
 
-            <Button type='submit' colorScheme='blue' size='lg' fontSize='md' isLoading={isLoading}>
+            <FormControl mt={4}>
+              <Checkbox isChecked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}>
+                Remember me
+              </Checkbox>
+            </FormControl>
+
+            <Button type='submit' colorScheme='red' size='lg' fontSize='md' isLoading={isSubmitting} w='full' mt={6}>
               Sign In
             </Button>
           </Stack>

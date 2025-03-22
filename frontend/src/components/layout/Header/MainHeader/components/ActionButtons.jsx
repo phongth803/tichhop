@@ -1,43 +1,36 @@
-import { HStack, IconButton, Box } from '@chakra-ui/react'
-import { FiHeart, FiShoppingCart } from 'react-icons/fi'
+import { HStack, Icon, Text, Button } from '@chakra-ui/react'
+import { Link } from 'react-router-dom'
+import { FiUser, FiShoppingCart, FiHeart } from 'react-icons/fi'
+import { useStore } from '@/stores/rootStore'
+import ProfileMenu from './ProfileMenu'
 
 const ActionButtons = ({ isMobile }) => {
+  const { authStore } = useStore()
+  const { isAuthenticated } = authStore
+
   return (
-    <HStack spacing={isMobile ? 2 : 4}>
-      {!isMobile && (
-        <IconButton
-          aria-label='Wishlist'
-          icon={<FiHeart size={20} />}
+    <HStack spacing={4}>
+      <Button as={Link} to='/wishlist' variant='ghost' p={2}>
+        <Icon as={FiHeart} boxSize={5} />
+      </Button>
+
+      <Button as={Link} to='/cart' variant='ghost' p={2}>
+        <Icon as={FiShoppingCart} boxSize={5} />
+      </Button>
+
+      {isAuthenticated ? (
+        <ProfileMenu />
+      ) : (
+        <Button
+          as={Link}
+          to='/login'
           variant='ghost'
-          _hover={{ bg: 'gray.100' }}
-          transition='all 0.2s'
-        />
-      )}
-      <Box position='relative'>
-        <IconButton
-          aria-label='Cart'
-          icon={<FiShoppingCart size={20} />}
-          variant='ghost'
-          _hover={{ bg: 'gray.100' }}
-          transition='all 0.2s'
-        />
-        <Box
-          position='absolute'
-          top='-1'
-          right='-1'
-          px={1.5}
-          py={0.5}
-          fontSize='xs'
-          fontWeight='bold'
-          color='white'
-          bg='red.500'
-          borderRadius='full'
-          minW='18px'
-          textAlign='center'
+          leftIcon={<Icon as={FiUser} boxSize={5} />}
+          size={isMobile ? 'sm' : 'md'}
         >
-          0
-        </Box>
-      </Box>
+          <Text>Sign In</Text>
+        </Button>
+      )}
     </HStack>
   )
 }
