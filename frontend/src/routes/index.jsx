@@ -88,7 +88,7 @@ const AppRoutes = observer(() => {
         <Route path='/' element={<Home />} />
 
         <Route
-          path='/profile/edit'
+          path='/profile'
           element={
             <ProtectedRoute>
               <EditProfile />

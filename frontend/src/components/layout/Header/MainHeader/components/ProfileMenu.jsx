@@ -17,7 +17,7 @@ const ProfileMenu = () => {
     {
       label: 'Manage My Account',
       icon: FiUser,
-      onClick: () => navigate('/profile/edit')
+      onClick: () => navigate('/profile')
     },
     {
       label: 'My Order',
