@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
 import rootStore from '../stores/rootStore'
 import Layout from '../components/layout/Layout'
@@ -41,19 +41,52 @@ const ProtectedRoute = ({ children, admin = false }) => {
   return children
 }
 
+const AuthRoute = observer(({ children }) => {
+  const { authStore } = useStore()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (authStore.isAuthenticated) {
+      navigate('/', { replace: true })
+    }
+  }, [authStore.isAuthenticated])
+
+  // Nếu đang loading hoặc đã authenticated thì return null để không render gì cả
+  if (authStore.loading || authStore.isAuthenticated) {
+    return null
+  }
+
+  return children
+})
+
 const AppRoutes = observer(() => {
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route element={<AuthLayout />}>
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
+          <Route
+            path='/login'
+            element={
+              <AuthRoute>
+                <Login />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path='/register'
+            element={
+              <AuthRoute>
+                <Register />
+              </AuthRoute>
+            }
+          />
         </Route>
+
         <Route path='/not-found' element={<NotFound />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/about' element={<About />} />
-
         <Route path='/' element={<Home />} />
+
         <Route
           path='/profile/edit'
           element={

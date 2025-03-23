@@ -38,7 +38,7 @@ const Register = () => {
       const isRegister = await authStore.register(payload)
       if (isRegister) {
         toast.success('Register successful')
-        navigate('/login')
+        navigate('/')
       }
     } catch (error) {
       console.log(error)

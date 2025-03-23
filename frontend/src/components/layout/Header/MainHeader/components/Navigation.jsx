@@ -1,8 +1,11 @@
 import { HStack, VStack, Button } from '@chakra-ui/react'
 import { Link, useLocation } from 'react-router-dom'
-import { NAV_ITEMS } from '@/components/layout/Header/constants'
+import { useStore } from '@/stores/rootStore'
+import { NAV_ITEMS } from '@/components/layout/Header/constants/constants'
 
 const Navigation = ({ isMobile, onClose }) => {
+  const { authStore } = useStore()
+  const { isAuthenticated } = authStore
   const location = useLocation()
   const Container = isMobile ? VStack : HStack
 
@@ -12,6 +15,9 @@ const Navigation = ({ isMobile, onClose }) => {
     }
   }
 
+  // Lọc nav items dựa trên trạng thái authentication
+  const filteredNavItems = NAV_ITEMS.filter((item) => !item.guestOnly || !isAuthenticated)
+
   return (
     <Container
       spacing={isMobile ? 0 : 8}
@@ -19,7 +25,7 @@ const Navigation = ({ isMobile, onClose }) => {
       justify={isMobile ? 'flex-start' : 'center'}
       w='100%'
     >
-      {NAV_ITEMS.map(({ id, label, path }) => {
+      {filteredNavItems.map(({ id, label, path }) => {
         const isActive = location.pathname === path
 
         return (

@@ -18,7 +18,7 @@ const options = {
       schemas: {
         User: {
           type: 'object',
-          required: ['email', 'password', 'fullName'],
+          required: ['email', 'password', 'firstName', 'lastName'],
           properties: {
             email: {
               type: 'string',
@@ -31,13 +31,21 @@ const options = {
               minLength: 6,
               description: 'User password'
             },
-            fullName: {
+            firstName: {
               type: 'string',
-              description: 'User full name'
+              description: 'User first name'
+            },
+            lastName: {
+              type: 'string',
+              description: 'User last name'
             },
             phone: {
               type: 'string',
               description: 'User phone number'
+            },
+            address: {
+              type: 'string',
+              description: 'User address'
             },
             role: {
               type: 'string',
