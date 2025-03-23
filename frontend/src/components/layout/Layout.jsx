@@ -1,14 +1,16 @@
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@/stores/rootStore'
 import { Box, Spinner, Center } from '@chakra-ui/react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import Header from './Header'
 import Footer from './Footer'
+import BreadcrumbNav from '@/components/common/Breadcrumb'
 
 const Layout = observer(() => {
   const {
     authStore: { loading }
   } = useStore()
+  const location = useLocation()
 
   if (loading) {
     return (
@@ -21,7 +23,8 @@ const Layout = observer(() => {
   return (
     <Box minH='100vh' display='flex' flexDirection='column'>
       <Header />
-      <Box flex='1' as='main' py={8}>
+      <BreadcrumbNav />
+      <Box flex='1' as='main'>
         <Outlet />
       </Box>
       <Footer />
