@@ -107,8 +107,7 @@ const Footer = () => {
                 Account
               </Text>
               <VStack align='flex-start' spacing={2}>
-                <Link href='/my-account'>My Account</Link>
-                <Link href='/login'>Login / Register</Link>
+                <Link href='/profile/edit'>My Account</Link>
                 <Link href='/cart'>Cart</Link>
                 <Link href='/wishlist'>Wishlist</Link>
                 <Link href='/shop'>Shop</Link>

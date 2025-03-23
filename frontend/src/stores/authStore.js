@@ -10,27 +10,24 @@ class AuthStore {
 
   constructor() {
     makeAutoObservable(this)
-    this.initializeAuth()
+    // Chỉ lấy token từ localStorage, vì sessionStorage sẽ tự động xóa khi đóng tab
+    const token = localStorage.getItem('token')
+    if (token) {
+      this.initializeAuth()
+    } else {
+      this.loading = false
+    }
   }
 
   initializeAuth = async () => {
     try {
-      this.loading = true
-      const token = localStorage.getItem('token') || sessionStorage.getItem('token')
-
-      if (!token) {
-        this.loading = false
-        return
-      }
-
-      const { data } = await getProfile()
-      if (data.success && data.user) {
-        this.setUser(data.user)
+      const response = await getProfile()
+      if (response.data.success) {
+        this.setUser(response.data.user)
       } else {
         this.logout()
       }
     } catch (error) {
-      console.error('Initialize auth error:', error)
       this.logout()
     } finally {
       this.loading = false
@@ -52,17 +49,21 @@ class AuthStore {
     this.isAdmin = user?.role === 'admin'
   }
 
-  login = async (credentials) => {
+  login = async (userData) => {
     try {
-      const { data } = await login(credentials)
-      if (data.success && data.token) {
-        if (credentials.rememberMe) {
-          localStorage.setItem('token', data.token)
+      const { data } = await login(userData)
+      if (data.success) {
+        // Lưu token vào đúng storage dựa trên rememberMe
+        const storage = userData.rememberMe ? localStorage : sessionStorage
+        storage.setItem('token', data.token)
+
+        // Đảm bảo xóa token ở storage còn lại
+        if (userData.rememberMe) {
           sessionStorage.removeItem('token')
         } else {
-          sessionStorage.setItem('token', data.token)
           localStorage.removeItem('token')
         }
+
         this.setUser(data.user)
         return true
       }
@@ -72,16 +73,27 @@ class AuthStore {
     }
   }
 
-  register = async (credentials) => {
-    this.loading = true
+  register = async (userData) => {
     try {
-      const { data } = await register(credentials)
-      return true
+      const { data } = await register(userData)
+      if (data.success) {
+        // Luôn lưu vào localStorage (remember me) khi đăng ký
+        localStorage.setItem('token', data.token)
+        // Xóa token trong sessionStorage nếu có
+        sessionStorage.removeItem('token')
+
+        this.setUser(data.user)
+        return {
+          success: true
+        }
+      }
+      return {
+        success: false,
+        message: data.message
+      }
     } catch (error) {
-      console.error('Register error:', error.response?.data)
+      console.error('Register error:', error)
       throw error
-    } finally {
-      this.loading = false
     }
   }
 

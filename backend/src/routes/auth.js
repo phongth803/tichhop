@@ -1,5 +1,6 @@
 import express from 'express'
-import { register, login, updateProfile, getProfile } from '../controllers/authController.js'
+import { register, login } from '../controllers/authController.js'
+import { updateProfile, getProfile } from '../controllers/profileController.js'
 import { auth } from '../middleware/auth.js'
 
 const router = express.Router()
@@ -19,7 +20,8 @@ const router = express.Router()
  *             required:
  *               - email
  *               - password
- *               - fullName
+ *               - firstName
+ *               - lastName
  *             properties:
  *               email:
  *                 type: string
@@ -27,8 +29,12 @@ const router = express.Router()
  *               password:
  *                 type: string
  *                 minimum: 6
- *               fullName:
+ *               firstName:
  *                 type: string
+ *                 minLength: 2
+ *               lastName:
+ *                 type: string
+ *                 minLength: 2
  *               phone:
  *                 type: string
  *     responses:
@@ -73,18 +79,14 @@ router.post('/login', login)
  *   put:
  *     summary: Update user profile
  *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - firstName
- *               - lastName
- *               - address
- *               - currentPassword
- *               - newPassword
  *             properties:
  *               firstName:
  *                 type: string
@@ -101,6 +103,8 @@ router.post('/login', login)
  *         description: Profile updated successfully
  *       400:
  *         description: Invalid input
+ *       401:
+ *         description: Unauthorized - No token provided or invalid token
  */
 router.put('/update-profile', auth, updateProfile)
 
