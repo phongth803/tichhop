@@ -13,7 +13,15 @@ import Register from '../pages/auth/Register'
 import Contact from '../pages/Contact'
 import About from '../pages/About'
 import NotFound from '../pages/NotFound'
-import AdminPage from '../pages/adminManagement/AdminPage'
+import AdminPage from '../pages/adminManagement/Users/Users'
+import AdminLayout from '../components/layout/AdminLayout'
+import Users from '../pages/adminManagement/Users/Users'
+import Products from '../pages/adminManagement/Products/Products'
+import FlashSales from '../pages/adminManagement/FlashSales/FlashSales'
+import Orders from '../pages/adminManagement/Orders/Orders'
+import Category from '../pages/adminManagement/Category/Category'
+import Settings from '../pages/adminManagement/Settings/Settings'
+import DashBoard from '../pages/adminManagement/DashBoard/DashBoard'
 
 const ProtectedRoute = ({ children, admin = false }) => {
   const {
@@ -93,14 +101,64 @@ const AppRoutes = observer(() => {
         />
       </Route>
 
-      <Route
-        path='/admin'
-        element={
-          <ProtectedRoute admin={true}>
-            <AdminPage />
-          </ProtectedRoute>
-        }
-      />
+      <Route element={<AdminLayout />}>
+        <Route
+          path='/admin/users'
+          element={
+            <ProtectedRoute admin={true}>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/admin/products'
+          element={
+            <ProtectedRoute admin={true}>
+              <Products />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/admin/flash-sales'
+          element={
+            <ProtectedRoute admin={true}>
+              <FlashSales />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/admin/orders'
+          element={
+            <ProtectedRoute admin={true}>
+              <Orders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/admin/category'
+          element={
+            <ProtectedRoute admin={true}>
+              <Category />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/admin/settings'
+          element={
+            <ProtectedRoute admin={true}>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/admin/dashboard'
+          element={
+            <ProtectedRoute admin={true}>
+              <DashBoard />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
 
       <Route path='*' element={<Navigate to='/not-found' replace />} />
     </Routes>
