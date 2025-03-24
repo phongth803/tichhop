@@ -1,5 +1,5 @@
-import { Menu, MenuButton, MenuList, MenuItem, MenuDivider, Avatar, Icon, Text } from '@chakra-ui/react'
-import { FiUser, FiShoppingBag, FiHeart, FiStar, FiXCircle, FiLogOut } from 'react-icons/fi'
+import { Menu, MenuButton, MenuList, MenuItem, Avatar, Icon, Text } from '@chakra-ui/react'
+import { FiUser, FiShoppingBag, FiStar, FiXCircle, FiLogOut } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '@/stores/rootStore'
 

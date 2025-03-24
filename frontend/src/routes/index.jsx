@@ -1,11 +1,9 @@
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
-import rootStore from '../stores/rootStore'
 import Layout from '../components/layout/Layout'
 import AuthLayout from '../components/layout/AuthLayout'
 import EditProfile from '../pages/profile/EditProfile'
 import { useStore } from '@/stores/rootStore'
-import { Center, Spinner } from '@chakra-ui/react'
 import { useEffect } from 'react'
 
 // Public pages
@@ -15,51 +13,47 @@ import Register from '../pages/auth/Register'
 import Contact from '../pages/Contact'
 import About from '../pages/About'
 import NotFound from '../pages/NotFound'
+import AdminPage from '../pages/adminManagement/AdminPage'
 
 const ProtectedRoute = ({ children, admin = false }) => {
   const {
     authStore: { isAuthenticated, isAdmin, loading }
   } = useStore()
   const location = useLocation()
+  const navigate = useNavigate()
 
-  if (loading) {
-    return (
-      <Center h='100vh'>
-        <Spinner size='xl' color='red.500' />
-      </Center>
-    )
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to='/login' state={{ from: location.pathname }} replace />
-  }
-
-  if (admin && !isAdmin) {
-    return <Navigate to='/' replace />
-  }
+  useEffect(() => {
+    if (!isAuthenticated && !loading) {
+      navigate('/login', { state: { from: location.pathname }, replace: true })
+    } else if (admin && !isAdmin && !loading) {
+      navigate('/', { replace: true })
+    }
+  }, [isAuthenticated, isAdmin, admin, location, navigate, loading])
 
   return children
 }
 
-const AuthRoute = observer(({ children }) => {
+const AuthRoute = ({ children }) => {
   const { authStore } = useStore()
+  const { isAuthenticated, isAdmin, loading } = authStore
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (authStore.isAuthenticated) {
-      navigate('/', { replace: true })
+    if (!loading) {
+      if (isAuthenticated && !isAdmin) {
+        navigate('/', { replace: true })
+      } else if (isAdmin) {
+        navigate('/admin', { replace: true })
+      }
     }
-    if (authStore.isAdmin) {
-      navigate('/admin', { replace: true })
-    }
-  }, [authStore.isAuthenticated])
+  }, [isAuthenticated, isAdmin, loading, navigate])
 
-  if (authStore.loading || authStore.isAuthenticated) {
+  if (loading || isAuthenticated || isAdmin) {
     return null
   }
 
   return children
-})
+}
 
 const AppRoutes = observer(() => {
   return (
@@ -98,6 +92,15 @@ const AppRoutes = observer(() => {
           }
         />
       </Route>
+
+      <Route
+        path='/admin'
+        element={
+          <ProtectedRoute admin={true}>
+            <AdminPage />
+          </ProtectedRoute>
+        }
+      />
 
       <Route path='*' element={<Navigate to='/not-found' replace />} />
     </Routes>

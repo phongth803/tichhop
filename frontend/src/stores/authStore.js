@@ -11,7 +11,7 @@ class AuthStore {
   constructor() {
     makeAutoObservable(this)
     // Chỉ lấy token từ localStorage, vì sessionStorage sẽ tự động xóa khi đóng tab
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token')
     if (token) {
       this.initializeAuth()
     } else {
@@ -45,7 +45,7 @@ class AuthStore {
 
   setUser = (user) => {
     this.user = user
-    this.isAuthenticated = !!user
+    this.isAuthenticated = user !== null
     this.isAdmin = user?.role === 'admin'
   }
 
@@ -66,9 +66,9 @@ class AuthStore {
         }
         this.isAdmin = isAdmin
         this.setUser(data.user)
-        return true
+        return { success: true, isAdmin: isAdmin }
       }
-      return false
+      return { success: false }
     } catch (error) {
       throw error
     }
