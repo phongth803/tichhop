@@ -55,6 +55,7 @@ class AuthStore {
       if (data.success) {
         // Lưu token vào đúng storage dựa trên rememberMe
         const storage = userData.rememberMe ? localStorage : sessionStorage
+        const isAdmin = data.user.role === 'admin'
         storage.setItem('token', data.token)
 
         // Đảm bảo xóa token ở storage còn lại
@@ -63,7 +64,7 @@ class AuthStore {
         } else {
           localStorage.removeItem('token')
         }
-
+        this.isAdmin = isAdmin
         this.setUser(data.user)
         return true
       }

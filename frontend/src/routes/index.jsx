@@ -49,9 +49,11 @@ const AuthRoute = observer(({ children }) => {
     if (authStore.isAuthenticated) {
       navigate('/', { replace: true })
     }
+    if (authStore.isAdmin) {
+      navigate('/admin', { replace: true })
+    }
   }, [authStore.isAuthenticated])
 
-  // Nếu đang loading hoặc đã authenticated thì return null để không render gì cả
   if (authStore.loading || authStore.isAuthenticated) {
     return null
   }

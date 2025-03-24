@@ -1,18 +1,20 @@
 import { makeAutoObservable } from 'mobx'
-import { getUsers } from '../../apis/user'
+import { getUsers, getUserById, updateUser, deleteUser } from '../../apis/user'
 
 class UserStore {
   loading = false
+  userList = []
 
   constructor(rootStore) {
     this.rootStore = rootStore
     makeAutoObservable(this)
   }
 
-  sendMessage = async (contactData) => {
+  getUsers = async () => {
     this.loading = true
     try {
-      await sendContactMessage(contactData)
+      const users = await getUsers()
+      this.userList = users
       return true
     } catch (error) {
       throw error
