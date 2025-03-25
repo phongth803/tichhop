@@ -1,7 +1,8 @@
 import React from 'react'
 import { Table, Thead, Tbody, Tr, Th, Td, HStack, Box, Button, Select, Text } from '@chakra-ui/react'
 
-const DataTable = ({ headers, dataInTable, itemsPerPage = 10, currentPage = 1, onPageChange, totalItems }) => {
+const DataTable = ({ headers, dataInTable, itemsPerPage = 10, currentPage = 1, onPageChange }) => {
+  const totalItems = dataInTable.length
   const totalPages = Math.ceil(totalItems / itemsPerPage)
 
   return (

@@ -14,7 +14,7 @@ class UserStore {
     this.loading = true
     try {
       const users = await getUsers()
-      this.userList = users
+      this.userList = users || []
       return true
     } catch (error) {
       throw error
