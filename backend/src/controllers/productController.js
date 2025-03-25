@@ -3,7 +3,7 @@ import cloudinary from '../config/cloudinary.js'
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, stock } = req.body
+    const { name, description, price, category, stock, discount } = req.body
 
     // Tạo sản phẩm mới với thông tin cơ bản
     const product = new Product({
@@ -12,7 +12,8 @@ export const createProduct = async (req, res) => {
       price,
       category,
       stock,
-      images: [] // Khởi tạo mảng ảnh rỗng
+      images: [], // Khởi tạo mảng ảnh rỗng
+      discount: discount || 0
     })
 
     // Nếu có files được upload
@@ -44,7 +45,18 @@ export const getProducts = async (req, res) => {
       query.name = { $regex: search, $options: 'i' }
     }
 
-    const products = await Product.find(query).populate('category', 'name').sort({ createdAt: -1 })
+    let products = await Product.find(query).populate('category', 'name').sort({ createdAt: -1 })
+    const today = new Date()
+    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
+
+    // Gán kết quả của map vào biến products
+    products = products.map(product => {
+      const productObj = product.toObject()
+      productObj.priceOnSale = product.price * (1 - product.discount / 100)
+      productObj.isNew = product.createdAt > sevenDaysAgo
+      return productObj
+    })
+
     res.json(products)
   } catch (error) {
     console.error('Error fetching products:', error)
@@ -67,7 +79,7 @@ export const getProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   try {
-    const { name, description, price, category, stock, isActive } = req.body
+    const { name, description, price, category, stock, isActive, discount } = req.body
 
     // Tìm sản phẩm hiện tại
     const product = await Product.findById(req.params.id)
@@ -82,6 +94,7 @@ export const updateProduct = async (req, res) => {
     product.category = category || product.category
     product.stock = stock !== undefined ? stock : product.stock
     product.isActive = isActive !== undefined ? isActive : product.isActive
+    product.discount = discount || product.discount
 
     await product.save()
     res.json(product)
