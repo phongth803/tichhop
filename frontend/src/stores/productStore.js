@@ -12,42 +12,58 @@ class ProductStore {
     makeAutoObservable(this)
   }
 
+  setProducts = (products) => {
+    this.products = products
+  }
+
+  setBestSellingProducts = (products) => {
+    this.bestSellingProducts = products
+  }
+
+  setFlashSaleProducts = (products) => {
+    this.flashSaleProducts = products
+  }
+
+  setLoading = (status) => {
+    this.loading = status
+  }
+
   getProducts = async (params = {}) => {
-    this.loading = true
+    this.setLoading(true)
     try {
       const response = await getProducts(params)
-      this.products = response.data
+      this.setProducts(response.data)
       return true
     } catch (error) {
       throw error
     } finally {
-      this.loading = false
+      this.setLoading(false)
     }
   }
 
   getBestSellingProducts = async () => {
-    this.loading = true
+    this.setLoading(true)
     try {
       const response = await getBestSellingProducts()
-      this.bestSellingProducts = response.data
+      this.setBestSellingProducts(response.data)
       return true
     } catch (error) {
       throw error
     } finally {
-      this.loading = false
+      this.setLoading(false)
     }
   }
 
   getFlashSaleProducts = async () => {
-    this.loading = true
+    this.setLoading(true)
     try {
       const response = await getFlashSaleProducts()
-      this.flashSaleProducts = response.data
+      this.setFlashSaleProducts(response.data)
       return true
     } catch (error) {
       throw error
     } finally {
-      this.loading = false
+      this.setLoading(false)
     }
   }
 }

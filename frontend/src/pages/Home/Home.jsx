@@ -2,7 +2,7 @@ import { Box, Container, Divider } from '@chakra-ui/react'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { observer } from 'mobx-react-lite'
 
-import { sidebarCategories, categories, heroSlides } from '@/data/mockData'
+import { heroSlides } from '@/data/mockData'
 import { useStore } from '@/stores/rootStore'
 import { useCountdown } from '@/hooks/useCountdown'
 import { INITIAL_COUNTDOWN, SLIDER_INTERVAL, ITEMS_PER_PAGE } from './constants/home'
@@ -29,41 +29,52 @@ const Home = observer(() => {
   const bannerCountdown = useCountdown(INITIAL_COUNTDOWN.BANNER)
   const slideInterval = useRef(null)
 
-  const { productStore } = useStore()
-  const { products, bestSellingProducts, loading, flashSaleProducts } = productStore
+  const { productStore, categoryStore } = useStore()
+  const { products, bestSellingProducts, loading: productsLoading, flashSaleProducts } = productStore
+  const { categories, loading: categoriesLoading } = categoryStore
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Prefetch data
-        const productPromise = productStore.getProducts({ limit: 24 })
-        const bestSellingPromise = productStore.getBestSellingProducts()
-        const flashSalePromise = productStore.getFlashSaleProducts()
-
-        // Start rendering UI while data is being fetched
-        await Promise.all([productPromise, bestSellingPromise, flashSalePromise])
+        await Promise.all([
+          productStore.getProducts({ limit: 24 }),
+          productStore.getBestSellingProducts(),
+          productStore.getFlashSaleProducts(),
+          categoryStore.getCategories()
+        ])
       } catch (error) {
-        console.error('Failed to load products:', error)
+        console.error('Failed to load data:', error)
       }
     }
     loadData()
-  }, [productStore])
+  }, [productStore, categoryStore])
+
+  const startSlideTimer = useCallback(() => {
+    if (slideInterval.current) {
+      clearInterval(slideInterval.current)
+    }
+    setCurrentSlide((prev) => (prev === heroSlides.length - 1 ? 0 : prev + 1))
+    slideInterval.current = setInterval(() => {
+      setCurrentSlide((prev) => (prev === heroSlides.length - 1 ? 0 : prev + 1))
+    }, SLIDER_INTERVAL)
+  }, [])
+
+  const pauseSlideTimer = useCallback(() => {
+    if (slideInterval.current) {
+      clearInterval(slideInterval.current)
+      slideInterval.current = null
+    }
+  }, [])
 
   // Auto slide with pause on hover
   useEffect(() => {
     startSlideTimer()
-    return () => clearInterval(slideInterval.current)
-  }, [])
-
-  const startSlideTimer = () => {
-    slideInterval.current = setInterval(() => {
-      setCurrentSlide((prev) => (prev === heroSlides.length - 1 ? 0 : prev + 1))
-    }, SLIDER_INTERVAL)
-  }
-
-  const pauseSlideTimer = () => {
-    clearInterval(slideInterval.current)
-  }
+    return () => {
+      if (slideInterval.current) {
+        clearInterval(slideInterval.current)
+      }
+    }
+  }, [startSlideTimer])
 
   const getItemsPerPage = useCallback((section) => {
     switch (section) {
@@ -85,10 +96,11 @@ const Home = observer(() => {
           : section === 'categories'
             ? categories.length
             : flashSaleProducts.length
+      const totalPages = Math.ceil(totalItems / itemsPerPage)
 
       setCurrentIndex((prev) => ({
         ...prev,
-        [section]: prev[section] - 1 < 0 ? Math.ceil(totalItems / itemsPerPage) - 1 : prev[section] - 1
+        [section]: prev[section] - 1 < 0 ? totalPages - 1 : prev[section] - 1
       }))
     },
     [products.length, flashSaleProducts.length, categories.length, getItemsPerPage]
@@ -103,32 +115,35 @@ const Home = observer(() => {
           : section === 'categories'
             ? categories.length
             : flashSaleProducts.length
+      const totalPages = Math.ceil(totalItems / itemsPerPage)
 
       setCurrentIndex((prev) => ({
         ...prev,
-        [section]: prev[section] + 1 >= Math.ceil(totalItems / itemsPerPage) ? 0 : prev[section] + 1
+        [section]: prev[section] + 1 >= totalPages ? 0 : prev[section] + 1
       }))
     },
     [products.length, flashSaleProducts.length, categories.length, getItemsPerPage]
   )
 
   // Loading state
-  if (loading) {
+  if (productsLoading || categoriesLoading) {
     return <LoadingSkeleton />
   }
 
   return (
     <Box as='main'>
-      <HeroSection
-        currentSlide={currentSlide}
-        setCurrentSlide={setCurrentSlide}
-        heroSlides={heroSlides}
-        sidebarCategories={sidebarCategories}
-        startSlideTimer={startSlideTimer}
-        pauseSlideTimer={pauseSlideTimer}
-      />
+      <Box display={{ base: 'none', md: 'block' }}>
+        <HeroSection
+          currentSlide={currentSlide}
+          setCurrentSlide={setCurrentSlide}
+          heroSlides={heroSlides}
+          sidebarCategories={categories}
+          startSlideTimer={startSlideTimer}
+          pauseSlideTimer={pauseSlideTimer}
+        />
+      </Box>
 
-      <Container maxW='container.xl' mt={10}>
+      <Container maxW='container.xl' mt={{ base: 0, md: 10 }} px={{ base: 4, md: 6, lg: 8 }}>
         <FlashSales
           countdown={countdown}
           flashSaleProducts={flashSaleProducts}

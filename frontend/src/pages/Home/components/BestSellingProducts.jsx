@@ -11,11 +11,17 @@ const BestSellingProducts = observer(({ products }) => {
 
   return (
     <Box py={8}>
-      <SectionHeader label='This Month' title='Best Selling Products'>
-        <ViewAllButton onClick={() => navigate('/products')} />
-      </SectionHeader>
+      <SectionHeader label='This Month' title='Best Selling Products' />
 
-      <Grid templateColumns='repeat(4, 1fr)' gap={6}>
+      <Grid
+        templateColumns={{
+          base: 'repeat(1, 1fr)',
+          sm: 'repeat(2, 1fr)',
+          md: 'repeat(3, 1fr)',
+          lg: 'repeat(4, 1fr)'
+        }}
+        gap={{ base: 4, md: 6 }}
+      >
         {products.map((product) => (
           <ProductCard key={product._id} {...product} />
         ))}

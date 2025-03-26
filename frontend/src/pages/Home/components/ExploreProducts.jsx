@@ -25,7 +25,15 @@ const ExploreProducts = observer(({ products, currentIndex, onPrev, onNext }) =>
         >
           {Array.from({ length: Math.ceil(products.length / 8) }).map((_, pageIndex) => (
             <Box key={pageIndex} width={`${100 / Math.ceil(products.length / 8)}%`} px={4}>
-              <Grid templateColumns='repeat(4, 1fr)' templateRows='repeat(2, 1fr)' gap={6}>
+              <Grid
+                templateColumns={{
+                  base: 'repeat(1, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                  lg: 'repeat(4, 1fr)'
+                }}
+                gap={{ base: 4, md: 6 }}
+              >
                 {products.slice(pageIndex * 8, (pageIndex + 1) * 8).map((product) => (
                   <ProductCard key={product._id} {...product} />
                 ))}
@@ -34,8 +42,6 @@ const ExploreProducts = observer(({ products, currentIndex, onPrev, onNext }) =>
           ))}
         </Box>
       </Box>
-
-      {/* View All Button */}
       <ViewAllButton onClick={() => navigate('/products')} />
     </Box>
   )

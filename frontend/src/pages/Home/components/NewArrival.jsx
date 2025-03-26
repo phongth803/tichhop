@@ -6,17 +6,27 @@ const NewArrival = () => {
   return (
     <Box py={8}>
       <SectionHeader label='Featured' title='New Arrival' />
-      <Grid templateColumns='repeat(4, 1fr)' templateRows='repeat(2, 1fr)' gap={6} h='600px'>
-        {/* PlayStation 5 Card - Chiếm 2 cột, 2 hàng */}
-        <GridItem colSpan={2} rowSpan={2} position='relative'>
+      <Grid 
+        templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(4, 1fr)' }}
+        templateRows={{ base: 'auto', md: 'repeat(2, 1fr)' }}
+        gap={{ base: 4, md: 6 }}
+        h={{ base: 'auto', md: '600px' }}
+      >
+        <GridItem 
+          colSpan={{ base: 1, md: 2 }} 
+          rowSpan={{ base: 1, md: 2 }}
+          h={{ base: '300px', md: 'auto' }}
+        >
           <Box bg='black' borderRadius='lg' overflow='hidden' h='100%' position='relative'>
             <Image src='src/assets/images/ps5.jpg' alt='PS5' objectFit='cover' w='100%' h='100%' />
             <CardOverlay title='PlayStation 5' description='Black and White version of the PS5 coming out on sale.' />
           </Box>
         </GridItem>
-
-        {/* Women's Collections Card */}
-        <GridItem colSpan={2} position='relative'>
+        
+        <GridItem 
+          colSpan={{ base: 1, md: 2 }}
+          h={{ base: '200px', md: 'auto' }}
+        >
           <Box bg='black' borderRadius='lg' overflow='hidden' h='100%' position='relative'>
             <Image
               src='src/assets/images/women.jpg'

@@ -235,13 +235,10 @@ export const getBestSellingProducts = async (req, res) => {
 
 export const getFlashSaleProducts = async (req, res) => {
   try {
-    const limit = 8
     const sort = { discount: -1 }
-
     const query = { discount: { $gt: 0 } }
 
-    let products = await Product.find(query).sort(sort).limit(limit)
-
+    let products = await Product.find(query).sort(sort)
     const today = new Date()
     const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
 

@@ -3,7 +3,7 @@ import { HiOutlineTruck, HiOutlinePhone, HiOutlineShieldCheck } from 'react-icon
 
 const Services = () => {
   return (
-    <Grid templateColumns='repeat(3, 1fr)' gap={8} py={20} mt={100}>
+    <Grid templateColumns='repeat(3, 1fr)' gap={8} py={20} mt={50}>
       {[
         {
           icon: HiOutlineTruck,
@@ -35,7 +35,9 @@ const Services = () => {
             />
             <service.icon size={24} color='white' />
           </Box>
-          <Heading size='md'>{service.title}</Heading>
+          <Heading size='md' textAlign='center'>
+            {service.title}{' '}
+          </Heading>
           <Text color='black' textAlign='center'>
             {service.description}
           </Text>
