@@ -98,6 +98,11 @@ const options = {
               type: 'boolean',
               default: true,
               description: 'Product status'
+            },
+            discount: {
+              type: 'number',
+              default: 0,
+              description: 'Product discount percentage'
             }
           }
         },

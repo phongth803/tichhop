@@ -2,7 +2,7 @@ import { Box, Image, Badge, Text, HStack, IconButton, Button, Icon } from '@chak
 import { FiHeart, FiEye, FiImage } from 'react-icons/fi'
 import { FaStar, FaRegStar } from 'react-icons/fa'
 
-const ProductCard = ({ image, name, price, originalPrice, rating, reviews, discount, isNew }) => {
+const ProductCard = ({ name, price, priceOnSale, thumbnail, discount, isNew, rating, reviews }) => {
   const NoImage = () => (
     <Box
       w='full'
@@ -20,6 +20,14 @@ const ProductCard = ({ image, name, price, originalPrice, rating, reviews, disco
       </Text>
     </Box>
   )
+
+  const formatPrice = (price) => {
+    const number = parseFloat(price)
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    }).format(number)
+  }
 
   return (
     <Box
@@ -42,7 +50,7 @@ const ProductCard = ({ image, name, price, originalPrice, rating, reviews, disco
       }}
     >
       <Box position='relative'>
-        {discount && (
+        {discount !== 0 && (
           <Badge position='absolute' top={2} left={2} bg='red.500' color='white' borderRadius='md' zIndex={1}>
             -{discount}%
           </Badge>
@@ -61,7 +69,6 @@ const ProductCard = ({ image, name, price, originalPrice, rating, reviews, disco
           </Badge>
         )}
 
-        {/* Quick actions */}
         <HStack
           position='absolute'
           top={2}
@@ -84,7 +91,7 @@ const ProductCard = ({ image, name, price, originalPrice, rating, reviews, disco
           <IconButton size='sm' variant='solid' bg='white' icon={<FiEye />} borderRadius='full' />
         </HStack>
 
-        <Image src={image} alt={name} w='full' h='200px' objectFit='contain' fallback={<NoImage />} />
+        <Image src={thumbnail} alt={name} w='full' h='200px' objectFit='contain' fallback={<NoImage />} />
       </Box>
 
       <Box p={4}>
@@ -93,26 +100,27 @@ const ProductCard = ({ image, name, price, originalPrice, rating, reviews, disco
         </Text>
         <HStack mb={2}>
           <Text color='red.500' fontWeight='bold'>
-            ${price}
+            ${formatPrice(priceOnSale)}
           </Text>
-          {originalPrice && (
+          {priceOnSale !== price && (
             <Text color='gray.500' textDecoration='line-through'>
-              ${originalPrice}
+              ${formatPrice(price)}
             </Text>
           )}
         </HStack>
-        <HStack>
-          <HStack spacing={1}>
-            {Array(5)
-              .fill('')
-              .map((_, i) => (
-                <Icon key={i} as={i < rating ? FaStar : FaRegStar} color={i < rating ? 'yellow.400' : 'gray.300'} />
-              ))}
+        {rating && reviews && (
+          <HStack>
+            <HStack spacing={1}>
+              {Array(5)
+                .fill('')
+                .map((_, i) => (
+                  <Icon key={i} as={i < rating ? FaStar : FaRegStar} color={i < rating ? 'yellow.400' : 'gray.300'} />
+                ))}
+            </HStack>
+            <Text color='gray.500'>({reviews})</Text>
           </HStack>
-          <Text color='gray.500'>({reviews})</Text>
-        </HStack>
+        )}
 
-        {/* Add to Cart button */}
         <Button
           w='full'
           mt={3}

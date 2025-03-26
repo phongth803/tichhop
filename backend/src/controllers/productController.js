@@ -1,5 +1,6 @@
 import Product from '../models/Product.js'
 import cloudinary from '../config/cloudinary.js'
+import Order from '../models/Order.js'
 
 export const createProduct = async (req, res) => {
   try {
@@ -34,7 +35,7 @@ export const createProduct = async (req, res) => {
 
 export const getProducts = async (req, res) => {
   try {
-    const { category, search } = req.query
+    const { category, search, limit } = req.query
     let query = { isActive: true }
 
     if (category) {
@@ -45,7 +46,11 @@ export const getProducts = async (req, res) => {
       query.name = { $regex: search, $options: 'i' }
     }
 
-    let products = await Product.find(query).populate('category', 'name').sort({ createdAt: -1 })
+    let products = await Product.find(query)
+      .populate('category', 'name')
+      .sort({ createdAt: -1 })
+      .limit(limit ? parseInt(limit) : 0)
+
     const today = new Date()
     const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
 
@@ -177,5 +182,80 @@ export const deleteImage = async (req, res) => {
   } catch (error) {
     console.error('Error deleting image:', error)
     res.status(400).json({ message: 'Error deleting image', error: error.message })
+  }
+}
+
+export const getBestSellingProducts = async (req, res) => {
+  try {
+    // Sử dụng aggregate để tính tổng số lượng đã bán của mỗi sản phẩm
+    const bestSellers = await Order.aggregate([
+      // Chỉ lấy các đơn hàng đã delivered
+      { $match: { status: 'delivered' } },
+      // Tách các items trong mỗi order
+      { $unwind: '$items' },
+      // Group theo product và tính tổng số lượng
+      {
+        $group: {
+          _id: '$items.product',
+          totalSold: { $sum: '$items.quantity' }
+        }
+      },
+      // Sắp xếp theo số lượng bán giảm dần
+      { $sort: { totalSold: -1 } },
+      // Giới hạn 4 sản phẩm bán chạy nhất
+      { $limit: 4 }
+    ])
+
+    // Lấy thông tin chi tiết của các sản phẩm
+    const productIds = bestSellers.map(item => item._id)
+    let products = await Product.find({ _id: { $in: productIds } }).populate('category', 'name')
+
+    const today = new Date()
+    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
+
+    // Map data và thêm thông tin totalSold
+    products = products.map(product => {
+      const productObj = product.toObject()
+      const bestSeller = bestSellers.find(item => item._id.toString() === product._id.toString())
+      productObj.priceOnSale = product.price * (1 - (product.discount || 0) / 100)
+      productObj.isNew = product.createdAt > sevenDaysAgo
+      productObj.totalSold = bestSeller ? bestSeller.totalSold : 0
+      return productObj
+    })
+
+    // Sắp xếp lại theo thứ tự của bestSellers
+    products.sort((a, b) => b.totalSold - a.totalSold)
+
+    res.json(products)
+  } catch (error) {
+    console.error('Error fetching best selling products:', error)
+    res.status(500).json({ message: 'Error fetching best selling products' })
+  }
+}
+
+export const getFlashSaleProducts = async (req, res) => {
+  try {
+    const limit = 8
+    const sort = { discount: -1 }
+
+    const query = { discount: { $gt: 0 } }
+
+    let products = await Product.find(query).sort(sort).limit(limit)
+
+    const today = new Date()
+    const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
+
+    // Gán kết quả của map vào biến products
+    products = products.map(product => {
+      const productObj = product.toObject()
+      productObj.priceOnSale = product.price * (1 - product.discount / 100)
+      productObj.isNew = product.createdAt > sevenDaysAgo
+      return productObj
+    })
+
+    res.json(products)
+  } catch (error) {
+    console.error('Error fetching products:', error)
+    res.status(500).json({ message: 'Error fetching products', error: error.message })
   }
 }

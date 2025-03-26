@@ -7,7 +7,9 @@ import {
   updateProduct,
   deleteProduct,
   uploadImages,
-  deleteImage
+  deleteImage,
+  getBestSellingProducts,
+  getFlashSaleProducts
 } from '../controllers/productController.js'
 import { upload } from '../config/cloudinary.js'
 
@@ -41,6 +43,9 @@ const router = express.Router()
  *         isActive:
  *           type: boolean
  *           default: true
+ *         discount:
+ *           type: number
+ *           default: 0
  */
 
 /**
@@ -83,6 +88,42 @@ const router = express.Router()
  *     responses:
  *       201:
  *         description: Product created successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Admin access required
+ * 
+ * /products/best-selling:
+ *   get:
+ *     summary: Get best-selling products
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: List of best-selling products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Admin access required
+ * 
+ * /products/flash-sale:
+ *   get:
+ *     summary: Get flash sale products
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: List of flash sale products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
  *       401:
  *         description: Unauthorized
  *       403:
@@ -214,6 +255,8 @@ const router = express.Router()
 
 // Routes
 router.get('/', getProducts)
+router.get('/best-selling', getBestSellingProducts)
+router.get('/flash-sale', getFlashSaleProducts)
 router.get('/:id', getProduct)
 router.post('/', auth, adminAuth, createProduct)
 router.put('/:id', auth, adminAuth, updateProduct)
