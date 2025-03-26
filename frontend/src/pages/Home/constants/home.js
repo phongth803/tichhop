@@ -20,3 +20,42 @@ export const INITIAL_COUNTDOWN = {
     seconds: 35
   }
 }
+
+export const heroSlides = [
+  {
+    id: 1,
+    title: 'iPhone 14 Series',
+    subtitle: 'Up to 10% off Voucher',
+    image: 'src/assets/images/iphone-14.png',
+    logo: 'src/assets/images/apple-logo.png'
+  },
+  {
+    id: 2,
+    title: 'iPhone 14 Series',
+    subtitle: 'Up to 10% off Voucher',
+    image: 'src/assets/images/iphone-14.png',
+    logo: 'src/assets/images/apple-logo.png'
+  },
+  {
+    id: 3,
+    title: 'iPhone 14 Series',
+    subtitle: 'Up to 10% off Voucher',
+    image: 'src/assets/images/iphone-14.png',
+    logo: 'src/assets/images/apple-logo.png'
+  },
+  {
+    id: 4,
+    title: 'iPhone 14 Series',
+    subtitle: 'Up to 10% off Voucher',
+    image: 'src/assets/images/iphone-14.png',
+    logo: 'src/assets/images/apple-logo.png'
+  },
+  {
+    id: 5,
+    title: 'iPhone 14 Series',
+    subtitle: 'Up to 10% off Voucher',
+    image: 'src/assets/images/iphone-14.png',
+    logo: 'src/assets/images/apple-logo.png'
+  }
+]
+

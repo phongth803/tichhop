@@ -4,9 +4,9 @@ import { getCategories } from '../apis/categories'
 class CategoryStore {
   categories = []
   loading = false
-  error = null
 
-  constructor() {
+  constructor(rootStore) {
+    this.rootStore = rootStore
     makeAutoObservable(this)
   }
 
@@ -18,18 +18,13 @@ class CategoryStore {
     this.loading = status
   }
 
-  setError(error) {
-    this.error = error
-  }
-
   async getCategories() {
     try {
       this.setLoading(true)
       const response = await getCategories()
       this.setCategories(response.data)
     } catch (error) {
-      console.error('Failed to fetch categories:', error)
-      this.setError(error)
+      throw error
     } finally {
       this.setLoading(false)
     }

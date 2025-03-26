@@ -12,28 +12,27 @@ class ProductStore {
     makeAutoObservable(this)
   }
 
-  setProducts = (products) => {
+  setProducts(products) {
     this.products = products
   }
 
-  setBestSellingProducts = (products) => {
+  setBestSellingProducts(products) {
     this.bestSellingProducts = products
   }
 
-  setFlashSaleProducts = (products) => {
+  setFlashSaleProducts(products) {
     this.flashSaleProducts = products
   }
 
-  setLoading = (status) => {
+  setLoading(status) {
     this.loading = status
   }
 
-  getProducts = async (params = {}) => {
-    this.setLoading(true)
+  async getProducts(params = {}) {
     try {
+      this.setLoading(true)
       const response = await getProducts(params)
       this.setProducts(response.data)
-      return true
     } catch (error) {
       throw error
     } finally {
@@ -41,12 +40,11 @@ class ProductStore {
     }
   }
 
-  getBestSellingProducts = async () => {
-    this.setLoading(true)
+  async getBestSellingProducts() {
     try {
+      this.setLoading(true)
       const response = await getBestSellingProducts()
       this.setBestSellingProducts(response.data)
-      return true
     } catch (error) {
       throw error
     } finally {
@@ -54,12 +52,11 @@ class ProductStore {
     }
   }
 
-  getFlashSaleProducts = async () => {
-    this.setLoading(true)
+  async getFlashSaleProducts() {
     try {
+      this.setLoading(true)
       const response = await getFlashSaleProducts()
       this.setFlashSaleProducts(response.data)
-      return true
     } catch (error) {
       throw error
     } finally {
