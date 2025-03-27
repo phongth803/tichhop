@@ -3,7 +3,20 @@ import User from '../models/User.js'
 // Lấy danh sách tất cả người dùng
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find()
+    const { search, role } = req.query
+    let query = {}
+
+    if (search) {
+      query = {
+        $or: [{ firstName: { $regex: search, $options: 'i' } }, { lastName: { $regex: search, $options: 'i' } }]
+      }
+    }
+
+    if (role) {
+      query.role = role
+    }
+
+    const users = await User.find(query)
     res.json(users)
   } catch (err) {
     res.status(500).json({ message: err.message })
@@ -61,7 +74,7 @@ export const deleteUser = async (req, res) => {
       return res.status(404).json({ message: 'Cannot find user' })
     }
 
-    await user.remove()
+    await user.deleteOne()
     res.json({ message: 'Deleted User' })
   } catch (err) {
     res.status(500).json({ message: err.message })

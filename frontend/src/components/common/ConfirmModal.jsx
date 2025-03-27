@@ -20,7 +20,8 @@ const ConfirmModal = ({
   itemName,
   confirmText = 'Delete',
   cancelText = 'Cancel',
-  confirmColorScheme = 'red'
+  confirmColorScheme = 'red',
+  isLoading = false
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -28,23 +29,13 @@ const ConfirmModal = ({
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          {message || (
-            <>
-              Are you sure you want to delete{' '}
-              <Text as='span' fontWeight='bold'>
-                {itemName}
-              </Text>
-              ?
-            </>
-          )}
-        </ModalBody>
+        <ModalBody>{message}</ModalBody>
 
         <ModalFooter>
           <Button mr={3} onClick={onClose}>
             {cancelText}
           </Button>
-          <Button colorScheme={confirmColorScheme} onClick={onConfirm}>
+          <Button colorScheme={confirmColorScheme} onClick={onConfirm} isLoading={isLoading}>
             {confirmText}
           </Button>
         </ModalFooter>

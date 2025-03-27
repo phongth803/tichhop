@@ -20,6 +20,16 @@ export const getUserById = async (id) => {
   }
 }
 
+export const addUser = async (userData) => {
+  try {
+    const response = await axiosInstance.post('/admin/users', userData)
+    return response.data
+  } catch (error) {
+    console.error('Error adding user:', error)
+    throw error
+  }
+}
+
 export const updateUser = async (id, userData) => {
   try {
     const response = await axiosInstance.put(`/admin/users/${id}`, userData)
