@@ -50,6 +50,7 @@ entity "Product" {
     averageRating: Number
     createdAt: Date
     updatedAt: Date
+    discount: Number
 }
 
 entity "ProductCategory" {
