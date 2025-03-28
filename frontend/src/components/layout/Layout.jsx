@@ -10,7 +10,6 @@ const Layout = observer(() => {
   const {
     authStore: { loading }
   } = useStore()
-  const location = useLocation()
 
   if (loading) {
     return (

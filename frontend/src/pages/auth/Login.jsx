@@ -42,8 +42,12 @@ const Login = () => {
         rememberMe
       })
       if (isLogin) {
+        if (authStore.isAdmin) {
+          navigate('/admin/dashboard')
+        } else {
+          navigate('/')
+        }
         toast.success('Login successful')
-        navigate(location.state?.from || '/', { replace: true })
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed')

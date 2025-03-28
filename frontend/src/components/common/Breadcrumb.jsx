@@ -4,7 +4,7 @@ import { ChevronRightIcon } from '@chakra-ui/icons'
 
 const BreadcrumbNav = () => {
   const location = useLocation()
-  
+
   // Return null for home page and auth pages
   if (location.pathname === '/' || location.pathname.match(/\/(login|register)$/)) {
     return null
@@ -22,14 +22,14 @@ const BreadcrumbNav = () => {
           fontSize='md'
         >
           <BreadcrumbItem>
-            <BreadcrumbLink 
-              as={Link} 
-              to='/' 
+            <BreadcrumbLink
+              as={Link}
+              to='/'
               color='gray.500'
               fontSize='15px'
-              _hover={{ 
+              _hover={{
                 color: 'gray.700',
-                textDecoration: 'none' 
+                textDecoration: 'none'
               }}
             >
               Home
@@ -65,4 +65,4 @@ const BreadcrumbNav = () => {
   )
 }
 
-export default BreadcrumbNav 
+export default BreadcrumbNav
