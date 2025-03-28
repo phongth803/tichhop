@@ -13,6 +13,7 @@ import Register from '../pages/auth/Register'
 import Contact from '../pages/Contact'
 import About from '../pages/About'
 import NotFound from '../pages/NotFound'
+import ProductDetail from '../pages/ProductDetail'
 import AdminPage from '../pages/adminManagement/Users/Users'
 import AdminLayout from '../components/layout/AdminLayout'
 import Users from '../pages/adminManagement/Users/Users'
@@ -90,6 +91,7 @@ const AppRoutes = observer(() => {
         <Route path='/contact' element={<Contact />} />
         <Route path='/about' element={<About />} />
         <Route path='/' element={<Home />} />
+        <Route path='/product/:id' element={<ProductDetail />} />
 
         <Route
           path='/profile'

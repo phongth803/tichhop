@@ -13,7 +13,7 @@ import Categories from './components/Categories'
 import MusicBanner from './components/MusicBanner'
 import NewArrival from './components/NewArrival'
 import Services from './components/Services'
-import LoadingSkeleton from './components/LoadingSkeleton'
+import LoadingSkeleton from '@/components/common/LoadingSkeleton'
 
 const Home = observer(() => {
   const [currentSlide, setCurrentSlide] = useState(0)
