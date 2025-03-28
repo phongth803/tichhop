@@ -43,7 +43,7 @@ const Login = () => {
       })
       if (isLogin) {
         if (authStore.isAdmin) {
-          navigate('/admin')
+          navigate('/admin/dashboard')
         } else {
           navigate('/')
         }

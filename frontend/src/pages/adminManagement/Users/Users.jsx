@@ -4,11 +4,11 @@ import { EditIcon, DeleteIcon } from '@chakra-ui/icons'
 import DataTable from '../../../components/common/DataTable'
 import ConfirmModal from '../../../components/common/ConfirmModal'
 import { useStore } from '../../../stores/rootStore'
-import Loading from '../../../components/common/Loading'
 import { observer } from 'mobx-react-lite'
 import TaskBarAdmin from '../../../components/common/TaskBarAdmin'
 import UserActionModal from './components/AddUserModal'
 import { toast } from 'react-toastify'
+import FilterModal from '../../../components/common/FilterModal'
 
 const Users = observer(() => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -157,6 +157,7 @@ const Users = observer(() => {
         itemsPerPage={itemsPerPage}
         onPageChange={handlePageChange}
       />
+      <FilterModal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)}></FilterModal>
     </Box>
   )
 })

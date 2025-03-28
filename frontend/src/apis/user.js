@@ -32,7 +32,7 @@ export const addUser = async (userData) => {
 
 export const updateUser = async (id, userData) => {
   try {
-    const response = await axiosInstance.put(`/admin/users/${id}`, userData)
+    const response = await axiosInstance.patch(`/admin/users/${id}`, userData)
     return response.data
   } catch (error) {
     console.error('Error updating user:', error)
