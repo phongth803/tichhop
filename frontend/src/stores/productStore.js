@@ -1,10 +1,18 @@
 import { makeAutoObservable } from 'mobx'
-import { getProducts, getBestSellingProducts, getFlashSaleProducts } from '../apis/products'
+import {
+  getProducts,
+  getBestSellingProducts,
+  getFlashSaleProducts,
+  getProduct,
+  getRelatedProducts
+} from '../apis/products'
 
 class ProductStore {
   products = []
   bestSellingProducts = []
   flashSaleProducts = []
+  currentProduct = null
+  relatedProducts = []
   loading = false
 
   constructor(rootStore) {
@@ -26,6 +34,14 @@ class ProductStore {
 
   setLoading(status) {
     this.loading = status
+  }
+
+  setCurrentProduct(product) {
+    this.currentProduct = product
+  }
+
+  setRelatedProducts(products) {
+    this.relatedProducts = products
   }
 
   async getProducts(params = {}) {
@@ -59,6 +75,34 @@ class ProductStore {
       this.setFlashSaleProducts(response.data)
     } catch (error) {
       throw error
+    } finally {
+      this.setLoading(false)
+    }
+  }
+
+  async getProductDetail(id) {
+    try {
+      this.setLoading(true)
+      const response = await getProduct(id)
+      this.setCurrentProduct(response.data)
+
+      if (response.data.category) {
+        this.getRelatedProductsByCategory(id, response.data.category._id)
+      }
+    } catch (error) {
+      throw error
+    } finally {
+      this.setLoading(false)
+    }
+  }
+
+  async getRelatedProductsByCategory(productId, categoryId) {
+    try {
+      this.setLoading(true)
+      const response = await getRelatedProducts(productId, categoryId)
+      this.setRelatedProducts(response.data)
+    } catch (error) {
+      this.setRelatedProducts([])
     } finally {
       this.setLoading(false)
     }

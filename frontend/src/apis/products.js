@@ -26,3 +26,16 @@ export const getFlashSaleProducts = async () => {
     throw error
   }
 }
+
+export const getProduct = async (id) => {
+  try {
+    const response = await axiosInstance.get(`/products/${id}`)
+    return response
+  } catch (error) {
+    throw error
+  }
+}
+
+export const getRelatedProducts = async (productId, categoryId) => {
+  return axiosInstance.get(`/products/${productId}/related/${categoryId}`)
+}
