@@ -9,7 +9,8 @@ import {
   uploadImages,
   deleteImage,
   getBestSellingProducts,
-  getFlashSaleProducts
+  getFlashSaleProducts,
+  getRelatedProducts
 } from '../controllers/productController.js'
 import { upload } from '../config/cloudinary.js'
 
@@ -258,6 +259,7 @@ router.get('/', getProducts)
 router.get('/best-selling', getBestSellingProducts)
 router.get('/flash-sale', getFlashSaleProducts)
 router.get('/:id', getProduct)
+router.get('/:id/related/:categoryId', getRelatedProducts)
 router.post('/', auth, adminAuth, createProduct)
 router.put('/:id', auth, adminAuth, updateProduct)
 router.delete('/:id', auth, adminAuth, deleteProduct)
