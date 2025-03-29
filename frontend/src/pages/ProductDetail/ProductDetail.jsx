@@ -4,22 +4,31 @@ import { useParams } from 'react-router-dom'
 import { useStore } from '@/stores/rootStore'
 import { useEffect } from 'react'
 
-import LoadingSkeleton from '@/components/common/LoadingSkeleton'
 import ImageGallery from './components/ImageGallery'
 import ProductInfo from './components/ProductInfo'
 import RelatedProducts from './components/RelatedProducts'
+import Loading from '@/components/common/Loading'
 
 const ProductDetail = observer(() => {
   const { id } = useParams()
   const { productStore } = useStore()
-  const { currentProduct, relatedProducts, loading } = productStore
+  const { currentProduct, relatedProducts, loadingStates } = productStore
 
   useEffect(() => {
     productStore.getProductDetail(id)
   }, [id])
 
-  if (loading) return <LoadingSkeleton />
-  if (!currentProduct) return <Box>Product not found</Box>
+  if (loadingStates.detail || loadingStates.related) {
+    return <Loading text='Loading product details...' />
+  }
+
+  if (!currentProduct) {
+    return (
+      <Container maxW='container.xl' py={8}>
+        <Box>Product not found</Box>
+      </Container>
+    )
+  }
 
   return (
     <Container maxW='container.xl' py={8}>
@@ -28,9 +37,12 @@ const ProductDetail = observer(() => {
         <ProductInfo product={currentProduct} />
       </Grid>
 
-      <Divider my={12} />
-
-      <RelatedProducts products={relatedProducts} />
+      {relatedProducts.length > 0 && (
+        <>
+          <Divider my={12} />
+          <RelatedProducts products={relatedProducts} />
+        </>
+      )}
     </Container>
   )
 })

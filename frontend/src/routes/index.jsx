@@ -13,6 +13,7 @@ import Register from '../pages/auth/Register'
 import Contact from '../pages/Contact'
 import About from '../pages/About'
 import NotFound from '../pages/NotFound'
+import ProductList from '../pages/Products'
 import ProductDetail from '../pages/ProductDetail'
 import AdminPage from '../pages/adminManagement/Users/Users'
 import AdminLayout from '../components/layout/AdminLayout'
@@ -86,13 +87,13 @@ const AppRoutes = observer(() => {
             }
           />
         </Route>
-
         <Route path='/not-found' element={<NotFound />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/about' element={<About />} />
         <Route path='/' element={<Home />} />
+        <Route path='/products' element={<ProductList />} />
+        <Route path='/product' element={<Navigate to='/products' replace />} />
         <Route path='/product/:id' element={<ProductDetail />} />
-
         <Route
           path='/profile'
           element={

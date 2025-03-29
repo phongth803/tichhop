@@ -47,20 +47,75 @@ export const createProduct = async (req, res) => {
 
 export const getProducts = async (req, res) => {
   try {
-    const { category, search, limit } = req.query
-    let query = { isActive: true }
-    if (category) query.category = category
-    if (search) query.name = { $regex: search, $options: 'i' }
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 20
 
-    const products = await Product.find(query)
-      .populate('category', 'name')
-      .sort({ createdAt: -1 })
-      .limit(limit ? parseInt(limit) : 0)
+    const buildQuery = () => {
+      const query = { isActive: true }
 
-    res.json(products.map(transformProduct))
+      if (req.query.category) {
+        query.category = req.query.category
+      }
+
+      if (req.query.search) {
+        query.name = { $regex: req.query.search, $options: 'i' }
+      }
+
+      if (req.query.onSale === 'true') {
+        query.discount = { $gt: 0 }
+      }
+
+      if (req.query.minPrice || req.query.maxPrice) {
+        query.price = {}
+        if (req.query.minPrice) {
+          query.price.$gte = parseFloat(req.query.minPrice)
+        }
+        if (req.query.maxPrice) {
+          query.price.$lte = parseFloat(req.query.maxPrice)
+        }
+      }
+
+      return query
+    }
+
+    const buildSortOptions = () => {
+      switch (req.query.sort) {
+        case 'price-asc':
+          return { price: 1 }
+        case 'price-desc':
+          return { price: -1 }
+        default:
+          return { createdAt: -1 }
+      }
+    }
+
+    // Thực hiện queries song song
+    const [total, products] = await Promise.all([
+      Product.countDocuments(buildQuery()),
+      Product.find(buildQuery())
+        .populate('category', 'name')
+        .sort(buildSortOptions())
+        .skip((page - 1) * limit)
+        .limit(limit)
+    ])
+
+    res.json({
+      products: products.map(transformProduct),
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        itemsPerPage: limit,
+        hasNextPage: page < Math.ceil(total / limit),
+        hasPrevPage: page > 1
+      }
+    })
   } catch (error) {
     console.error('Error fetching products:', error)
-    res.status(500).json({ message: 'Error fetching products', error: error.message })
+    res.status(500).json({
+      message: 'Error fetching products',
+      error: error.message
+    })
   }
 }
 
