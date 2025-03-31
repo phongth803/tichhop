@@ -122,6 +122,7 @@ const Users = observer(() => {
   return (
     <Box p={4}>
       <TaskBarAdmin
+        buttonText='Add User'
         title={'Users'}
         isFilter={true}
         handleOpenFilter={() => setIsFilterOpen(true)}

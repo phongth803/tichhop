@@ -2,7 +2,13 @@ import ProductCategory from '../models/ProductCategory.js'
 
 export const createCategory = async (req, res) => {
   try {
-    const category = new ProductCategory(req.body)
+    const { name, description, status } = req.body
+    console.log(req.body)
+    const category = new ProductCategory({
+      name,
+      description,
+      isActive: status
+    })
     await category.save()
     res.status(201).json(category)
   } catch (error) {
@@ -12,7 +18,9 @@ export const createCategory = async (req, res) => {
 
 export const getCategories = async (req, res) => {
   try {
-    const categories = await ProductCategory.find({ isActive: true })
+    const showAll = req.query.all === 'true'
+    const filter = showAll ? {} : { isActive: true }
+    const categories = await ProductCategory.find(filter)
     res.json(categories)
   } catch (error) {
     res.status(500).json({ message: 'Error fetching categories' })
@@ -47,7 +55,7 @@ export const updateCategory = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
   try {
-    const category = await ProductCategory.findByIdAndUpdate(req.params.id, { isActive: false }, { new: true })
+    const category = await ProductCategory.findByIdAndDelete(req.params.id)
     if (!category) {
       res.status(404).json({ message: 'Category not found' })
       return
