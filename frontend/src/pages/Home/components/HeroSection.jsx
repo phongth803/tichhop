@@ -9,7 +9,8 @@ const HeroSection = ({
   heroSlides,
   sidebarCategories,
   startSlideTimer,
-  pauseSlideTimer
+  pauseSlideTimer,
+  onCategoryClick
 }) => {
   return (
     <Container maxW='container.xl'>
@@ -19,13 +20,15 @@ const HeroSection = ({
           <Box pt={4}>
             {sidebarCategories.map((item) => (
               <Link
-                key={item.name}
+                key={item._id}
                 display='flex'
                 justifyContent='space-between'
                 alignItems='center'
                 py={2}
                 px={4}
                 color='black'
+                onClick={() => onCategoryClick(item._id)}
+                cursor='pointer'
                 _hover={{
                   color: 'red.500',
                   bg: 'gray.50'

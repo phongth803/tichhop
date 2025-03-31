@@ -28,7 +28,7 @@ const getIconComponent = (categoryName) => {
   return matchedKey ? CATEGORY_ICONS[matchedKey] : FiPackage
 }
 
-const Categories = ({ currentIndex, handlePrev, handleNext, categories }) => {
+const Categories = ({ currentIndex, handlePrev, handleNext, categories, onCategoryClick }) => {
   const itemsPerPage = ITEMS_PER_PAGE.CATEGORIES
 
   if (!categories?.length) return null
@@ -77,6 +77,7 @@ const Categories = ({ currentIndex, handlePrev, handleNext, categories }) => {
                         textAlign='center'
                         cursor='pointer'
                         transition='all 0.3s'
+                        onClick={() => onCategoryClick(cat._id)}
                         _hover={{
                           borderColor: 'red.500',
                           bg: 'red.500',

@@ -1,6 +1,7 @@
 import { Box, Container, Divider } from '@chakra-ui/react'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { observer } from 'mobx-react-lite'
+import { useNavigate } from 'react-router-dom'
 
 import { useStore } from '@/stores/rootStore'
 import { useCountdown } from '@/hooks/useCountdown'
@@ -31,6 +32,8 @@ const Home = observer(() => {
   const { productStore, categoryStore } = useStore()
   const { exploreProducts, bestSellingProducts, flashSaleProducts, loadingStates } = productStore
   const { categories, loading: categoriesLoading } = categoryStore
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     const loadData = async () => {
@@ -124,6 +127,13 @@ const Home = observer(() => {
     [exploreProducts.length, flashSaleProducts.length, categories.length, getItemsPerPage]
   )
 
+  const handleCategoryClick = useCallback(
+    (categoryId) => {
+      navigate(`/products?category=${categoryId}`)
+    },
+    [navigate]
+  )
+
   // Loading state
   if (loadingStates.explore || loadingStates.bestSelling || loadingStates.flashSale || categoriesLoading) {
     return <Loading text='Loading home page...' />
@@ -139,6 +149,7 @@ const Home = observer(() => {
           sidebarCategories={categories}
           startSlideTimer={startSlideTimer}
           pauseSlideTimer={pauseSlideTimer}
+          onCategoryClick={handleCategoryClick}
         />
       </Box>
 
@@ -158,6 +169,7 @@ const Home = observer(() => {
           handlePrev={handlePrev}
           handleNext={handleNext}
           categories={categories}
+          onCategoryClick={handleCategoryClick}
         />
 
         <Divider borderColor='gray.300' my={8} />
