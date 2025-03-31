@@ -87,7 +87,7 @@ router.post('/', auth, createOrder)
  *       401:
  *         description: Unauthorized
  */
-router.get('/my-orders', auth, getOrders)
+router.get('/my-orders', auth, getOrder)
 
 /**
  * @swagger
@@ -105,14 +105,7 @@ router.get('/my-orders', auth, getOrders)
  *       403:
  *         description: Admin access required
  */
-router.get('/all', auth, adminAuth, async (req, res) => {
-  try {
-    const orders = await Order.find().populate('user', '-password').populate('items.product')
-    res.json(orders)
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-})
+router.get('/all', auth, adminAuth, getOrders)
 
 /**
  * @swagger

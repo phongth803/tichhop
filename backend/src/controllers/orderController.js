@@ -50,7 +50,7 @@ export const getOrders = async (req, res) => {
       return
     }
 
-    const orders = await Order.find({ user: req.user._id }).populate('items.product').sort({ createdAt: -1 })
+    const orders = await Order.find().populate('user', '-password').populate('items.product').sort({ createdAt: -1 })
     res.json(orders)
   } catch (error) {
     res.status(500).json({ message: 'Error fetching orders' })
@@ -59,21 +59,8 @@ export const getOrders = async (req, res) => {
 
 export const getOrder = async (req, res) => {
   try {
-    if (!req.user) {
-      res.status(401).json({ message: 'Authentication required' })
-      return
-    }
-
-    const order = await Order.findOne({
-      _id: req.params.id,
-      user: req.user._id
-    }).populate('items.product')
-
-    if (!order) {
-      res.status(404).json({ message: 'Order not found' })
-      return
-    }
-    res.json(order)
+    const orders = await Order.find({ user: req.user._id }).populate('items.product').sort({ createdAt: -1 })
+    res.json(orders)
   } catch (error) {
     res.status(500).json({ message: 'Error fetching order' })
   }
