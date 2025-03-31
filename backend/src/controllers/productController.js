@@ -3,7 +3,7 @@ import cloudinary from '../config/cloudinary.js'
 import Order from '../models/Order.js'
 
 // Helper function để transform product
-const transformProduct = product => {
+export const transformProduct = product => {
   const productObj = product.toObject()
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 

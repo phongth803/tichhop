@@ -5,6 +5,7 @@ import ContactStore from './contactStore'
 import ProductStore from './productStore'
 import CategoryStore from './categoryStore'
 import UserStore from './admin/userStore'
+import CartStore from './cartStore'
 import AdminCategoryStore from './admin/adminCategoryStore'
 import AdminDashBoardStore from './admin/adminDashBoardStore'
 
@@ -21,6 +22,8 @@ class RootStore {
     this.contactStore = new ContactStore(this)
     this.productStore = new ProductStore(this)
     this.categoryStore = new CategoryStore(this)
+    this.userStore = new UserStore(this)
+    this.cartStore = new CartStore(this)
     makeAutoObservable(this)
   }
 }

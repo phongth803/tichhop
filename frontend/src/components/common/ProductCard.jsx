@@ -2,17 +2,35 @@ import { Box, Image, Badge, Text, HStack, IconButton, Button, Icon } from '@chak
 import { FiEye, FiImage } from 'react-icons/fi'
 import { FaStar, FaRegStar } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
+import { observer } from 'mobx-react-lite'
+import { useStore } from '../../stores/rootStore'
+import { toast } from 'react-toastify'
+import { useState } from 'react'
 
-const ProductCard = ({ _id, name, price, priceOnSale, thumbnail, discount, isNew, rating, reviews }) => {
+const ProductCard = observer(({ _id, name, price, priceOnSale, thumbnail, discount, isNew, rating, reviews }) => {
+  const { cartStore } = useStore()
   const navigate = useNavigate()
+  const [isAddingToCart, setIsAddingToCart] = useState(false)
 
   const handleClick = () => {
     navigate(`/product/${_id}`)
   }
 
-  const handleAddToCart = (e) => {
+  const handleAddToCart = async (e) => {
     e.stopPropagation()
-    // Xử lý thêm vào giỏ hàng
+    setIsAddingToCart(true)
+    try {
+      const success = await cartStore.addToCart(_id, 1)
+      if (success) {
+        toast.success('Product added to cart')
+      } else {
+        toast.error(cartStore.error || 'Failed to add product to cart')
+      }
+    } catch (error) {
+      toast.error(error.message || 'Failed to add product to cart')
+    } finally {
+      setIsAddingToCart(false)
+    }
   }
 
   const NoImage = () => (
@@ -143,6 +161,8 @@ const ProductCard = ({ _id, name, price, priceOnSale, thumbnail, discount, isNew
           transform='translateY(20px)'
           transition='all 0.3s'
           _hover={{ bg: 'gray.800' }}
+          isLoading={isAddingToCart}
+          loadingText='Adding...'
           onClick={handleAddToCart}
         >
           Add To Cart
@@ -150,6 +170,6 @@ const ProductCard = ({ _id, name, price, priceOnSale, thumbnail, discount, isNew
       </Box>
     </Box>
   )
-}
+})
 
 export default ProductCard
