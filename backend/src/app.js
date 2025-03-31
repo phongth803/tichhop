@@ -13,6 +13,7 @@ import orderRoutes from './routes/order.js'
 import categoryRoutes from './routes/category.js'
 import contactRoutes from './routes/contactRoutes.js'
 import userRoutes from './routes/user.js'
+import dashboardRoutes from './routes/dashboardRoutes.js'
 dotenv.config()
 
 const app = express()
@@ -30,6 +31,7 @@ app.use('/api/orders', orderRoutes)
 app.use('/api/categories', categoryRoutes)
 app.use('/api/contact', contactRoutes)
 app.use('/api/admin/users', userRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs))
 
