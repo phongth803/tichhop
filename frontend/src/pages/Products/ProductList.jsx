@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Box, Container, Grid, useBreakpointValue, useDisclosure } from '@chakra-ui/react'
 import { useStore } from '@/stores/rootStore'
@@ -11,18 +11,27 @@ import Pagination from './components/Pagination'
 import ProductListHeader from './components/ProductListHeader'
 import MobileFilters from './components/MobileFilters'
 import { DEFAULT_FILTERS } from '@/stores/productStore'
+import { useProductFilters } from '@/hooks/useProductFilters'
 
 const ProductList = observer(() => {
   const navigate = useNavigate()
   const location = useLocation()
   const { productStore, categoryStore } = useStore()
-  const { productsList, totalProducts, currentPage, filters, loadingStates } = productStore
+  const { productsList, totalProducts, filters, loadingStates } = productStore
   const { categories } = categoryStore
 
   const isMobile = useBreakpointValue({ base: true, md: false })
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const [localFilters, setLocalFilters] = useState(DEFAULT_FILTERS)
+  const {
+    localFilters,
+    setLocalFilters,
+    currentPageState,
+    setCurrentPageState,
+    debouncedFilters,
+    validatePageNumber,
+    cleanFilters
+  } = useProductFilters(DEFAULT_FILTERS)
 
   useEffect(() => {
     const parsed = queryString.parse(location.search, {
@@ -31,36 +40,57 @@ const ProductList = observer(() => {
       skipEmptyString: true
     })
 
-    const initialFilters = {
+    const totalPages = Math.ceil(totalProducts / 20)
+    const validatedPage = validatePageNumber(parsed.page, totalPages)
+
+    const newFilters = {
       ...DEFAULT_FILTERS,
-      ...parsed
+      ...parsed,
+      category: parsed.category || DEFAULT_FILTERS.category,
+      page: validatedPage
     }
 
-    setLocalFilters(initialFilters)
-    productStore.filters = initialFilters
-    productStore.currentPage = parsed.page || 1
+    if (parsed.page && parsed.page !== validatedPage) {
+      const cleanedFilters = cleanFilters(newFilters)
+      updateUrl({ ...cleanedFilters, page: validatedPage })
+      return
+    }
 
+    setLocalFilters(newFilters)
+    setCurrentPageState(validatedPage)
+    productStore.setFilters(newFilters)
     productStore.getProductsList()
-    categoryStore.getCategories()
 
+    if (!categories.length) {
+      categoryStore.getCategories()
+    }
+  }, [location.search, totalProducts])
+
+  // Xử lý khi filters thay đổi qua debounce
+  useEffect(() => {
+    if (JSON.stringify(debouncedFilters) === JSON.stringify(filters)) {
+      return
+    }
+
+    const cleanedFilters = cleanFilters(debouncedFilters)
+    const newFilters = { ...debouncedFilters, page: 1 }
+    productStore.setFilters(newFilters)
+    productStore.getProductsList()
+
+    updateUrl(cleanedFilters)
+    if (isMobile) {
+      onClose()
+    }
+  }, [debouncedFilters])
+
+  useEffect(() => {
     return () => {
       productStore.resetFilters()
     }
-  }, [location.search])
+  }, [])
 
   const updateUrl = (params) => {
-    const cleanParams = {
-      ...params,
-      page: params.page > 1 ? params.page : undefined,
-      category: params.category !== DEFAULT_FILTERS.category ? params.category : undefined,
-      search: params.search !== DEFAULT_FILTERS.search ? params.search : undefined,
-      minPrice: params.minPrice !== DEFAULT_FILTERS.minPrice ? params.minPrice : undefined,
-      maxPrice: params.maxPrice !== DEFAULT_FILTERS.maxPrice ? params.maxPrice : undefined,
-      sort: params.sort !== DEFAULT_FILTERS.sort ? params.sort : undefined,
-      onSale: params.onSale !== DEFAULT_FILTERS.onSale ? params.onSale : undefined
-    }
-
-    const queryParams = queryString.stringify(cleanParams, {
+    const queryParams = queryString.stringify(params, {
       skipEmptyString: true,
       skipNull: true,
       sort: false
@@ -68,29 +98,37 @@ const ProductList = observer(() => {
     navigate(`?${queryParams}`, { replace: true })
   }
 
-  const handleApplyFilters = () => {
-    productStore.setFilters(localFilters)
-    updateUrl(localFilters)
-    if (isMobile) onClose()
-  }
-
   const handleResetFilters = () => {
     setLocalFilters(DEFAULT_FILTERS)
     productStore.resetFilters()
-    navigate({ search: '' }, { replace: true })
+    productStore.getProductsList()
+    navigate('', { replace: true })
     if (isMobile) onClose()
   }
 
   const handlePageChange = (page) => {
-    productStore.setPage(page)
+    const totalPages = Math.ceil(totalProducts / 20)
+    const validatedPage = validatePageNumber(page, totalPages)
+
+    setCurrentPageState(validatedPage)
+    const newFilters = { ...filters, page: validatedPage }
+    productStore.setFilters(newFilters)
+    productStore.getProductsList()
     window.scrollTo(0, 0)
-    updateUrl({ ...productStore.filters, page })
+    updateUrl({ ...filters, page: validatedPage })
   }
 
   const handleSortChange = (value) => {
-    const newFilters = { ...productStore.filters, sort: value }
+    const newFilters = {
+      ...filters,
+      sort: value,
+      page: 1
+    }
+    setLocalFilters(newFilters)
+    setCurrentPageState(1)
     productStore.setFilters(newFilters)
-    updateUrl(newFilters)
+    productStore.getProductsList()
+    updateUrl({ ...cleanFilters(newFilters) })
   }
 
   if (loadingStates.products) {
@@ -114,18 +152,19 @@ const ProductList = observer(() => {
               localFilters={localFilters}
               setLocalFilters={setLocalFilters}
               categories={categories}
-              onApply={handleApplyFilters}
               onReset={handleResetFilters}
             />
           )}
 
           <Box>
             <ProductGrid products={productsList} />
-            <Pagination
-              currentPage={currentPage}
-              totalPages={Math.ceil(totalProducts / 20)}
-              onPageChange={handlePageChange}
-            />
+            {totalProducts > 0 && (
+              <Pagination
+                currentPage={currentPageState}
+                totalPages={Math.ceil(totalProducts / 20)}
+                onPageChange={handlePageChange}
+              />
+            )}
           </Box>
         </Grid>
 
@@ -136,7 +175,6 @@ const ProductList = observer(() => {
             localFilters={localFilters}
             setLocalFilters={setLocalFilters}
             categories={categories}
-            onApply={handleApplyFilters}
             onReset={handleResetFilters}
           />
         )}

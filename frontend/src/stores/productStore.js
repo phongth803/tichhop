@@ -75,18 +75,15 @@ class ProductStore {
   setFilters = (newFilters) => {
     this.filters = { ...this.filters, ...newFilters }
     this.currentPage = 1
-    this.getProductsList()
   }
 
   setPage = (page) => {
     this.currentPage = page
-    this.getProductsList()
   }
 
   resetFilters = () => {
     this.filters = { ...DEFAULT_FILTERS }
     this.currentPage = 1
-    this.getProductsList()
   }
 
   async getProductsList() {
@@ -101,6 +98,7 @@ class ProductStore {
       this.setProductsList(response.data.products, response.data.pagination.totalItems)
     } catch (error) {
       console.error('Error getting products list:', error)
+      this.setProductsList([], 0)
     } finally {
       this.setLoadingState('products', false)
     }
