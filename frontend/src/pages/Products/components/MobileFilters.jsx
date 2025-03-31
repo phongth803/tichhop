@@ -1,20 +1,33 @@
 import { Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton } from '@chakra-ui/react'
 import ProductFilters from './ProductFilters'
 
-const MobileFilters = ({ isOpen, onClose, localFilters, setLocalFilters, categories, onApply, onReset }) => {
+const MobileFilters = ({ isOpen, onClose, localFilters, setLocalFilters, categories, onReset }) => {
+  const handleImmediateFilterChange = (newFilters) => {
+    setLocalFilters(newFilters)
+    onClose()
+  }
+
+  const handleDebouncedFilterChange = (newFilters) => {
+    setLocalFilters(newFilters)
+  }
+
+  const handleResetMobile = () => {
+    onReset()
+    onClose()
+  }
+
   return (
     <Drawer isOpen={isOpen} placement='left' onClose={onClose} size='sm'>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader>Filters</DrawerHeader>
-        <DrawerBody>
+        <DrawerBody py={8}>
           <ProductFilters
             localFilters={localFilters}
-            setLocalFilters={setLocalFilters}
+            setLocalFilters={handleDebouncedFilterChange}
+            onImmediateChange={handleImmediateFilterChange}
             categories={categories}
-            onApply={onApply}
-            onReset={onReset}
+            onReset={handleResetMobile}
           />
         </DrawerBody>
       </DrawerContent>

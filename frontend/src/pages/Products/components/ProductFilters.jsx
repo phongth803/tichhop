@@ -1,7 +1,27 @@
 import { Box, VStack, Input, Select, HStack, Text, Checkbox, Button, Flex, Heading } from '@chakra-ui/react'
 import { observer } from 'mobx-react-lite'
 
-const ProductFilters = observer(({ localFilters, setLocalFilters, categories, onApply, onReset }) => {
+const ProductFilters = observer(({ localFilters, setLocalFilters, onImmediateChange, categories, onReset }) => {
+  const handleDebouncedChange = (key, value) => {
+    const newFilters = {
+      ...localFilters,
+      [key]: value
+    }
+    setLocalFilters(newFilters)
+  }
+
+  const handleImmediateChange = (key, value) => {
+    const newFilters = {
+      ...localFilters,
+      [key]: value
+    }
+    if (onImmediateChange) {
+      onImmediateChange(newFilters)
+    } else {
+      setLocalFilters(newFilters)
+    }
+  }
+
   return (
     <Box bg='white' p={4} borderRadius='md' shadow='sm'>
       <Flex justify='space-between' align='center' mb={4}>
@@ -12,7 +32,6 @@ const ProductFilters = observer(({ localFilters, setLocalFilters, categories, on
       </Flex>
 
       <VStack spacing={4} align='stretch'>
-        {/* Search */}
         <Box>
           <Text mb={2} fontWeight='medium'>
             Search
@@ -20,29 +39,15 @@ const ProductFilters = observer(({ localFilters, setLocalFilters, categories, on
           <Input
             placeholder='Search products...'
             value={localFilters.search}
-            onChange={(e) =>
-              setLocalFilters((prev) => ({
-                ...prev,
-                search: e.target.value
-              }))
-            }
+            onChange={(e) => handleDebouncedChange('search', e.target.value)}
           />
         </Box>
 
-        {/* Category */}
         <Box>
           <Text mb={2} fontWeight='medium'>
             Category
           </Text>
-          <Select
-            value={localFilters.category}
-            onChange={(e) =>
-              setLocalFilters((prev) => ({
-                ...prev,
-                category: e.target.value
-              }))
-            }
-          >
+          <Select value={localFilters.category} onChange={(e) => handleImmediateChange('category', e.target.value)}>
             <option value=''>All Categories</option>
             {categories.map((cat) => (
               <option key={cat._id} value={cat._id}>
@@ -52,7 +57,6 @@ const ProductFilters = observer(({ localFilters, setLocalFilters, categories, on
           </Select>
         </Box>
 
-        {/* Price Range */}
         <Box>
           <Text mb={2} fontWeight='medium'>
             Price Range
@@ -62,12 +66,7 @@ const ProductFilters = observer(({ localFilters, setLocalFilters, categories, on
               type='number'
               placeholder='Min'
               value={localFilters.minPrice}
-              onChange={(e) =>
-                setLocalFilters((prev) => ({
-                  ...prev,
-                  minPrice: e.target.value
-                }))
-              }
+              onChange={(e) => handleDebouncedChange('minPrice', e.target.value)}
               size='sm'
             />
             <Text>-</Text>
@@ -75,43 +74,17 @@ const ProductFilters = observer(({ localFilters, setLocalFilters, categories, on
               type='number'
               placeholder='Max'
               value={localFilters.maxPrice}
-              onChange={(e) =>
-                setLocalFilters((prev) => ({
-                  ...prev,
-                  maxPrice: e.target.value
-                }))
-              }
+              onChange={(e) => handleDebouncedChange('maxPrice', e.target.value)}
               size='sm'
             />
           </HStack>
         </Box>
 
-        {/* Sale Items */}
         <Box>
-          <Checkbox
-            isChecked={localFilters.onSale}
-            onChange={(e) =>
-              setLocalFilters((prev) => ({
-                ...prev,
-                onSale: e.target.checked
-              }))
-            }
-          >
+          <Checkbox isChecked={localFilters.onSale} onChange={(e) => handleImmediateChange('onSale', e.target.checked)}>
             On Sale
           </Checkbox>
         </Box>
-
-        <Button
-          colorScheme='red'
-          onClick={onApply}
-          isDisabled={
-            localFilters.minPrice &&
-            localFilters.maxPrice &&
-            Number(localFilters.minPrice) > Number(localFilters.maxPrice)
-          }
-        >
-          Apply Filters
-        </Button>
       </VStack>
     </Box>
   )
