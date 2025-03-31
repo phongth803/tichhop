@@ -15,6 +15,7 @@ import About from '../pages/About'
 import NotFound from '../pages/NotFound'
 import ProductList from '../pages/Products'
 import ProductDetail from '../pages/ProductDetail'
+import Cart from '../pages/Cart/Cart'
 import AdminPage from '../pages/adminManagement/Users/Users'
 import AdminLayout from '../components/layout/AdminLayout'
 import Users from '../pages/adminManagement/Users/Users'
@@ -94,6 +95,7 @@ const AppRoutes = observer(() => {
         <Route path='/products' element={<ProductList />} />
         <Route path='/product' element={<Navigate to='/products' replace />} />
         <Route path='/product/:id' element={<ProductDetail />} />
+        <Route path='/cart' element={<Cart />} />
         <Route
           path='/profile'
           element={

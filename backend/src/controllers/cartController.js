@@ -1,6 +1,30 @@
 import Cart from '../models/Cart.js'
 import Product from '../models/Product.js'
 import CartItem from '../models/CartItem.js'
+import { transformProduct } from './productController.js'
+
+// Helper function để transform cart data
+const transformCartData = cart => {
+  if (!cart) return null
+
+  const items = cart.items.map(item => {
+    const transformedProduct = transformProduct(item.productId)
+    return {
+      ...item.toObject(),
+      productId: transformedProduct,
+      subtotal: transformedProduct.priceOnSale * item.quantity
+    }
+  })
+
+  const totalAmount = items.reduce((total, item) => total + item.subtotal, 0)
+
+  return {
+    _id: cart._id,
+    user: cart.user,
+    items,
+    totalAmount
+  }
+}
 
 export const getCart = async (req, res) => {
   try {
@@ -8,11 +32,13 @@ export const getCart = async (req, res) => {
       path: 'items',
       populate: { path: 'productId' }
     })
+
     if (!cart) {
       cart = new Cart({ user: req.user._id, items: [] })
       await cart.save()
     }
-    res.json(cart)
+
+    res.json(transformCartData(cart))
   } catch (error) {
     res.status(500).json({ message: 'Error fetching cart' })
   }
@@ -56,7 +82,7 @@ export const addToCart = async (req, res) => {
       path: 'items',
       populate: { path: 'productId' }
     })
-    res.json(cart)
+    res.json(transformCartData(cart))
   } catch (error) {
     res.status(400).json({ message: 'Error adding to cart' })
   }
@@ -85,7 +111,11 @@ export const updateCartItem = async (req, res) => {
       path: 'items',
       populate: { path: 'productId' }
     })
-    res.json(cart)
+
+    // Transform cart data để bao gồm priceOnSale
+    const transformedCart = transformCartData(cart)
+
+    res.json(transformedCart)
   } catch (error) {
     res.status(400).json({ message: 'Error updating cart item' })
   }
@@ -114,7 +144,7 @@ export const removeFromCart = async (req, res) => {
       path: 'items',
       populate: { path: 'productId' }
     })
-    res.json(cart)
+    res.json(transformCartData(cart))
   } catch (error) {
     res.status(400).json({ message: 'Error removing from cart' })
   }
