@@ -165,31 +165,34 @@ export const getTopProducts = async (req, res) => {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
     const topProducts = await Order.aggregate([
-      // Chỉ lấy đơn hàng trong 30 ngày gần đây và đã hoàn thành
       {
         $match: {
           createdAt: { $gte: thirtyDaysAgo },
           status: { $in: ['delivered', 'completed'] }
         }
       },
-      // Tách các sản phẩm trong đơn hàng
       { $unwind: '$items' },
-      // Nhóm theo sản phẩm
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'items.product',
+          foreignField: '_id',
+          as: 'productInfo'
+        }
+      },
+      { $unwind: '$productInfo' },
       {
         $group: {
-          _id: '$items.productId',
-          name: { $first: '$items.name' },
+          _id: '$items.product',
+          name: { $first: '$productInfo.name' },
           sales: { $sum: '$items.quantity' },
           revenue: {
             $sum: { $multiply: ['$items.price', '$items.quantity'] }
           }
         }
       },
-      // Sắp xếp theo doanh thu giảm dần
       { $sort: { revenue: -1 } },
-      // Giới hạn 10 sản phẩm
       { $limit: 10 },
-      // Format kết quả
       {
         $project: {
           _id: 0,
@@ -209,7 +212,7 @@ export const getTopProducts = async (req, res) => {
 
 export const getCategoryDistribution = async (req, res) => {
   try {
-    const { type = 'revenue' } = req.query // 'revenue' hoặc 'products'
+    const { type = 'revenue' } = req.query
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
@@ -226,7 +229,7 @@ export const getCategoryDistribution = async (req, res) => {
         {
           $lookup: {
             from: 'products',
-            localField: 'items.productId',
+            localField: 'items.product',
             foreignField: '_id',
             as: 'product'
           }
@@ -264,7 +267,7 @@ export const getCategoryDistribution = async (req, res) => {
         {
           $lookup: {
             from: 'products',
-            localField: 'items.productId',
+            localField: 'items.product',
             foreignField: '_id',
             as: 'product'
           }
