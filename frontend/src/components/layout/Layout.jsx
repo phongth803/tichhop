@@ -1,22 +1,27 @@
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@/stores/rootStore'
-import { Box, Spinner, Center } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import { Outlet, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import Header from './Header'
 import Footer from './Footer'
 import BreadcrumbNav from '@/components/common/Breadcrumb'
+import Loading from '@/components/common/Loading'
+import ScrollToTop from '@/components/common/ScrollToTop'
 
 const Layout = observer(() => {
   const {
     authStore: { loading }
   } = useStore()
 
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
   if (loading) {
-    return (
-      <Center h='100vh'>
-        <Spinner size='xl' color='red.500' />
-      </Center>
-    )
+    return <Loading text='Loading...' />
   }
 
   return (
@@ -27,6 +32,7 @@ const Layout = observer(() => {
         <Outlet />
       </Box>
       <Footer />
+      <ScrollToTop />
     </Box>
   )
 })

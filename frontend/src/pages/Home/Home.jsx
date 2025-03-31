@@ -1,6 +1,7 @@
 import { Box, Container, Divider } from '@chakra-ui/react'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { observer } from 'mobx-react-lite'
+import { useNavigate } from 'react-router-dom'
 
 import { useStore } from '@/stores/rootStore'
 import { useCountdown } from '@/hooks/useCountdown'
@@ -13,7 +14,7 @@ import Categories from './components/Categories'
 import MusicBanner from './components/MusicBanner'
 import NewArrival from './components/NewArrival'
 import Services from './components/Services'
-import LoadingSkeleton from './components/LoadingSkeleton'
+import Loading from '@/components/common/Loading'
 
 const Home = observer(() => {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -29,14 +30,16 @@ const Home = observer(() => {
   const slideInterval = useRef(null)
 
   const { productStore, categoryStore } = useStore()
-  const { products, bestSellingProducts, loading: productsLoading, flashSaleProducts } = productStore
+  const { exploreProducts, bestSellingProducts, flashSaleProducts, loadingStates } = productStore
   const { categories, loading: categoriesLoading } = categoryStore
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     const loadData = async () => {
       try {
         await Promise.all([
-          productStore.getProducts({ limit: 24 }),
+          productStore.getExploreProducts(),
           productStore.getBestSellingProducts(),
           productStore.getFlashSaleProducts(),
           categoryStore.getCategories()
@@ -46,7 +49,7 @@ const Home = observer(() => {
       }
     }
     loadData()
-  }, [productStore, categoryStore])
+  }, [])
 
   const startSlideTimer = useCallback(() => {
     if (slideInterval.current) {
@@ -91,7 +94,7 @@ const Home = observer(() => {
       const itemsPerPage = getItemsPerPage(section)
       const totalItems =
         section === 'explore'
-          ? products.length
+          ? exploreProducts.length
           : section === 'categories'
             ? categories.length
             : flashSaleProducts.length
@@ -102,7 +105,7 @@ const Home = observer(() => {
         [section]: prev[section] - 1 < 0 ? totalPages - 1 : prev[section] - 1
       }))
     },
-    [products.length, flashSaleProducts.length, categories.length, getItemsPerPage]
+    [exploreProducts.length, flashSaleProducts.length, categories.length, getItemsPerPage]
   )
 
   const handleNext = useCallback(
@@ -110,7 +113,7 @@ const Home = observer(() => {
       const itemsPerPage = getItemsPerPage(section)
       const totalItems =
         section === 'explore'
-          ? products.length
+          ? exploreProducts.length
           : section === 'categories'
             ? categories.length
             : flashSaleProducts.length
@@ -121,12 +124,19 @@ const Home = observer(() => {
         [section]: prev[section] + 1 >= totalPages ? 0 : prev[section] + 1
       }))
     },
-    [products.length, flashSaleProducts.length, categories.length, getItemsPerPage]
+    [exploreProducts.length, flashSaleProducts.length, categories.length, getItemsPerPage]
+  )
+
+  const handleCategoryClick = useCallback(
+    (categoryId) => {
+      navigate(`/products?category=${categoryId}`)
+    },
+    [navigate]
   )
 
   // Loading state
-  if (productsLoading || categoriesLoading) {
-    return <LoadingSkeleton />
+  if (loadingStates.explore || loadingStates.bestSelling || loadingStates.flashSale || categoriesLoading) {
+    return <Loading text='Loading home page...' />
   }
 
   return (
@@ -139,6 +149,7 @@ const Home = observer(() => {
           sidebarCategories={categories}
           startSlideTimer={startSlideTimer}
           pauseSlideTimer={pauseSlideTimer}
+          onCategoryClick={handleCategoryClick}
         />
       </Box>
 
@@ -158,6 +169,7 @@ const Home = observer(() => {
           handlePrev={handlePrev}
           handleNext={handleNext}
           categories={categories}
+          onCategoryClick={handleCategoryClick}
         />
 
         <Divider borderColor='gray.300' my={8} />
@@ -167,7 +179,7 @@ const Home = observer(() => {
         <MusicBanner bannerCountdown={bannerCountdown} />
 
         <ExploreProducts
-          products={products}
+          products={exploreProducts}
           currentIndex={currentIndex.explore}
           onPrev={() => handlePrev('explore')}
           onNext={() => handleNext('explore')}

@@ -1,8 +1,20 @@
 import { Box, Image, Badge, Text, HStack, IconButton, Button, Icon } from '@chakra-ui/react'
-import { FiHeart, FiEye, FiImage } from 'react-icons/fi'
+import { FiEye, FiImage } from 'react-icons/fi'
 import { FaStar, FaRegStar } from 'react-icons/fa'
+import { useNavigate } from 'react-router-dom'
 
-const ProductCard = ({ name, price, priceOnSale, thumbnail, discount, isNew, rating, reviews }) => {
+const ProductCard = ({ _id, name, price, priceOnSale, thumbnail, discount, isNew, rating, reviews }) => {
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    navigate(`/product/${_id}`)
+  }
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation()
+    // Xử lý thêm vào giỏ hàng
+  }
+
   const NoImage = () => (
     <Box
       w='full'
@@ -36,6 +48,8 @@ const ProductCard = ({ name, price, priceOnSale, thumbnail, discount, isNew, rat
       overflow='hidden'
       transition='all 0.3s'
       position='relative'
+      cursor='pointer'
+      onClick={handleClick}
       _hover={{
         transform: 'translateY(-5px)',
         shadow: 'md',
@@ -69,27 +83,25 @@ const ProductCard = ({ name, price, priceOnSale, thumbnail, discount, isNew, rat
           </Badge>
         )}
 
-        <HStack
+        <IconButton
           position='absolute'
           top={2}
           right={2}
-          spacing={1}
+          size='sm'
+          variant='solid'
+          bg='white'
+          icon={<FiEye />}
+          borderRadius='full'
           className='card-actions'
           opacity={0}
           transform='translateY(-10px)'
           transition='all 0.3s'
           zIndex={1}
-        >
-          <IconButton
-            size='sm'
-            variant='solid'
-            bg='white'
-            icon={<FiHeart />}
-            borderRadius='full'
-            _hover={{ color: 'red.500' }}
-          />
-          <IconButton size='sm' variant='solid' bg='white' icon={<FiEye />} borderRadius='full' />
-        </HStack>
+          onClick={(e) => {
+            e.stopPropagation()
+            navigate(`/product/${_id}`)
+          }}
+        />
 
         <Image src={thumbnail} alt={name} w='full' h='200px' objectFit='contain' fallback={<NoImage />} />
       </Box>
@@ -131,6 +143,7 @@ const ProductCard = ({ name, price, priceOnSale, thumbnail, discount, isNew, rat
           transform='translateY(20px)'
           transition='all 0.3s'
           _hover={{ bg: 'gray.800' }}
+          onClick={handleAddToCart}
         >
           Add To Cart
         </Button>
