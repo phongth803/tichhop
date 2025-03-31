@@ -22,7 +22,6 @@ class RootStore {
     this.contactStore = new ContactStore(this)
     this.productStore = new ProductStore(this)
     this.categoryStore = new CategoryStore(this)
-    this.userStore = new UserStore(this)
     this.cartStore = new CartStore(this)
     makeAutoObservable(this)
   }
