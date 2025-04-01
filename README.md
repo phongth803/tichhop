@@ -41,3 +41,94 @@ read env.example and create .env file
 3. Install dependencies: `npm install` or `yarn install`
 4. Create `.env` file and configure environment variables
 5. Start the server: `npm dev` or `yarn dev`
+
+## Docker Deployment
+
+### Prerequisites
+
+- Docker
+- Docker Compose
+
+### Using Docker Hub Images
+
+1. Pull the images:
+
+```bash
+docker pull your-dockerhub-username/frontend:latest
+docker pull your-dockerhub-username/backend:latest
+```
+
+2. Run the application:
+
+```bash
+docker-compose up
+```
+
+### Building Locally
+
+1. Clone the repository
+2. Create .env file in backend directory
+3. Build and run:
+
+```bash
+docker-compose up --build
+```
+
+## Frontend
+
+### Tech Stack
+
+- React with Vite
+- Chakra UI
+- MobX for State Management
+- React Router for Navigation
+- Axios for API Requests
+
+### Features
+
+- 🎨 Responsive Design
+- 🛒 Shopping Cart Management
+- 👤 User Authentication
+- 📱 Mobile-Friendly Interface
+- 🎯 Product Search and Filtering
+- ⚡ Flash Sales
+- 📊 Admin Dashboard
+
+### Development
+
+1. Navigate to frontend directory
+2. Install dependencies:
+
+```bash
+yarn install
+```
+
+3. Start development server:
+
+```bash
+yarn dev
+```
+
+## Accessing the Application
+
+- Frontend: http://localhost
+- Backend API: http://localhost:3002
+- API Documentation: http://localhost:3002/api-docs
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Thanks to all contributors
+- Inspired by modern e-commerce platforms
+- Built with ❤️ using Node.js and React
