@@ -34,7 +34,7 @@ const Footer = () => {
           <GridItem w='100%'>
             <VStack align='flex-start' spacing={4}>
               <Text fontWeight='bold' fontSize='2xl'>
-                Exclusive
+                PDT
               </Text>
               <Text fontSize='sm'>Subscribe</Text>
               <Text fontSize='sm'>Get 10% off your first order</Text>
