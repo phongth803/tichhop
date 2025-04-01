@@ -74,26 +74,6 @@ docker-compose up
 docker-compose up --build
 ```
 
-## Frontend
-
-### Tech Stack
-
-- React with Vite
-- Chakra UI
-- MobX for State Management
-- React Router for Navigation
-- Axios for API Requests
-
-### Features
-
-- 🎨 Responsive Design
-- 🛒 Shopping Cart Management
-- 👤 User Authentication
-- 📱 Mobile-Friendly Interface
-- 🎯 Product Search and Filtering
-- ⚡ Flash Sales
-- 📊 Admin Dashboard
-
 ### Development
 
 1. Navigate to frontend directory
