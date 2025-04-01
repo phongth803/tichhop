@@ -51,32 +51,30 @@ read env.example and create .env file
 
 ### Using Docker Hub Images
 
-1. Pull the images:
-
-```bash
-docker pull your-dockerhub-username/frontend:latest
-docker pull your-dockerhub-username/backend:latest
-```
-
-2. Run the application:
-
 ```bash
 docker-compose up
 ```
 
-### Building Locally
-
-1. Clone the repository
-2. Create .env file in backend directory
-3. Build and run:
-
-```bash
-docker-compose up --build
-```
-
 ### Development
 
+## frontend
+
 1. Navigate to frontend directory
+2. Install dependencies:
+
+```bash
+yarn install
+```
+
+3. Start development server:
+
+```bash
+yarn dev
+```
+
+## backend
+
+1. Navigate to backend directory
 2. Install dependencies:
 
 ```bash
