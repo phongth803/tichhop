@@ -1,5 +1,5 @@
 import { Flex, Box } from '@chakra-ui/react'
-import logoAuth from '../../assets/icons/logoAuth.svg'
+import logoAuth from '@/assets/icons/logoAuth.svg'
 import { Outlet } from 'react-router-dom'
 
 const AuthLayout = () => {

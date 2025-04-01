@@ -1,4 +1,5 @@
 import { Box, Text, Heading, Grid, Button, Image } from '@chakra-ui/react'
+import jblSpeaker from '@/assets/images/jbl-speaker.png'
 
 const MusicBanner = ({ bannerCountdown }) => (
   <Box my={8} bg='black' color='white' borderRadius='xl' overflow='hidden' position='relative' p={{ base: 4, md: 8 }}>
@@ -47,7 +48,7 @@ const MusicBanner = ({ bannerCountdown }) => (
       </Button>
     </Box>
     <Image
-      src='src/assets/images/jbl-speaker.png'
+      src={jblSpeaker}
       position='absolute'
       right={0}
       top='50%'
