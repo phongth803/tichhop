@@ -2,7 +2,7 @@ import axios from 'axios'
 import rootStore from '../stores/rootStore'
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3002/api',
+  baseURL: `${process.env.REACT_APP_API_URL}/api` || 'http://localhost:3002/api',
   headers: {
     'Content-Type': 'application/json'
   }

@@ -68,7 +68,13 @@ const AdminLayout = ({ children }) => {
           color='gray.600'
         >
           <Icon as={MdLogout} boxSize={5} />
-          <Text onClick={logout}>Log out</Text>
+          <Text onClick={() => {
+              logout()
+              navigate('/login')
+            }}
+          >
+            Log out
+          </Text>
         </HStack>
       </Box>
 

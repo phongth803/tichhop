@@ -1,6 +1,10 @@
 import { Box, Grid, GridItem, Image } from '@chakra-ui/react'
 import SectionHeader from './SectionHeader'
 import CardOverlay from './CardOverlay'
+import ps5 from '@/assets/images/ps5.jpg'
+import women from '@/assets/images/women.jpg'
+import speakers from '@/assets/images/speakers.jpg'
+import perfume from '@/assets/images/perfume.jpg'
 
 const NewArrival = () => {
   return (
@@ -18,7 +22,7 @@ const NewArrival = () => {
           h={{ base: '300px', md: 'auto' }}
         >
           <Box bg='black' borderRadius='lg' overflow='hidden' h='100%' position='relative'>
-            <Image src='src/assets/images/ps5.jpg' alt='PS5' objectFit='cover' w='100%' h='100%' />
+              <Image src={ps5} alt='PS5' objectFit='cover' w='100%' h='100%' />
             <CardOverlay title='PlayStation 5' description='Black and White version of the PS5 coming out on sale.' />
           </Box>
         </GridItem>
@@ -29,7 +33,7 @@ const NewArrival = () => {
         >
           <Box bg='black' borderRadius='lg' overflow='hidden' h='100%' position='relative'>
             <Image
-              src='src/assets/images/women.jpg'
+              src={women}
               alt="Women's Collections"
               objectFit='cover'
               w='100%'
@@ -46,7 +50,7 @@ const NewArrival = () => {
         {/* Speakers Card */}
         <GridItem position='relative'>
           <Box bg='black' borderRadius='lg' overflow='hidden' h='100%' position='relative'>
-            <Image src='src/assets/images/speakers.jpg' alt='Speakers' objectFit='cover' w='100%' h='100%' />
+            <Image src={speakers} alt='Speakers' objectFit='cover' w='100%' h='100%' />
             <CardOverlay title='Speakers' description='Amazon wireless speakers' />
           </Box>
         </GridItem>
@@ -54,7 +58,7 @@ const NewArrival = () => {
         {/* Perfume Card */}
         <GridItem position='relative'>
           <Box bg='black' borderRadius='lg' overflow='hidden' h='100%' position='relative'>
-            <Image src='src/assets/images/perfume.jpg' alt='Perfume' objectFit='cover' w='100%' h='100%' />
+            <Image src={perfume} alt='Perfume' objectFit='cover' w='100%' h='100%' />
             <CardOverlay title='Perfume' description='GUCCI INTENSE OUD EDP' />
           </Box>
         </GridItem>

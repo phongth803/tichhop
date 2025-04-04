@@ -56,8 +56,8 @@ const MainHeader = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader borderBottomWidth='1px' fontWeight='bold' fontSize='2xl'>
-            Exclusive
+          <DrawerHeader borderBottomWidth='1px' fontWeight='bold' fontSize='2xl' color='red.500'>
+            PDT
           </DrawerHeader>
           <DrawerBody px={0}>
             <Box p={4}>

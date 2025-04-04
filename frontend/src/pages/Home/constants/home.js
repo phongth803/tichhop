@@ -1,3 +1,6 @@
+import iphone14 from '@/assets/images/iphone-14.png'
+import appleLogo from '@/assets/images/apple-logo.png'
+
 export const ITEMS_PER_PAGE = {
   FLASH_SALE: 4,
   EXPLORE: 8,
@@ -26,36 +29,36 @@ export const heroSlides = [
     id: 1,
     title: 'iPhone 14 Series',
     subtitle: 'Up to 10% off Voucher',
-    image: 'src/assets/images/iphone-14.png',
-    logo: 'src/assets/images/apple-logo.png'
+    image: iphone14,
+    logo: appleLogo
   },
   {
     id: 2,
     title: 'iPhone 14 Series',
     subtitle: 'Up to 10% off Voucher',
-    image: 'src/assets/images/iphone-14.png',
-    logo: 'src/assets/images/apple-logo.png'
+    image: iphone14,
+    logo: appleLogo
   },
   {
     id: 3,
     title: 'iPhone 14 Series',
     subtitle: 'Up to 10% off Voucher',
-    image: 'src/assets/images/iphone-14.png',
-    logo: 'src/assets/images/apple-logo.png'
+    image: iphone14,
+    logo: appleLogo
   },
   {
     id: 4,
     title: 'iPhone 14 Series',
     subtitle: 'Up to 10% off Voucher',
-    image: 'src/assets/images/iphone-14.png',
-    logo: 'src/assets/images/apple-logo.png'
+    image: iphone14,
+    logo: appleLogo
   },
   {
     id: 5,
     title: 'iPhone 14 Series',
     subtitle: 'Up to 10% off Voucher',
-    image: 'src/assets/images/iphone-14.png',
-    logo: 'src/assets/images/apple-logo.png'
+    image: iphone14,
+    logo: appleLogo
   }
 ]
 

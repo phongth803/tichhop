@@ -3,11 +3,14 @@ import { FaStar, FaRegStar } from 'react-icons/fa'
 import { FiTruck, FiRefreshCcw } from 'react-icons/fi'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useStore } from '@/stores/rootStore'
+import { toast } from 'react-toastify'
 
 const ProductInfo = ({ product }) => {
   const navigate = useNavigate()
   const [inputValue, setInputValue] = useState('1')
   const [quantity, setQuantity] = useState(1)
+  const { cartStore } = useStore()
 
   const formatPrice = (price) => {
     const number = parseFloat(price)
@@ -17,24 +20,62 @@ const ProductInfo = ({ product }) => {
     }).format(number)
   }
 
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value)
+  const validateQuantity = (value) => {
+    const val = parseInt(value)
+    if (!value || isNaN(val) || val < 1) {
+      return 1
+    }
+    return Math.min(Math.max(val, 1), product.stock)
   }
 
-  const handleBlur = () => {
-    const val = parseInt(inputValue)
-    if (!inputValue || isNaN(val)) {
-      setInputValue('1')
-      setQuantity(1)
-    } else {
-      const validValue = Math.min(Math.max(val, 1), 99)
-      setInputValue(validValue.toString())
-      setQuantity(validValue)
+  const updateQuantityStates = (value) => {
+    const validValue = validateQuantity(value)
+    setInputValue(validValue.toString())
+    setQuantity(validValue)
+    return validValue
+  }
+
+  const handleInputChange = (e) => {
+    const val = e.target.value
+    if (val === '') {
+      setInputValue('')
+      return
+    }
+
+    const numVal = parseInt(val)
+    if (!isNaN(numVal)) {
+      if (numVal > product.stock) {
+        toast.error(`Only ${product.stock} items left in stock`)
+        updateQuantityStates(product.stock)
+      } else {
+        setInputValue(val)
+        setQuantity(numVal)
+      }
     }
   }
 
-  const handleBuyNow = () => {
-    navigate('/cart')
+  const handleBlur = () => {
+    updateQuantityStates(inputValue)
+  }
+
+  const handleBuyNow = async () => {
+    try {
+      const validQuantity = updateQuantityStates(inputValue)
+
+      if (validQuantity > product.stock) {
+        toast.error(`Only ${product.stock} items left in stock`)
+        return
+      }
+
+      const success = await cartStore.addToCart(product._id, validQuantity)
+      if (success) {
+        navigate('/cart')
+      } else {
+        toast.error(cartStore.error)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
   return (
@@ -60,8 +101,8 @@ const ProductInfo = ({ product }) => {
           ({product.reviews} Reviews)
         </Text>
         <Text color='gray.400'>|</Text>
-        <Text color='green.400' fontSize='sm'>
-          In Stock
+        <Text color={product.stock > 0 ? 'green.400' : 'red.400'} fontSize='sm'>
+          {product.stock > 0 ? `In Stock (${product.stock})` : 'Out of Stock'}
         </Text>
       </HStack>
 
@@ -86,7 +127,7 @@ const ProductInfo = ({ product }) => {
       </Text>
 
       <HStack spacing={4} mb={8}>
-        <NumberInput value={quantity} min={1} max={99} onChange={(_, value) => setQuantity(value)} w='140px'>
+        <NumberInput value={quantity} min={1} max={product.stock} onChange={(_, value) => setQuantity(value)} w='140px'>
           <HStack spacing={0} border='1px' borderColor='gray.500' borderRadius='md' w='fit-content' overflow='hidden'>
             <IconButton
               icon={<Text fontSize='xl'>−</Text>}
@@ -159,7 +200,7 @@ const ProductInfo = ({ product }) => {
                 setQuantity(newValue)
                 setInputValue(newValue.toString())
               }}
-              isDisabled={quantity >= 99}
+              isDisabled={quantity >= product.stock}
               _hover={{
                 bg: 'gray.50'
               }}

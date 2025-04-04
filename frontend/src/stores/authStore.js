@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 import { login, register, updateProfile, getProfile } from '../apis/auth'
-
+import { toast } from 'react-toastify'
 class AuthStore {
   user = null
   isAuthenticated = false
@@ -103,6 +103,7 @@ class AuthStore {
     sessionStorage.removeItem('token')
     this.setUser(null)
     this.loading = false
+    toast.success('Logout successfully')
   }
 
   updateProfile = async (userData) => {
