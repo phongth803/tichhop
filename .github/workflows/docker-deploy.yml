@@ -22,12 +22,12 @@ jobs:
       - name: Setup Backend ENV
         run: |
           cd backend
-          cp ${{ secrets.BACKEND_ENV }} .env
+          echo "${{ secrets.BACKEND_ENV }}" > .env
 
       - name: Setup Frontend ENV
         run: |
           cd frontend
-          cp ${{ secrets.FRONTEND_ENV }} .env
+          echo "${{ secrets.FRONTEND_ENV }}" > .env
 
       - name: Build and push Backend
         uses: docker/build-push-action@v5
@@ -42,3 +42,5 @@ jobs:
           context: ./frontend
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+          build-args: |
+            FRONTEND_ENV=${{ secrets.FRONTEND_ENV }}

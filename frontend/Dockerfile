@@ -13,6 +13,10 @@ RUN yarn install --frozen-lockfile
 # Copy source code
 COPY . .
 
+# Create .env file from build args
+ARG FRONTEND_ENV
+RUN echo "$FRONTEND_ENV" > .env
+
 # Build the application with Vite
 RUN yarn build
 

@@ -2,6 +2,7 @@ import { Menu, MenuButton, MenuList, MenuItem, Avatar, Icon, Text } from '@chakr
 import { FiUser, FiShoppingBag, FiStar, FiXCircle, FiLogOut } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '@/stores/rootStore'
+import { toast } from 'react-toastify'
 
 const ProfileMenu = () => {
   const navigate = useNavigate()
@@ -10,7 +11,8 @@ const ProfileMenu = () => {
 
   const handleLogout = () => {
     authStore.logout()
-    navigate('/')
+    navigate('/login')
+    toast.success('Logged out successfully')
   }
 
   const menuItems = [

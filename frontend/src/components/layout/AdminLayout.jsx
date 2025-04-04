@@ -13,10 +13,10 @@ import {
 } from 'react-icons/md'
 import { useStore } from '../../stores/rootStore'
 import { useNavigate, useLocation, Outlet } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const AdminLayout = ({ children }) => {
   const { authStore } = useStore()
-  const { logout } = authStore
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const isActive = (path) => pathname === path
@@ -29,6 +29,12 @@ const AdminLayout = ({ children }) => {
     { icon: MdCategory, label: 'Category', path: '/admin/category' },
     { icon: MdSettings, label: 'Settings', path: '/admin/settings' }
   ]
+
+  const handleLogout = () => {
+    authStore.logout()
+    navigate('/login')
+    toast.success('Logged out successfully')
+  }
 
   return (
     <Flex h='100vh'>
@@ -66,15 +72,10 @@ const AdminLayout = ({ children }) => {
           bottom={4}
           w='100%'
           color='gray.600'
+          onClick={handleLogout}
         >
           <Icon as={MdLogout} boxSize={5} />
-          <Text onClick={() => {
-              logout()
-              navigate('/login')
-            }}
-          >
-            Log out
-          </Text>
+          <Text>Log out</Text>
         </HStack>
       </Box>
 

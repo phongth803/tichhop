@@ -131,9 +131,6 @@ const ProductList = observer(() => {
     updateUrl({ ...cleanFilters(newFilters) })
   }
 
-  if (loadingStates.products) {
-    return <Loading text='Loading products...' />
-  }
 
   return (
     <Box bg='gray.50' minH='100vh'>
@@ -157,13 +154,19 @@ const ProductList = observer(() => {
           )}
 
           <Box>
-            <ProductGrid products={productsList} />
-            {totalProducts > 0 && (
-              <Pagination
+            {loadingStates.products ? (
+              <Loading text='Loading products...' />
+            ) : (
+              <>
+                <ProductGrid products={productsList} />
+                {totalProducts > 0 && (
+                  <Pagination
                 currentPage={currentPageState}
                 totalPages={Math.ceil(totalProducts / 20)}
-                onPageChange={handlePageChange}
-              />
+                    onPageChange={handlePageChange}
+                  />
+                )}
+              </>
             )}
           </Box>
         </Grid>
