@@ -1,0 +1,44 @@
+name: Docker Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Setup Backend ENV
+        run: |
+          cd backend
+          cp ${{ secrets.BACKEND_ENV }} .env
+
+      - name: Setup Frontend ENV
+        run: |
+          cd frontend
+          cp ${{ secrets.FRONTEND_ENV }} .env
+
+      - name: Build and push Backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+
+      - name: Build and push Frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest

@@ -13,9 +13,6 @@ RUN yarn install --frozen-lockfile
 # Copy source code
 COPY . .
 
-# Copy .env file
-COPY .env .env
-
 # Expose port 3002
 EXPOSE 3002
 
