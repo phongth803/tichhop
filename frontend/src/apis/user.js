@@ -1,8 +1,8 @@
 import axiosInstance from "../utils/axios"
 
-export const getUsers = async () => {
+export const getUsers = async (params) => {
   try {
-    const response = await axiosInstance.get('/admin/users')
+    const response = await axiosInstance.get('/admin/users', { params })
     return response.data
   } catch (error) {
     console.error('Error fetching users:', error)

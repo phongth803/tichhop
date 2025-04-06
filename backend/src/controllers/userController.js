@@ -3,12 +3,25 @@ import User from '../models/User.js'
 // Lấy danh sách tất cả người dùng
 export const getAllUsers = async (req, res) => {
   try {
-    const { search, role } = req.query
+    const { search, role, isActive, page = 1, limit = 10 } = req.query
     let query = {}
 
     if (search) {
       query = {
-        $or: [{ firstName: { $regex: search, $options: 'i' } }, { lastName: { $regex: search, $options: 'i' } }]
+        $or: [
+          { firstName: { $regex: search, $options: 'i' } },
+          { lastName: { $regex: search, $options: 'i' } },
+          // Tìm theo full name
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $concat: ['$firstName', ' ', '$lastName'] },
+                regex: search,
+                options: 'i'
+              }
+            }
+          }
+        ]
       }
     }
 
@@ -16,8 +29,25 @@ export const getAllUsers = async (req, res) => {
       query.role = role
     }
 
-    const users = await User.find(query)
-    res.json(users)
+    if (isActive !== undefined && isActive !== '') {
+      query.isActive = isActive === 'true'
+    }
+
+    // Calculate skip value for pagination
+    const skip = (page - 1) * limit
+
+    // Get total count for pagination
+    const total = await User.countDocuments(query)
+
+    // Get paginated users
+    const users = await User.find(query).skip(skip).limit(parseInt(limit))
+
+    res.json({
+      users,
+      totalItems: total,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(total / limit)
+    })
   } catch (err) {
     res.status(500).json({ message: err.message })
   }
@@ -25,14 +55,15 @@ export const getAllUsers = async (req, res) => {
 
 // Tạo người dùng mới
 export const createUser = async (req, res) => {
-  const { firstName, lastName, email, password, address, role } = req.body
+  const { firstName, lastName, email, password, address, role, isActive } = req.body
   const user = new User({
     firstName,
     lastName,
     email,
     password,
     address,
-    role
+    role,
+    isActive: isActive !== undefined ? isActive : true
   })
 
   try {
@@ -43,21 +74,24 @@ export const createUser = async (req, res) => {
   }
 }
 
-// Cập nhật thông tin người dùng
+// Cập nhật người dùng
 export const updateUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id)
-    if (user == null) {
-      return res.status(404).json({ message: 'Cannot find user' })
+    const { id } = req.params
+    const { firstName, lastName, email, password, address, role, isActive } = req.body
+
+    const user = await User.findById(id)
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
     }
 
-    const { firstName, lastName, email, address, role, password } = req.body
-    if (firstName != null) user.firstName = firstName
-    if (lastName != null) user.lastName = lastName
-    if (email != null) user.email = email
-    if (address != null) user.address = address
-    if (role != null) user.role = role
-    if (password != null) user.password = password
+    if (firstName) user.firstName = firstName
+    if (lastName) user.lastName = lastName
+    if (email) user.email = email
+    if (password) user.password = password
+    if (address !== undefined) user.address = address
+    if (role) user.role = role
+    if (isActive !== undefined) user.isActive = isActive
 
     const updatedUser = await user.save()
     res.json(updatedUser)

@@ -1,10 +1,7 @@
 import React from 'react'
 import { Table, Thead, Tbody, Tr, Th, Td, HStack, Box, Button, Select, Text } from '@chakra-ui/react'
 
-const DataTable = ({ headers, dataInTable, itemsPerPage = 10, currentPage = 1, onPageChange }) => {
-  const totalItems = dataInTable.length
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
-
+const DataTable = ({ headers, dataInTable, itemsPerPage = 10, currentPage = 1, totalPages = 1, onPageChange }) => {
   return (
     <Box>
       <Table variant='simple'>
@@ -34,13 +31,21 @@ const DataTable = ({ headers, dataInTable, itemsPerPage = 10, currentPage = 1, o
         </Select>
 
         <HStack>
-          <Button disabled={currentPage === 1} onClick={() => onPageChange(currentPage - 1, itemsPerPage)}>
+          <Button
+            disabled={currentPage === 1}
+            onClick={() => onPageChange(currentPage - 1, itemsPerPage)}
+            isDisabled={currentPage === 1}
+          >
             Previous
           </Button>
           <Text>
             Page {currentPage} of {totalPages}
           </Text>
-          <Button disabled={currentPage === totalPages} onClick={() => onPageChange(currentPage + 1, itemsPerPage)}>
+          <Button
+            disabled={currentPage === totalPages}
+            onClick={() => onPageChange(currentPage + 1, itemsPerPage)}
+            isDisabled={currentPage === totalPages}
+          >
             Next
           </Button>
         </HStack>

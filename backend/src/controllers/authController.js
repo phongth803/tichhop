@@ -77,6 +77,14 @@ export const login = async (req, res) => {
       })
     }
 
+    // Kiểm tra trạng thái active của user
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account has been deactivated. Please contact administrator.'
+      })
+    }
+
     const isMatch = await user.comparePassword(password)
     if (!isMatch) {
       return res.status(400).json({

@@ -113,11 +113,7 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
 
                 <FormControl isInvalid={errors.address}>
                   <FormLabel>Address</FormLabel>
-                  <Input
-                    {...register('address', {
-                      required: 'Address is required'
-                    })}
-                  />
+                  <Input {...register('address', {})} />
                   <FormErrorMessage>{errors.address && errors.address.message}</FormErrorMessage>
                 </FormControl>
 
@@ -133,6 +129,14 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
                     <option value='user'>User</option>
                   </Select>
                   <FormErrorMessage>{errors.role && errors.role.message}</FormErrorMessage>
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel>Status</FormLabel>
+                  <Select {...register('isActive')} defaultValue={true}>
+                    <option value={true}>Active</option>
+                    <option value={false}>Inactive</option>
+                  </Select>
                 </FormControl>
               </Grid>
             </VStack>
