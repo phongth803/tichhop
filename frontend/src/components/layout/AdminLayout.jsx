@@ -90,6 +90,7 @@ const AdminLayout = ({ children }) => {
           justify='space-between'
           position='sticky'
           top={0}
+          zIndex={1000}
         >
           <Text fontSize='20px' fontWeight='bold'>
             Admin Dashboard

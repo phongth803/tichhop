@@ -5,17 +5,35 @@ class UserStore {
   loading = false
   isListLoading = false
   userList = []
+  pagination = {
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    itemsPerPage: 10
+  }
 
   constructor(rootStore) {
     this.rootStore = rootStore
     makeAutoObservable(this)
   }
 
-  getUsers = async () => {
+  getUsers = async (page = 1, limit = 10, search = '', filters = {}) => {
     this.isListLoading = true
     try {
-      const users = await getUsers()
-      this.userList = users || []
+      const response = await getUsers({
+        page,
+        limit,
+        search,
+        role: filters.role || '',
+        isActive: filters.status
+      })
+      this.userList = response.users || []
+      this.pagination = {
+        currentPage: response.currentPage,
+        totalPages: response.totalPages,
+        totalItems: response.totalItems,
+        itemsPerPage: limit
+      }
       return true
     } catch (error) {
       throw error

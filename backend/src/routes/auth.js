@@ -70,6 +70,8 @@ router.post('/register', register)
  *         description: Login successful
  *       401:
  *         description: Invalid credentials
+ *       403:
+ *         description: Account deactivated
  */
 router.post('/login', login)
 
