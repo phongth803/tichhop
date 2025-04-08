@@ -30,7 +30,7 @@ const router = express.Router()
  *           type: number
  *         status:
  *           type: string
- *           enum: [pending, processing, shipped, delivered, cancelled]
+ *           enum: [processing, delivered, cancelled]
  *         shippingAddress:
  *           type: object
  *           properties:
@@ -132,7 +132,7 @@ router.get('/all', auth, adminAuth, getOrders)
  *             properties:
  *               status:
  *                 type: string
- *                 enum: [pending, processing, shipped, delivered, cancelled]
+ *                 enum: [processing, delivered, cancelled]
  *     responses:
  *       200:
  *         description: Order status updated successfully

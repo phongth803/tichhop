@@ -14,7 +14,7 @@ export const getStats = async (req, res) => {
         {
           $match: {
             createdAt: { $gte: thirtyDaysAgo },
-            status: { $in: ['delivered', 'completed'] }
+            status: { $in: ['delivered'] }
           }
         },
         {
@@ -34,7 +34,7 @@ export const getStats = async (req, res) => {
               $gte: sixtyDaysAgo,
               $lt: thirtyDaysAgo
             },
-            status: { $in: ['delivered', 'completed'] }
+            status: { $in: ['delivered'] }
           }
         },
         {
@@ -103,7 +103,7 @@ export const getRevenue = async (req, res) => {
       {
         $match: {
           createdAt: { $gte: twelveMonthsAgo },
-          status: { $in: ['delivered', 'completed'] }
+          status: { $in: ['delivered'] }
         }
       },
       {
@@ -168,7 +168,7 @@ export const getTopProducts = async (req, res) => {
       {
         $match: {
           createdAt: { $gte: thirtyDaysAgo },
-          status: { $in: ['delivered', 'completed'] }
+          status: { $in: ['delivered'] }
         }
       },
       { $unwind: '$items' },
@@ -222,7 +222,7 @@ export const getCategoryDistribution = async (req, res) => {
         {
           $match: {
             createdAt: { $gte: thirtyDaysAgo },
-            status: { $in: ['delivered', 'completed'] }
+            status: { $in: ['delivered'] }
           }
         },
         { $unwind: '$items' },
@@ -260,7 +260,7 @@ export const getCategoryDistribution = async (req, res) => {
         {
           $match: {
             createdAt: { $gte: thirtyDaysAgo },
-            status: { $in: ['delivered', 'completed'] }
+            status: { $in: ['delivered'] }
           }
         },
         { $unwind: '$items' },

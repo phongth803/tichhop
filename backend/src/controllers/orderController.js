@@ -58,9 +58,68 @@ export const getOrders = async (req, res) => {
       return
     }
 
-    const orders = await Order.find().populate('user', '-password').populate('items.product').sort({ createdAt: -1 })
-    res.json(orders)
+    const { search, status, page = 1, limit = 10 } = req.query
+    const skip = (page - 1) * limit
+    let query = {}
+
+    if (search) {
+      // Use pipeline only for searching user names
+      const orderIds = await Order.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'userData'
+          }
+        },
+        { $unwind: '$userData' },
+        {
+          $match: {
+            $or: [
+              { 'userData.firstName': { $regex: search, $options: 'i' } },
+              { 'userData.lastName': { $regex: search, $options: 'i' } },
+              {
+                $expr: {
+                  $regexMatch: {
+                    input: { $concat: ['$userData.firstName', ' ', '$userData.lastName'] },
+                    regex: search,
+                    options: 'i'
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { $project: { _id: 1 } }
+      ])
+      
+      query._id = { $in: orderIds.map(order => order._id) }
+    }
+
+    if (status) {
+      query.status = status
+    }
+
+    // Get total count for pagination
+    const total = await Order.countDocuments(query)
+
+    // Get paginated orders with populated data
+    const orders = await Order.find(query)
+      .populate('user', '-password')
+      .populate('items.product')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+
+    res.json({
+      orders,
+      totalItems: total,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(total / limit)
+    })
   } catch (error) {
+    console.error('Error fetching orders:', error)
     res.status(500).json({ message: 'Error fetching orders' })
   }
 }
@@ -77,7 +136,7 @@ export const getOrder = async (req, res) => {
 export const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body
-    const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled']
+    const validStatuses = ['processing', 'delivered', 'cancelled']
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: 'Invalid status' })

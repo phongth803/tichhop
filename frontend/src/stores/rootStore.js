@@ -8,6 +8,7 @@ import UserStore from './admin/userStore'
 import CartStore from './cartStore'
 import AdminCategoryStore from './admin/adminCategoryStore'
 import AdminDashBoardStore from './admin/adminDashBoardStore'
+import AdminOrderStore from './admin/adminOrderStore'
 
 class RootStore {
   constructor() {
@@ -17,6 +18,7 @@ class RootStore {
     this.userStore = new UserStore(this)
     this.adminCategoryStore = new AdminCategoryStore(this)
     this.adminDashBoardStore = new AdminDashBoardStore(this)
+    this.orderStore = new AdminOrderStore(this)
 
     //user
     this.contactStore = new ContactStore(this)
