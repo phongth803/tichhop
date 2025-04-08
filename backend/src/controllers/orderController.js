@@ -93,7 +93,7 @@ export const getOrders = async (req, res) => {
         },
         { $project: { _id: 1 } }
       ])
-      
+
       query._id = { $in: orderIds.map(order => order._id) }
     }
 
@@ -136,7 +136,7 @@ export const getOrder = async (req, res) => {
 export const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body
-    const validStatuses = ['processing', 'delivered', 'cancelled']
+    const validStatuses = ['pending', 'processing', 'delivered', 'cancelled']
 
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: 'Invalid status' })
