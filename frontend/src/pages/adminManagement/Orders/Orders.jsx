@@ -73,12 +73,7 @@ const Orders = observer(() => {
     setIsItemsModalOpen(true)
   }
 
-  const filteredOrders = orderList?.filter(order => {
-    const customerName = `${order.user?.firstName} ${order.user?.lastName}`.toLowerCase()
-    return customerName.includes(searchTerm.toLowerCase())
-  })
-
-  const dataInTable = filteredOrders?.map((item) => {
+  const dataInTable = orderList?.map((item) => {
     return {
       customerName: `${item.user?.firstName} ${item.user?.lastName}`,
       totalAmount: `$${Number(item.totalAmount || 0).toFixed(2)}`,
@@ -95,7 +90,7 @@ const Orders = observer(() => {
       createdAt: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A',
       status: (
         <Badge colorScheme={
-          item.status === 'completed' ? 'green' :
+          item.status === 'delivered' ? 'green' :
           item.status === 'pending' ? 'yellow' :
           item.status === 'processing' ? 'blue' :
           item.status === 'cancelled' ? 'red' : 'gray'
@@ -140,26 +135,12 @@ const Orders = observer(() => {
 
   return (
     <Box p={4}>
-      <Box mb={4}>
-        <InputGroup>
-          <InputLeftElement pointerEvents='none'>
-            <SearchIcon color='gray.400' />
-          </InputLeftElement>
-          <Input
-            placeholder='Search by customer name...'
-            value={searchTerm}
-            onChange={handleSearch}
-            maxW="400px"
-          />
-        </InputGroup>
-      </Box>
-
       <TaskBarAdmin
         title='Orders'
         isFilter={true}
         isAdd={false}
         handleOpenFilter={() => setIsFilterOpen(true)}
-        searchPlaceholder='Search by order ID...'
+        searchPlaceholder='Search by customer name...'
         searchValue={searchTerm}
         onSearchChange={handleSearch}
       />

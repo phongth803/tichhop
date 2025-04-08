@@ -1,8 +1,8 @@
 import axiosInstance from "../utils/axios"
 
-export const getAllOrders = async () => {
+export const getAllOrders = async (params) => {
   try {
-    const response = await axiosInstance.get('/orders/all')
+    const response = await axiosInstance.get('/orders/all', { params })
     return response.data
   } catch (error) {
     console.error('Error fetching all orders:', error)
