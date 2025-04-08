@@ -44,7 +44,7 @@ const OrderFilter = ({ isOpen, onClose, onFilter, currentFilters }) => {
                   <option value="">All</option>
                   <option value="pending">Pending</option>
                   <option value="processing">Processing</option>
-                  <option value="completed">Completed</option>
+                  <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
                 </Select>
               </FormControl>

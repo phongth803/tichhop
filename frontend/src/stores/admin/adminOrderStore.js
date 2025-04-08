@@ -26,9 +26,7 @@ class AdminOrderStore {
         search,
         status: filters.status || ''
       })
-      console.log('API Response:', response) // Debug log
-      this.orderList = Array.isArray(response) ? response : (response.orders || [])
-      console.log('Updated orderList:', this.orderList) // Debug log
+      this.orderList = response.orders 
       this.pagination = {
         currentPage: response.currentPage || page,
         totalPages: response.totalPages || Math.ceil(this.orderList.length / limit),
@@ -37,7 +35,7 @@ class AdminOrderStore {
       }
       return true
     } catch (error) {
-      console.error('Error in getAllOrders:', error) // Debug log
+      console.error('Error in getAllOrders:', error) 
       throw error
     } finally {
       this.isListLoading = false
