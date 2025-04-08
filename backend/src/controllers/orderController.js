@@ -1,5 +1,6 @@
 import Order from '../models/Order.js'
 import Cart from '../models/Cart.js'
+import CartItem from '../models/CartItem.js'
 
 export const createOrder = async (req, res) => {
   try {
@@ -9,17 +10,24 @@ export const createOrder = async (req, res) => {
     }
 
     const { shippingAddress } = req.body
-    const cart = await Cart.findOne({ user: req.user._id }).populate('items.product')
+    const cart = await Cart.findOne({ user: req.user._id })
 
-    if (!cart || cart.items.length === 0) {
+    if (!cart) {
+      res.status(400).json({ message: 'Cart not found' })
+      return
+    }
+
+    const cartItems = await CartItem.find({ cartId: cart._id }).populate('productId')
+
+    if (!cartItems || cartItems.length === 0) {
       res.status(400).json({ message: 'Cart is empty' })
       return
     }
 
-    const orderItems = cart.items.map(item => ({
-      product: item.product._id,
+    const orderItems = cartItems.map(item => ({
+      product: item.productId._id,
       quantity: item.quantity,
-      price: item.product.price
+      price: item.productId.price
     }))
 
     const totalAmount = orderItems.reduce((total, item) => total + item.price * item.quantity, 0)
@@ -34,11 +42,11 @@ export const createOrder = async (req, res) => {
     await order.save()
 
     // Clear cart after order creation
-    cart.items = []
-    await cart.save()
+    await CartItem.deleteMany({ cartId: cart._id })
 
     res.status(201).json(order)
   } catch (error) {
+    console.error('Error creating order:', error)
     res.status(400).json({ message: 'Error creating order' })
   }
 }
