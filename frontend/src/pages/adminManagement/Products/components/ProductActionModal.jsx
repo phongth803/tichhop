@@ -23,12 +23,14 @@ import {
   HStack,
   Image,
   Box,
-  Checkbox
+  Checkbox,
+  IconButton
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { uploadProductImages, deleteProductImage } from '@/apis/products'
+import { DeleteIcon } from '@chakra-ui/icons'
 
 const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, categories }) => {
   const {
@@ -151,8 +153,18 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
         ...data,
         isActive: data.status === 'active'
       }
+
+      if (!isEdit && selectedFiles.length > 0) {
+        const formData = new FormData()
+        selectedFiles.forEach((file) => {
+          formData.append('images', file)
+        })
+        submitData.files = formData
+      }
+
       await onSubmit(submitData)
       reset()
+      setSelectedFiles([])
       onClose()
     } catch (error) {
       console.error(`Error ${isEdit ? 'updating' : 'adding'} product:`, error)
@@ -192,11 +204,14 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
                     })}
                   >
                     <option value=''>Select category</option>
-                    {categories?.map((category) => (
-                      <option key={category._id} value={category._id}>
-                        {category.name}
-                      </option>
-                    ))}
+                    {categories
+                      ?.slice()
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .map((category) => (
+                        <option key={category._id} value={category._id}>
+                          {category.name}
+                        </option>
+                      ))}
                   </Select>
                   <FormErrorMessage>{errors.category && errors.category.message}</FormErrorMessage>
                 </FormControl>
@@ -329,6 +344,39 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
                         ))}
                       </Grid>
                     </>
+                  )}
+                  {selectedFiles.length > 0 && (
+                    <Grid templateColumns='repeat(5, 1fr)' gap={4} mb={4}>
+                      {selectedFiles.map((file, index) => (
+                        <Box
+                          key={index}
+                          position='relative'
+                          border='1px solid'
+                          borderColor='gray.200'
+                          borderRadius='md'
+                          p={1}
+                        >
+                          <Image
+                            src={URL.createObjectURL(file)}
+                            alt={`Preview ${index + 1}`}
+                            objectFit='cover'
+                            borderRadius='md'
+                          />
+                          <IconButton
+                            position='absolute'
+                            top={2}
+                            right={2}
+                            size='sm'
+                            colorScheme='red'
+                            icon={<DeleteIcon />}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setSelectedFiles((prev) => prev.filter((_, i) => i !== index))
+                            }}
+                          />
+                        </Box>
+                      ))}
+                    </Grid>
                   )}
                   <Input
                     type='file'
