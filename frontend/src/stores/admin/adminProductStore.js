@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { getProducts, addProduct, updateProduct, deleteProduct } from '../../apis/products'
+import { getProducts, addProduct, updateProduct, deleteProduct, uploadProductImages } from '../../apis/products'
 
 export const DEFAULT_FILTERS = {
   category: '',
@@ -78,7 +78,25 @@ class AdminProductStore {
   async addProduct(productData) {
     try {
       this.setLoading(true)
-      await addProduct(productData)
+      // Tách product data và files
+      const { files, ...productInfo } = productData
+
+      // Tạo sản phẩm trước
+      const response = await addProduct(productInfo)
+      const newProduct = response.data
+
+      // Nếu có files, upload ảnh
+      if (files) {
+        try {
+          await uploadProductImages(newProduct._id, files)
+        } catch (error) {
+          console.error('Error uploading images:', error)
+          // Nếu upload ảnh thất bại, xóa sản phẩm vừa tạo
+          await deleteProduct(newProduct._id)
+          throw new Error('Failed to upload images')
+        }
+      }
+
       return true
     } catch (error) {
       throw error

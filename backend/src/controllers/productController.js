@@ -29,15 +29,16 @@ export const createProduct = async (req, res) => {
       discount: discount || 0
     })
 
-    // Nếu có files được upload
-    if (req.files && req.files.length > 0) {
-      const imageUrls = req.files.slice(0, 5).map(file => file.path) // Giới hạn tối đa 5 ảnh
-      product.images = imageUrls
-      // Không cần set thumbnail thủ công, middleware sẽ tự xử lý
-    }
-
     await product.save()
     await product.populate('category', 'name')
+
+    // Nếu có files được upload, gọi hàm uploadImages
+    if (req.files && req.files.length > 0) {
+      req.params.id = product._id // Set product id cho uploadImages
+      await uploadImages(req, res)
+      return // Kết thúc ở đây vì uploadImages đã gửi response
+    }
+
     res.status(201).json(product)
   } catch (error) {
     console.error('Error creating product:', error)
