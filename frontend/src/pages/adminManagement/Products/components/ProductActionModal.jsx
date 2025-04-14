@@ -24,13 +24,16 @@ import {
   Image,
   Box,
   Checkbox,
-  IconButton
+  IconButton,
+  Text,
+  Flex,
+  useColorModeValue
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { toast } from 'react-toastify'
 import { uploadProductImages, deleteProductImage } from '@/apis/products'
-import { DeleteIcon } from '@chakra-ui/icons'
+import { DeleteIcon, AddIcon } from '@chakra-ui/icons'
 
 const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, categories }) => {
   const {
@@ -47,6 +50,17 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
   const [deletingImages, setDeletingImages] = useState([])
   const [selectedImages, setSelectedImages] = useState([])
   const images = watch('images') || []
+  const fileInputRef = useRef(null)
+  const borderColor = useColorModeValue('gray.200', 'gray.600')
+  const hoverBg = useColorModeValue('gray.50', 'gray.700')
+
+  const handleOnClose = () => {
+    reset()
+    setSelectedFiles([])
+    setSelectedImages([])
+    setDeletingImages([])
+    onClose()
+  }
 
   useEffect(() => {
     if (initialData) {
@@ -87,7 +101,6 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
       const newImages = response.data.images.filter((img) => !images.includes(img))
       setValue('images', [...images, ...newImages], { shouldDirty: true })
       setSelectedFiles([])
-      toast.success('Upload images successfully')
     } catch (error) {
       if (error.response?.data?.message === 'Maximum 5 images allowed per product') {
         toast.error('Maximum 5 images allowed per product')
@@ -154,25 +167,34 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
         isActive: data.status === 'active'
       }
 
-      if (!isEdit && selectedFiles.length > 0) {
-        const formData = new FormData()
-        selectedFiles.forEach((file) => {
-          formData.append('images', file)
-        })
-        submitData.files = formData
+      // Handle image upload for both new and edit modes
+      if (selectedFiles.length > 0) {
+        if (isEdit) {
+          // For edit mode, upload images first
+          await handleUploadImages()
+        } else {
+          // For add mode, include files in the form data
+          const formData = new FormData()
+          selectedFiles.forEach((file) => {
+            formData.append('images', file)
+          })
+          submitData.files = formData
+        }
       }
 
       await onSubmit(submitData)
-      reset()
-      setSelectedFiles([])
-      onClose()
+      handleOnClose()
     } catch (error) {
       console.error(`Error ${isEdit ? 'updating' : 'adding'} product:`, error)
     }
   }
 
+  const handleFileButtonClick = () => {
+    fileInputRef.current.click()
+  }
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size='4xl'>
+    <Modal isOpen={isOpen} onClose={handleOnClose} size='4xl'>
       <ModalOverlay />
       <ModalContent>
         <form onSubmit={handleSubmit(onSubmitHandler)}>
@@ -284,7 +306,7 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
                   </Select>
                 </FormControl>
 
-                <FormControl gridColumn='span 2'>
+                <FormControl isInvalid={errors.description} gridColumn='span 2'>
                   <FormLabel>Description</FormLabel>
                   <Textarea
                     {...register('description', {
@@ -375,33 +397,55 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
                       ))}
                     </Grid>
                   )}
-                  <Input
-                    type='file'
-                    multiple
-                    accept='image/*'
-                    onChange={handleFileChange}
+
+                  {/* Improved file selection UI */}
+                  <Box
+                    border='1px dashed'
+                    borderColor={borderColor}
+                    borderRadius='md'
+                    p={4}
+                    textAlign='center'
+                    cursor='pointer'
+                    onClick={handleFileButtonClick}
+                    _hover={{ bg: hoverBg }}
                     isDisabled={images.length >= 5}
-                  />
-                  {images.length >= 5 && (
-                    <Box color='red.500' fontSize='sm' mt={1}>
-                      Maximum 5 images reached
-                    </Box>
-                  )}
-                  {isEdit && selectedFiles.length > 0 && images.length + selectedFiles.length <= 5 && (
-                    <Button mt={2} colorScheme='blue' onClick={handleUploadImages} isLoading={isUploading}>
-                      Upload New Images
-                    </Button>
-                  )}
+                  >
+                    <input
+                      type='file'
+                      multiple
+                      accept='image/*'
+                      onChange={handleFileChange}
+                      style={{ display: 'none' }}
+                      ref={fileInputRef}
+                      disabled={images.length >= 5}
+                    />
+                    <Flex direction='column' align='center' justify='center'>
+                      <AddIcon boxSize={8} mb={2} />
+                      <Text fontWeight='medium'>
+                        {images.length >= 5 ? 'Maximum 5 images reached' : 'Click to add images'}
+                      </Text>
+                      <Text fontSize='sm' color='gray.500'>
+                        {images.length >= 5
+                          ? "You can't add more images"
+                          : `You can add up to ${5 - images.length} more images`}
+                      </Text>
+                    </Flex>
+                  </Box>
                 </FormControl>
               </Grid>
             </VStack>
           </ModalBody>
 
           <ModalFooter>
-            <Button variant='ghost' mr={3} onClick={onClose}>
+            <Button variant='ghost' mr={3} onClick={handleOnClose}>
               Cancel
             </Button>
-            <Button colorScheme='purple' type='submit' isLoading={isSubmitting} isDisabled={!isDirty}>
+            <Button
+              colorScheme='purple'
+              type='submit'
+              isLoading={isSubmitting || isUploading}
+              isDisabled={!isDirty && selectedFiles.length === 0}
+            >
               {isEdit ? 'Update Product' : 'Add Product'}
             </Button>
           </ModalFooter>
