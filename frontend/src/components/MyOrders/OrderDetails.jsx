@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { format } from 'date-fns'
 import {
   Box,
@@ -15,11 +15,17 @@ import {
   VStack,
   Divider,
   Stack,
-  useBreakpointValue
+  useBreakpointValue,
+  Button,
+  Tooltip
 } from '@chakra-ui/react'
+import { StarIcon } from '@chakra-ui/icons'
+import RatingForm from '../RatingForm'
 
 const OrderDetails = ({ order, getStatusColor }) => {
   const isMobile = useBreakpointValue({ base: true, md: false })
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false)
 
   const OrderSummary = () =>
     isMobile ? (
@@ -61,6 +67,23 @@ const OrderDetails = ({ order, getStatusColor }) => {
       </Grid>
     )
 
+  const renderRating = (product) => {
+    if (!product.ratings || product.ratings.length === 0) {
+      return null
+    }
+
+    const rating = product.ratings[0]
+    return (
+      <Tooltip label={`Bạn đã đánh giá ${rating.rating} sao`}>
+        <HStack spacing={1}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <StarIcon key={star} w={4} h={4} color={star <= rating.rating ? 'yellow.400' : 'gray.300'} />
+          ))}
+        </HStack>
+      </Tooltip>
+    )
+  }
+
   return (
     <AccordionItem border='1px' borderColor='gray.200' borderRadius='md' mb={2}>
       <h2>
@@ -95,6 +118,21 @@ const OrderDetails = ({ order, getStatusColor }) => {
                     <Text>${item.price.toFixed(2)}</Text>
                     <Text fontWeight='medium'>${(item.quantity * item.price).toFixed(2)}</Text>
                   </HStack>
+                  {order.status === 'delivered' && (
+                    <HStack spacing={2}>
+                      {renderRating(item.product)}
+                      <Button
+                        size='sm'
+                        colorScheme='blue'
+                        onClick={() => {
+                          setSelectedProduct(item.product)
+                          setIsRatingModalOpen(true)
+                        }}
+                      >
+                        {item.product.ratings?.length > 0 ? 'Sửa đánh giá' : 'Đánh giá'}
+                      </Button>
+                    </HStack>
+                  )}
                 </VStack>
               </Stack>
             </Box>
@@ -107,6 +145,22 @@ const OrderDetails = ({ order, getStatusColor }) => {
           </Box>
         </VStack>
       </AccordionPanel>
+
+      {selectedProduct && (
+        <RatingForm
+          isOpen={isRatingModalOpen}
+          onClose={() => {
+            setIsRatingModalOpen(false)
+            setSelectedProduct(null)
+          }}
+          productId={selectedProduct._id}
+          productName={selectedProduct.name}
+          productImage={selectedProduct.thumbnail || selectedProduct.images?.[0]}
+          productPrice={selectedProduct.price}
+          initialRating={selectedProduct.ratings?.[0]?.rating}
+          initialReview={selectedProduct.ratings?.[0]?.review}
+        />
+      )}
     </AccordionItem>
   )
 }

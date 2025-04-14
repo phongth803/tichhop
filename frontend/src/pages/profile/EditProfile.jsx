@@ -220,7 +220,7 @@ const EditProfile = () => {
               </Box>
 
               <Box>
-                <Text fontSize='lg' fontWeight='medium' mb={3}>
+                <Text fontSize='lg' fontWeight='medium' mb={3} onClick={() => navigate('/my-orders')}>
                   My Orders
                 </Text>
                 <Stack spacing={2}>

@@ -133,7 +133,15 @@ export const getOrder = async (req, res) => {
       query.status = status
     }
 
-    const orders = await Order.find(query).populate('items.product').sort({ createdAt: -1 })
+    const orders = await Order.find(query)
+      .populate({
+        path: 'items.product',
+        populate: {
+          path: 'ratings',
+          select: 'rating review user'
+        }
+      })
+      .sort({ createdAt: -1 })
 
     res.json(orders)
   } catch (error) {

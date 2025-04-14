@@ -89,3 +89,12 @@ export const deleteProductImage = async (id, imageUrl) => {
     throw error
   }
 }
+
+export const addProductRating = async (productId, ratingData) => {
+  try {
+    const response = await axiosInstance.post(`/products/${productId}/ratings`, ratingData)
+    return response
+  } catch (error) {
+    throw error
+  }
+}
