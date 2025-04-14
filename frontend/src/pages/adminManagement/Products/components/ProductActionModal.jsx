@@ -194,7 +194,7 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleOnClose} size='4xl'>
+    <Modal isOpen={isOpen} onClose={handleOnClose} size={{ base: 'full', md: '4xl' }}>
       <ModalOverlay />
       <ModalContent>
         <form onSubmit={handleSubmit(onSubmitHandler)}>
@@ -203,7 +203,7 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
 
           <ModalBody>
             <VStack spacing={4}>
-              <Grid templateColumns='repeat(2, 1fr)' gap={5} w='100%'>
+              <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={5} w='100%'>
                 <FormControl isInvalid={errors.name}>
                   <FormLabel>Name</FormLabel>
                   <Input
@@ -306,7 +306,7 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
                   </Select>
                 </FormControl>
 
-                <FormControl isInvalid={errors.description} gridColumn='span 2'>
+                <FormControl isInvalid={errors.description} gridColumn={{ base: 'span 1', md: 'span 2' }}>
                   <FormLabel>Description</FormLabel>
                   <Textarea
                     {...register('description', {
@@ -316,7 +316,7 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
                   <FormErrorMessage>{errors.description && errors.description.message}</FormErrorMessage>
                 </FormControl>
 
-                <FormControl gridColumn='span 2'>
+                <FormControl gridColumn={{ base: 'span 1', md: 'span 2' }}>
                   <FormLabel>Product Images</FormLabel>
                   {isEdit && Array.isArray(images) && images.length > 0 && (
                     <>
@@ -335,7 +335,7 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
                           </Button>
                         )}
                       </HStack>
-                      <Grid templateColumns='repeat(5, 1fr)' gap={4} mb={4}>
+                      <Grid templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(5, 1fr)' }} gap={4} mb={4}>
                         {images.map((image, index) => (
                           <Box
                             key={index}
@@ -365,7 +365,7 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
                     </>
                   )}
                   {selectedFiles.length > 0 && (
-                    <Grid templateColumns='repeat(5, 1fr)' gap={4} mb={4}>
+                    <Grid templateColumns={{ base: 'repeat(2, 1fr)', md: 'repeat(5, 1fr)' }} gap={4} mb={4}>
                       {selectedFiles.map((file, index) => (
                         <Box
                           key={index}
@@ -405,10 +405,10 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
                     borderRadius='md'
                     p={4}
                     textAlign='center'
-                    cursor='pointer'
-                    onClick={handleFileButtonClick}
-                    _hover={{ bg: hoverBg }}
-                    isDisabled={images.length >= 5}
+                    cursor={images.length >= 5 ? 'not-allowed' : 'pointer'}
+                    onClick={images.length >= 5 ? undefined : handleFileButtonClick}
+                    _hover={{ bg: images.length >= 5 ? undefined : hoverBg }}
+                    opacity={images.length >= 5 ? 0.6 : 1}
                   >
                     <input
                       type='file'

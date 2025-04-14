@@ -2,9 +2,17 @@ import { Box, Text, VStack, Flex, Button, Divider } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 import { formatPrice } from '@/components/common/FormatPrice'
 
-
-const CartSummary = ({ totalAmount }) => (
-  <Box flex={1} maxW='400px' borderWidth={1} p={6} borderRadius='lg' bg='white' shadow='sm'>
+const CartSummary = ({ totalAmount, isMobile }) => (
+  <Box 
+    flex={1} 
+    maxW={isMobile ? 'full' : '400px'} 
+    w='full'
+    borderWidth={1} 
+    p={6} 
+    borderRadius='lg' 
+    bg='white' 
+    shadow='sm'
+  >
     <Text fontSize='xl' fontWeight='bold' mb={4}>
       Order Summary
     </Text>

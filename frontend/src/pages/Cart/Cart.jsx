@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite'
 import { useStore } from '@/stores/rootStore'
-import { useDisclosure, Container, VStack, Text, Button, Flex, Box } from '@chakra-ui/react'
+import { useDisclosure, Container, VStack, Text, Button, Flex, Box, useBreakpointValue } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -13,6 +13,7 @@ const Cart = observer(() => {
   const { cartStore } = useStore()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [itemToDelete, setItemToDelete] = useState(null)
+  const isMobile = useBreakpointValue({ base: true, md: false })
 
   useEffect(() => {
     cartStore.fetchCart()
@@ -72,19 +73,21 @@ const Cart = observer(() => {
         </Text>
         <Flex direction='column' gap={6}>
           <Box bg='white' rounded='lg' shadow='sm' overflow='hidden'>
-            <Flex borderBottom='1px' borderColor='gray.200' p={4} bg='gray.50' fontWeight='medium'>
-              <Box flex={2}>Product</Box>
-              <Box flex={1} textAlign='center'>
-                Price
-              </Box>
-              <Box flex={1} textAlign='center'>
-                Quantity
-              </Box>
-              <Box flex={1} textAlign='right'>
-                Subtotal
-              </Box>
-              <Box w='50px'></Box>
-            </Flex>
+            {!isMobile && (
+              <Flex borderBottom='1px' borderColor='gray.200' p={4} bg='gray.50' fontWeight='medium'>
+                <Box flex={2}>Product</Box>
+                <Box flex={1} textAlign='center'>
+                  Price
+                </Box>
+                <Box flex={1} textAlign='center'>
+                  Quantity
+                </Box>
+                <Box flex={1} textAlign='right'>
+                  Subtotal
+                </Box>
+                <Box w='50px'></Box>
+              </Flex>
+            )}
 
             {cartStore.cart.items.map((item) => (
               <CartItem
@@ -92,17 +95,23 @@ const Cart = observer(() => {
                 item={item}
                 onQuantityChange={handleQuantityChange}
                 onRemove={handleRemoveClick}
+                isMobile={isMobile}
               />
             ))}
           </Box>
 
-          <Flex justify='space-between' align='start' gap={6}>
+          <Flex 
+            direction={{ base: 'column', md: 'row' }} 
+            justify='space-between' 
+            align={{ base: 'stretch', md: 'start' }} 
+            gap={6}
+          >
             <Link to='/products'>
-              <Button variant='outline' size='lg'>
+              <Button variant='outline' size='lg' w={{ base: 'full', md: 'auto' }}>
                 Continue Shopping
               </Button>
             </Link>
-            <CartSummary totalAmount={cartStore.cart.totalAmount} />
+            <CartSummary totalAmount={cartStore.cart.totalAmount} isMobile={isMobile} />
           </Flex>
         </Flex>
       </Container>
