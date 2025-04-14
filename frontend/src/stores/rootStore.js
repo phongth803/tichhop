@@ -10,6 +10,7 @@ import AdminCategoryStore from './admin/adminCategoryStore'
 import AdminDashBoardStore from './admin/adminDashBoardStore'
 import AdminOrderStore from './admin/adminOrderStore'
 import AdminProductStore from './admin/adminProductStore'
+import OrderStore from './orderStore'
 
 class RootStore {
   constructor() {
@@ -27,6 +28,7 @@ class RootStore {
     this.productStore = new ProductStore(this)
     this.categoryStore = new CategoryStore(this)
     this.cartStore = new CartStore(this)
+    this.userOrderStore = new OrderStore(this)
     makeAutoObservable(this)
   }
 }

@@ -126,9 +126,18 @@ export const getOrders = async (req, res) => {
 
 export const getOrder = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.user._id }).populate('items.product').sort({ createdAt: -1 })
+    const { status } = req.query
+    let query = { user: req.user._id }
+
+    if (status) {
+      query.status = status
+    }
+
+    const orders = await Order.find(query).populate('items.product').sort({ createdAt: -1 })
+
     res.json(orders)
   } catch (error) {
+    console.error('Error fetching orders:', error)
     res.status(500).json({ message: 'Error fetching order' })
   }
 }

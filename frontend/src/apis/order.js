@@ -1,4 +1,4 @@
-import axiosInstance from "../utils/axios"
+import axiosInstance from '../utils/axios'
 
 export const getAllOrders = async (params) => {
   try {
@@ -16,6 +16,16 @@ export const updateOrderStatus = async (id, statusData) => {
     return response.data
   } catch (error) {
     console.error('Error updating order status:', error)
+    throw error
+  }
+}
+
+export const getUserOrders = async (params) => {
+  try {
+    const response = await axiosInstance.get('/orders/my-orders', { params })
+    return response.data
+  } catch (error) {
+    console.error('Error fetching user orders:', error)
     throw error
   }
 }
