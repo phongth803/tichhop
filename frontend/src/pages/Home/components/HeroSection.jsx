@@ -2,6 +2,7 @@ import { Box, HStack, Flex, Text, Heading, Link, Image } from '@chakra-ui/react'
 import { FiArrowRight } from 'react-icons/fi'
 import { FaChevronRight } from 'react-icons/fa'
 import { Container, Grid } from '@chakra-ui/react'
+import { useNavigate } from 'react-router-dom'
 
 const HeroSection = ({
   currentSlide,
@@ -12,6 +13,11 @@ const HeroSection = ({
   pauseSlideTimer,
   onCategoryClick
 }) => {
+  const navigate = useNavigate()
+
+  const handleShopNow = () => {
+    navigate('/products')
+  }
   return (
     <Container maxW='container.xl'>
       <Grid templateColumns='220px 1fr' gap={6}>
@@ -96,6 +102,7 @@ const HeroSection = ({
                     color='white'
                     fontSize='18px'
                     position='relative'
+                    onClick={handleShopNow}
                     _hover={{
                       textDecoration: 'none',
                       '&::after': {
