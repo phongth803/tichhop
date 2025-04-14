@@ -204,14 +204,11 @@ const ProductActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData, ca
                     })}
                   >
                     <option value=''>Select category</option>
-                    {categories
-                      ?.slice()
-                      .sort((a, b) => a.name.localeCompare(b.name))
-                      .map((category) => (
-                        <option key={category._id} value={category._id}>
-                          {category.name}
-                        </option>
-                      ))}
+                    {categories?.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    ))}
                   </Select>
                   <FormErrorMessage>{errors.category && errors.category.message}</FormErrorMessage>
                 </FormControl>
