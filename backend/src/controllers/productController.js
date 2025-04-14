@@ -127,7 +127,16 @@ export const getProducts = async (req, res) => {
 
 export const getProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate('category', 'name')
+    const product = await Product.findById(req.params.id)
+      .populate('category', 'name')
+      .populate({
+        path: 'ratings',
+        select: 'rating review user createdAt',
+        populate: {
+          path: 'user',
+          select: 'firstName lastName'
+        }
+      })
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' })

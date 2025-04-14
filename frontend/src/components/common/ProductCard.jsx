@@ -7,169 +7,171 @@ import { useStore } from '../../stores/rootStore'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
 
-const ProductCard = observer(({ _id, name, price, priceOnSale, thumbnail, discount, isNew, rating, reviews }) => {
-  const { cartStore } = useStore()
-  const navigate = useNavigate()
-  const [isAddingToCart, setIsAddingToCart] = useState(false)
+const ProductCard = observer(
+  ({ _id, name, price, priceOnSale, thumbnail, discount, isNew, averageRating, ratings }) => {
+    const { cartStore } = useStore()
+    const navigate = useNavigate()
+    const [isAddingToCart, setIsAddingToCart] = useState(false)
 
-  const handleClick = () => {
-    navigate(`/product/${_id}`)
-  }
-
-  const handleAddToCart = async (e) => {
-    e.stopPropagation()
-    setIsAddingToCart(true)
-    try {
-      const success = await cartStore.addToCart(_id, 1)
-      if (success) {
-        toast.success('Product added to cart')
-      } else {
-        toast.error(cartStore.error || 'Failed to add product to cart')
-      }
-    } catch (error) {
-      toast.error(error.message || 'Failed to add product to cart')
-    } finally {
-      setIsAddingToCart(false)
+    const handleClick = () => {
+      navigate(`/product/${_id}`)
     }
-  }
 
-  const NoImage = () => (
-    <Box
-      w='full'
-      h='200px'
-      bg='gray.100'
-      display='flex'
-      flexDirection='column'
-      alignItems='center'
-      justifyContent='center'
-      color='gray.400'
-    >
-      <FiImage size={32} />
-      <Text mt={2} fontSize='sm'>
-        No Image
-      </Text>
-    </Box>
-  )
-
-  const formatPrice = (price) => {
-    const number = parseFloat(price)
-    return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }).format(number)
-  }
-
-  return (
-    <Box
-      bg='gray.50'
-      borderRadius='md'
-      overflow='hidden'
-      transition='all 0.3s'
-      position='relative'
-      cursor='pointer'
-      onClick={handleClick}
-      _hover={{
-        transform: 'translateY(-5px)',
-        shadow: 'md',
-        '.card-actions': {
-          opacity: 1,
-          transform: 'translateY(0)'
-        },
-        '.add-to-cart': {
-          opacity: 1,
-          transform: 'translateY(0)'
+    const handleAddToCart = async (e) => {
+      e.stopPropagation()
+      setIsAddingToCart(true)
+      try {
+        const success = await cartStore.addToCart(_id, 1)
+        if (success) {
+          toast.success('Product added to cart')
+        } else {
+          toast.error(cartStore.error || 'Failed to add product to cart')
         }
-      }}
-    >
-      <Box position='relative'>
-        {discount !== 0 && (
-          <Badge position='absolute' top={2} left={2} bg='red.500' color='white' borderRadius='md' zIndex={1}>
-            -{discount}%
-          </Badge>
-        )}
-        {isNew && (
-          <Badge
+      } catch (error) {
+        toast.error(error.message || 'Failed to add product to cart')
+      } finally {
+        setIsAddingToCart(false)
+      }
+    }
+
+    const NoImage = () => (
+      <Box
+        w='full'
+        h='200px'
+        bg='gray.100'
+        display='flex'
+        flexDirection='column'
+        alignItems='center'
+        justifyContent='center'
+        color='gray.400'
+      >
+        <FiImage size={32} />
+        <Text mt={2} fontSize='sm'>
+          No Image
+        </Text>
+      </Box>
+    )
+
+    const formatPrice = (price) => {
+      const number = parseFloat(price)
+      return new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      }).format(number)
+    }
+
+    return (
+      <Box
+        bg='gray.50'
+        borderRadius='md'
+        overflow='hidden'
+        transition='all 0.3s'
+        position='relative'
+        cursor='pointer'
+        onClick={handleClick}
+        _hover={{
+          transform: 'translateY(-5px)',
+          shadow: 'md',
+          '.card-actions': {
+            opacity: 1,
+            transform: 'translateY(0)'
+          },
+          '.add-to-cart': {
+            opacity: 1,
+            transform: 'translateY(0)'
+          }
+        }}
+      >
+        <Box position='relative'>
+          {discount !== 0 && (
+            <Badge position='absolute' top={2} left={2} bg='red.500' color='white' borderRadius='md' zIndex={1}>
+              -{discount}%
+            </Badge>
+          )}
+          {isNew && (
+            <Badge
+              position='absolute'
+              top={2}
+              left={discount ? 16 : 2}
+              bg='green.400'
+              color='white'
+              borderRadius='md'
+              zIndex={1}
+            >
+              NEW
+            </Badge>
+          )}
+
+          <IconButton
             position='absolute'
             top={2}
-            left={discount ? 16 : 2}
-            bg='green.400'
-            color='white'
-            borderRadius='md'
+            right={2}
+            size='sm'
+            variant='solid'
+            bg='white'
+            icon={<FiEye />}
+            borderRadius='full'
+            className='card-actions'
+            opacity={0}
+            transform='translateY(-10px)'
+            transition='all 0.3s'
             zIndex={1}
-          >
-            NEW
-          </Badge>
-        )}
+            onClick={(e) => {
+              e.stopPropagation()
+              navigate(`/product/${_id}`)
+            }}
+          />
 
-        <IconButton
-          position='absolute'
-          top={2}
-          right={2}
-          size='sm'
-          variant='solid'
-          bg='white'
-          icon={<FiEye />}
-          borderRadius='full'
-          className='card-actions'
-          opacity={0}
-          transform='translateY(-10px)'
-          transition='all 0.3s'
-          zIndex={1}
-          onClick={(e) => {
-            e.stopPropagation()
-            navigate(`/product/${_id}`)
-          }}
-        />
+          <Image src={thumbnail} alt={name} w='full' h='200px' objectFit='contain' fallback={<NoImage />} />
+        </Box>
 
-        <Image src={thumbnail} alt={name} w='full' h='200px' objectFit='contain' fallback={<NoImage />} />
-      </Box>
-
-      <Box p={4}>
-        <Text fontWeight='medium' mb={2} noOfLines={2}>
-          {name}
-        </Text>
-        <HStack mb={2}>
-          <Text color='red.500' fontWeight='bold'>
-            ${formatPrice(priceOnSale)}
+        <Box p={4}>
+          <Text fontWeight='medium' mb={2} noOfLines={2}>
+            {name}
           </Text>
-          {priceOnSale !== price && (
-            <Text color='gray.500' textDecoration='line-through'>
-              ${formatPrice(price)}
+          <HStack mb={2}>
+            <Text color='red.500' fontWeight='bold'>
+              ${formatPrice(priceOnSale)}
             </Text>
-          )}
-        </HStack>
-        {rating && reviews && (
-          <HStack>
-            <HStack spacing={1}>
-              {Array(5)
-                .fill('')
-                .map((_, i) => (
-                  <Icon key={i} as={i < rating ? FaStar : FaRegStar} color={i < rating ? 'yellow.400' : 'gray.300'} />
-                ))}
-            </HStack>
-            <Text color='gray.500'>({reviews})</Text>
+            {priceOnSale !== price && (
+              <Text color='gray.500' textDecoration='line-through'>
+                ${formatPrice(price)}
+              </Text>
+            )}
           </HStack>
-        )}
+          {averageRating && ratings && (
+            <HStack>
+              <HStack spacing={1}>
+                {Array(5)
+                  .fill('')
+                  .map((_, i) => (
+                    <Icon key={i} as={i < averageRating ? FaStar : FaRegStar} color={i < averageRating ? 'yellow.400' : 'gray.300'} />
+                  ))}
+              </HStack>
+              <Text color='gray.500'>({ratings.length})</Text>
+            </HStack>
+          )}
 
-        <Button
-          w='full'
-          mt={3}
-          bg='black'
-          color='white'
-          className='add-to-cart'
-          opacity={0}
-          transform='translateY(20px)'
-          transition='all 0.3s'
-          _hover={{ bg: 'gray.800' }}
-          isLoading={isAddingToCart}
-          loadingText='Adding...'
-          onClick={handleAddToCart}
-        >
-          Add To Cart
-        </Button>
+          <Button
+            w='full'
+            mt={3}
+            bg='black'
+            color='white'
+            className='add-to-cart'
+            opacity={0}
+            transform='translateY(20px)'
+            transition='all 0.3s'
+            _hover={{ bg: 'gray.800' }}
+            isLoading={isAddingToCart}
+            loadingText='Adding...'
+            onClick={handleAddToCart}
+          >
+            Add To Cart
+          </Button>
+        </Box>
       </Box>
-    </Box>
-  )
-})
+    )
+  }
+)
 
 export default ProductCard
