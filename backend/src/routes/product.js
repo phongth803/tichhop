@@ -12,6 +12,7 @@ import {
   getFlashSaleProducts,
   getRelatedProducts
 } from '../controllers/productController.js'
+import { addRating } from '../controllers/ratingController.js'
 import { upload } from '../config/cloudinary.js'
 
 const router = express.Router()
@@ -93,7 +94,7 @@ const router = express.Router()
  *         description: Unauthorized
  *       403:
  *         description: Admin access required
- * 
+ *
  * /products/best-selling:
  *   get:
  *     summary: Get best-selling products
@@ -111,7 +112,7 @@ const router = express.Router()
  *         description: Unauthorized
  *       403:
  *         description: Admin access required
- * 
+ *
  * /products/flash-sale:
  *   get:
  *     summary: Get flash sale products
@@ -254,6 +255,47 @@ const router = express.Router()
  *         description: Image not found
  */
 
+/**
+ * @swagger
+ * /api/products/{id}/ratings:
+ *   post:
+ *     summary: Add a rating to a product
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Product ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - rating
+ *             properties:
+ *               rating:
+ *                 type: number
+ *                 minimum: 1
+ *                 maximum: 5
+ *                 description: Rating value (1-5)
+ *               review:
+ *                 type: string
+ *                 description: Optional review text
+ *     responses:
+ *       200:
+ *         description: Rating added successfully
+ *       400:
+ *         description: Invalid rating value
+ *       404:
+ *         description: Product not found
+ */
+
 // Routes
 router.get('/', getProducts)
 router.get('/best-selling', getBestSellingProducts)
@@ -265,5 +307,6 @@ router.put('/:id', auth, adminAuth, updateProduct)
 router.delete('/:id', auth, adminAuth, deleteProduct)
 router.post('/:id/images', auth, adminAuth, upload.array('images', 5), uploadImages)
 router.delete('/:id/images/:imageUrl', auth, adminAuth, deleteImage)
+router.post('/:id/ratings', auth, addRating)
 
 export default router

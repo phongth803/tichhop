@@ -16,7 +16,6 @@ enum UserRole {
 enum OrderStatus {
     PENDING
     PROCESSING
-    SHIPPED
     DELIVERED
     CANCELLED
 }
@@ -29,9 +28,9 @@ entity "User" {
     password: String
     firstName: String
     lastName: String
-    phone: String
     address: String
     role: UserRole <<enum>>
+    isActive: Boolean
     createdAt: Date
     updatedAt: Date
 }
@@ -39,7 +38,7 @@ entity "User" {
 entity "Product" {
     *_id: ObjectId <<PK>>
     --
-    *categoryId: ObjectId <<FK>>
+    *category: ObjectId <<FK>>
     name: String
     description: String
     price: Number
@@ -47,10 +46,10 @@ entity "Product" {
     images: Array
     thumbnail: String
     isActive: Boolean
+    discount: Number
     averageRating: Number
     createdAt: Date
     updatedAt: Date
-    discount: Number
 }
 
 entity "ProductCategory" {
@@ -66,7 +65,7 @@ entity "ProductCategory" {
 entity "Order" {
     *_id: ObjectId <<PK>>
     --
-    *userId: ObjectId <<FK>>
+    *user: ObjectId <<FK>>
     items: Array
     totalAmount: Number
     status: OrderStatus <<enum>>
@@ -78,7 +77,8 @@ entity "Order" {
 entity "Cart" {
     *_id: ObjectId <<PK>>
     --
-    *userId: ObjectId <<FK>>
+    *user: ObjectId <<FK>>
+    items: Array
 }
 
 entity "CartItem" {
@@ -91,12 +91,24 @@ entity "CartItem" {
     updatedAt: Date
 }
 
+entity "Rating" {
+    *_id: ObjectId <<PK>>
+    --
+    *user: ObjectId <<FK>>
+    *product: ObjectId <<FK>>
+    rating: Number
+    review: String
+    createdAt: Date
+}
+
 ' Định nghĩa relationships chính
 User ||--o{ Order : places
 User ||--o| Cart : has
 Product }o--|| ProductCategory : belongs_to
 Cart ||--o{ CartItem : contains
 CartItem }o--|| Product : refers_to
+Product ||--o{ Rating : has
+User ||--o{ Rating : gives
 
 ' Định nghĩa relationships với enum
 User .. UserRole

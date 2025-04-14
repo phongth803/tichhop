@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '@/stores/rootStore'
 import { toast } from 'react-toastify'
+import ProductReviews from './ProductReviews'
 
 const ProductInfo = ({ product }) => {
   const navigate = useNavigate()
@@ -94,11 +95,16 @@ const ProductInfo = ({ product }) => {
           {Array(5)
             .fill('')
             .map((_, i) => (
-              <Icon key={i} as={i < 4 ? FaStar : FaRegStar} color={i < 4 ? 'orange.400' : 'gray.300'} boxSize={4} />
+              <Icon
+                key={i}
+                as={i < Math.round(product.averageRating) ? FaStar : FaRegStar}
+                color={i < Math.round(product.averageRating) ? 'orange.400' : 'gray.300'}
+                boxSize={4}
+              />
             ))}
         </HStack>
         <Text color='gray.500' fontSize='sm'>
-          ({product.reviews} Reviews)
+          ({product?.ratings?.length || 0} Reviews)
         </Text>
         <Text color='gray.400'>|</Text>
         <Text color={product.stock > 0 ? 'green.400' : 'red.400'} fontSize='sm'>
@@ -234,6 +240,8 @@ const ProductInfo = ({ product }) => {
           </Box>
         </HStack>
       </Box>
+
+      <ProductReviews ratings={product.ratings} />
     </Box>
   )
 }

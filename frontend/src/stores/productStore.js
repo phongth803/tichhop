@@ -4,7 +4,8 @@ import {
   getBestSellingProducts,
   getFlashSaleProducts,
   getProduct,
-  getRelatedProducts
+  getRelatedProducts,
+  addProductRating
 } from '../apis/products'
 
 export const DEFAULT_FILTERS = {
@@ -35,7 +36,8 @@ class ProductStore {
     bestSelling: false,
     flashSale: false,
     detail: false,
-    related: false
+    related: false,
+    rating: false
   }
 
   constructor(rootStore) {
@@ -170,6 +172,20 @@ class ProductStore {
       this.setRelatedProducts([])
     } finally {
       this.setLoadingState('related', false)
+    }
+  }
+
+  addRating = async (productId, ratingData) => {
+    try {
+      this.setLoadingState('rating', true)
+      const response = await addProductRating(productId, ratingData)
+      await this.getProductDetail(productId)
+      return response
+    } catch (error) {
+      console.error('Error adding rating:', error)
+      throw error
+    } finally {
+      this.setLoadingState('rating', false)
     }
   }
 }

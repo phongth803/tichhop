@@ -30,7 +30,7 @@ const router = express.Router()
  *           type: number
  *         status:
  *           type: string
- *           enum: [processing, delivered, cancelled]
+ *           enum: [pending, processing, delivered, cancelled]
  *         shippingAddress:
  *           type: object
  *           properties:
@@ -81,6 +81,13 @@ router.post('/', auth, createOrder)
  *     tags: [Orders]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, processing, delivered, cancelled]
+ *         description: Filter orders by status
  *     responses:
  *       200:
  *         description: List of user's orders
@@ -132,7 +139,7 @@ router.get('/all', auth, adminAuth, getOrders)
  *             properties:
  *               status:
  *                 type: string
- *                 enum: [processing, delivered, cancelled]
+ *                 enum: [pending, processing, delivered, cancelled]
  *     responses:
  *       200:
  *         description: Order status updated successfully
@@ -142,5 +149,29 @@ router.get('/all', auth, adminAuth, getOrders)
  *         description: Admin access required
  */
 router.put('/:id/status', auth, adminAuth, updateOrderStatus)
+
+/**
+ * @swagger
+ * /orders/{id}/cancel:
+ *   put:
+ *     summary: Cancel an order (User only)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Order cancelled successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Order not found or cannot be cancelled
+ */
+router.put('/:id/cancel', auth, cancelOrder)
 
 export default router

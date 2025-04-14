@@ -5,6 +5,7 @@ import AuthLayout from '../components/layout/AuthLayout'
 import EditProfile from '../pages/profile/EditProfile'
 import { useStore } from '@/stores/rootStore'
 import { useEffect } from 'react'
+import MyOrders from '../pages/MyOrders'
 
 // Public pages
 import Home from '../pages/Home'
@@ -100,6 +101,14 @@ const AppRoutes = observer(() => {
           element={
             <ProtectedRoute>
               <EditProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/my-orders'
+          element={
+            <ProtectedRoute>
+              <MyOrders />
             </ProtectedRoute>
           }
         />

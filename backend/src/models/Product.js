@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import Rating from './Rating.js'
 
 const productSchema = new mongoose.Schema(
   {
@@ -58,20 +59,8 @@ const productSchema = new mongoose.Schema(
     },
     ratings: [
       {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User'
-        },
-        rating: {
-          type: Number,
-          min: 1,
-          max: 5
-        },
-        review: String,
-        createdAt: {
-          type: Date,
-          default: Date.now
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Rating'
       }
     ],
     averageRating: {
@@ -79,7 +68,9 @@ const productSchema = new mongoose.Schema(
       default: 0
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true
+  }
 )
 
 // Middleware để tự động set thumbnail và tính rating
@@ -96,4 +87,6 @@ productSchema.pre('save', function (next) {
   next()
 })
 
-export default mongoose.model('Product', productSchema)
+const Product = mongoose.model('Product', productSchema)
+
+export default Product

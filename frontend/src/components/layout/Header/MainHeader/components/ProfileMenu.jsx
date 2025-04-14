@@ -24,7 +24,7 @@ const ProfileMenu = () => {
     {
       label: 'My Order',
       icon: FiShoppingBag,
-      onClick: () => navigate('/orders')
+      onClick: () => navigate('/my-orders')
     },
     {
       label: 'My Cancellations',
