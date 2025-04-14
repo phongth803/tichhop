@@ -20,7 +20,34 @@ export const getCategories = async (req, res) => {
     const showAll = req.query.all === 'true'
     const filter = showAll ? {} : { isActive: true }
     const categories = await ProductCategory.find(filter).sort({ name: 1 })
-    res.json(categories)
+    const { search, page = 1, limit = 10, all } = req.query
+    const skip = (page - 1) * limit
+    let query = {}
+
+    if (all !== 'true') {
+      query.isActive = true
+    }
+
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ]
+    }
+
+    const total = await ProductCategory.countDocuments(query)
+
+    const categories = await ProductCategory.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit))
+
+    res.json({
+      categories,
+      totalItems: total,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(total / limit)
+    })
   } catch (error) {
     res.status(500).json({ message: 'Error fetching categories' })
   }

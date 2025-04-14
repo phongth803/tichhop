@@ -7,19 +7,16 @@ import { useStore } from '../../../stores/rootStore'
 import { observer } from 'mobx-react-lite'
 import TaskBarAdmin from '../../../components/common/TaskBarAdmin'
 import { toast } from 'react-toastify'
-import FilterModal from '../../../components/common/FilterModal'
 import CategoryModal from './components/CategoryModal'
 
 const Category = observer(() => {
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(10)
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [isEdit, setIsEdit] = useState(false)
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const { adminCategoryStore } = useStore()
-  const { categoryList, loading, addCategory, deleteCategory, updateCategory } = adminCategoryStore
+  const { categoryList, loading, addCategory, deleteCategory, updateCategory, totalItems, currentPage, totalPages } = adminCategoryStore
 
   const handleAddCategory = async (categoryData) => {
     try {
@@ -83,6 +80,20 @@ const Category = observer(() => {
     setIsRemoveModalOpen((prev) => !prev)
   }
 
+  const handleSearch = (value) => {
+    setSearchQuery(value || '')
+    adminCategoryStore.getCategories({ search: value || '', all: true })
+  }
+
+  const handlePageChange = (page, itemsPerPage) => {
+    adminCategoryStore.getCategories({ 
+      page, 
+      limit: itemsPerPage,
+      search: searchQuery || '',
+      all: true 
+    })
+  }
+
   const dataInTable = categoryList?.map((item) => ({
     name: item.name,
     description: item.description,
@@ -108,11 +119,6 @@ const Category = observer(() => {
     )
   }))
 
-  const handlePageChange = (page, newItemsPerPage) => {
-    setCurrentPage(page)
-    setItemsPerPage(newItemsPerPage)
-  }
-
   useEffect(() => {
     adminCategoryStore.getCategories({ all: true })
   }, [])
@@ -122,11 +128,13 @@ const Category = observer(() => {
       <TaskBarAdmin
         buttonText='Add Category'
         title={'Categories'}
-        isFilter={true}
-        handleOpenFilter={() => setIsFilterOpen(true)}
-        handleAdd={() => setIsAddModalOpen(true)}
         isAdd={true}
+        handleAdd={() => setIsAddModalOpen(true)}
+        searchPlaceholder='Search categories...'
+        searchValue={searchQuery || ''}
+        onSearchChange={(e) => handleSearch(e.target.value)}
       />
+
       <ConfirmModal
         isOpen={isRemoveModalOpen}
         onClose={() => setIsRemoveModalOpen(false)}
@@ -153,10 +161,11 @@ const Category = observer(() => {
         headers={headers}
         dataInTable={dataInTable}
         currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
+        itemsPerPage={10}
         onPageChange={handlePageChange}
+        totalItems={totalItems}
+        totalPages={totalPages}
       />
-      <FilterModal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)}></FilterModal>
     </Box>
   )
 })

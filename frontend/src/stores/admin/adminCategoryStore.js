@@ -5,6 +5,9 @@ class AdminCategoryStore {
   loading = false
   isListLoading = false
   categoryList = []
+  totalItems = 0
+  currentPage = 1
+  totalPages = 1
 
   constructor(rootStore) {
     this.rootStore = rootStore
@@ -14,8 +17,11 @@ class AdminCategoryStore {
   getCategories = async (filter) => {
     this.isListLoading = true
     try {
-      const categories = await getCategories(filter)
-      this.categoryList = categories.data || []
+      const response = await getCategories(filter)
+      this.categoryList = response.data.categories || []
+      this.totalItems = response.data.totalItems || 0
+      this.currentPage = response.data.currentPage || 1
+      this.totalPages = response.data.totalPages || 1
       return true
     } catch (error) {
       throw error
