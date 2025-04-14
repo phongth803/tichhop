@@ -44,3 +44,11 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
           build-args: |
             FRONTEND_ENV=${{ secrets.FRONTEND_ENV }}
+
+      - name: Trigger Backend Deployment
+        run: |
+          curl -X GET ${{ secrets.RENDER_BACKEND_DEPLOY_URL }}
+
+      - name: Trigger Frontend Deployment
+        run: |
+          curl -X GET ${{ secrets.RENDER_FRONTEND_DEPLOY_URL }}
