@@ -139,18 +139,22 @@ const ProductCard = observer(
               </Text>
             )}
           </HStack>
-          {averageRating && ratings && (
-            <HStack>
-              <HStack spacing={1}>
-                {Array(5)
-                  .fill('')
-                  .map((_, i) => (
-                    <Icon key={i} as={i < averageRating ? FaStar : FaRegStar} color={i < averageRating ? 'yellow.400' : 'gray.300'} />
-                  ))}
-              </HStack>
-              <Text color='gray.500'>({ratings.length})</Text>
+          <HStack>
+            <HStack spacing={1}>
+              {Array(5)
+                .fill('')
+                .map((_, i) => (
+                  <Icon
+                    key={i}
+                    as={i < Math.round(averageRating || 0) ? FaStar : FaRegStar}
+                    color={i < Math.round(averageRating || 0) ? 'yellow.400' : 'gray.300'}
+                  />
+                ))}
             </HStack>
-          )}
+            <Text color='gray.500' fontSize='sm'>
+              ({ratings?.length || 0})
+            </Text>
+          </HStack>
 
           <Button
             w='full'
