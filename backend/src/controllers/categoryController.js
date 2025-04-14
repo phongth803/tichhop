@@ -3,7 +3,6 @@ import ProductCategory from '../models/ProductCategory.js'
 export const createCategory = async (req, res) => {
   try {
     const { name, description, status } = req.body
-    console.log(req.body)
     const category = new ProductCategory({
       name,
       description,
@@ -20,7 +19,7 @@ export const getCategories = async (req, res) => {
   try {
     const showAll = req.query.all === 'true'
     const filter = showAll ? {} : { isActive: true }
-    const categories = await ProductCategory.find(filter)
+    const categories = await ProductCategory.find(filter).sort({ name: 1 })
     res.json(categories)
   } catch (error) {
     res.status(500).json({ message: 'Error fetching categories' })

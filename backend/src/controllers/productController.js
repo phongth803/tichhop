@@ -29,15 +29,16 @@ export const createProduct = async (req, res) => {
       discount: discount || 0
     })
 
-    // Nếu có files được upload
-    if (req.files && req.files.length > 0) {
-      const imageUrls = req.files.map(file => file.path)
-      product.images = imageUrls
-      // Không cần set thumbnail thủ công, middleware sẽ tự xử lý
-    }
-
     await product.save()
     await product.populate('category', 'name')
+
+    // Nếu có files được upload, gọi hàm uploadImages
+    if (req.files && req.files.length > 0) {
+      req.params.id = product._id // Set product id cho uploadImages
+      await uploadImages(req, res)
+      return // Kết thúc ở đây vì uploadImages đã gửi response
+    }
+
     res.status(201).json(product)
   } catch (error) {
     console.error('Error creating product:', error)
@@ -51,7 +52,8 @@ export const getProducts = async (req, res) => {
     const limit = parseInt(req.query.limit) || 20
 
     const buildQuery = () => {
-      const query = { isActive: true }
+      const showAll = req.query.all === 'true'
+      const query = showAll ? {} : { isActive: true }
 
       if (req.query.category) {
         query.category = req.query.category
@@ -63,6 +65,10 @@ export const getProducts = async (req, res) => {
 
       if (req.query.onSale === 'true') {
         query.discount = { $gt: 0 }
+      }
+
+      if (req.query.status && showAll) {
+        query.isActive = req.query.status === 'active'
       }
 
       if (req.query.minPrice || req.query.maxPrice) {
@@ -163,7 +169,7 @@ export const updateProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, { isActive: false }, { new: true })
+    const product = await Product.findByIdAndDelete(req.params.id)
     if (!product) {
       res.status(404).json({ message: 'Product not found' })
       return
@@ -188,6 +194,20 @@ export const uploadImages = async (req, res) => {
         await cloudinary.uploader.destroy(publicId)
       }
       return res.status(404).json({ message: 'Product not found' })
+    }
+
+    // Kiểm tra số lượng ảnh hiện tại và mới
+    const currentImageCount = product.images.length
+    const newImageCount = req.files.length
+    const totalImages = currentImageCount + newImageCount
+
+    if (totalImages > 5) {
+      // Xóa ảnh đã upload nếu vượt quá giới hạn
+      for (const file of req.files) {
+        const publicId = file.path.split('/').pop().split('.')[0]
+        await cloudinary.uploader.destroy(publicId)
+      }
+      return res.status(400).json({ message: 'Maximum 5 images allowed per product' })
     }
 
     const imageUrls = req.files.map(file => file.path)
@@ -254,7 +274,10 @@ export const getBestSellingProducts = async (req, res) => {
     ])
 
     // Lấy thông tin sản phẩm
+    const showAll = req.query.all === 'true'
+    const filter = showAll ? {} : { isActive: true }
     const products = await Product.find({
+      ...filter,
       _id: { $in: bestSellers.map(item => item._id) }
     }).populate('category', 'name')
 
@@ -275,7 +298,12 @@ export const getBestSellingProducts = async (req, res) => {
 
 export const getFlashSaleProducts = async (req, res) => {
   try {
-    const products = await Product.find({ discount: { $gt: 0 } })
+    const showAll = req.query.all === 'true'
+    const filter = showAll ? {} : { isActive: true }
+    const products = await Product.find({
+      ...filter,
+      discount: { $gt: 0 }
+    })
       .populate('category', 'name')
       .sort({ discount: -1 })
 
@@ -289,11 +317,12 @@ export const getFlashSaleProducts = async (req, res) => {
 export const getRelatedProducts = async (req, res) => {
   try {
     const { id, categoryId, limit = 4 } = req.params
-
+    const showAll = req.query.all === 'true'
+    const filter = showAll ? {} : { isActive: true }
     const products = await Product.find({
+      ...filter,
       category: categoryId,
-      _id: { $ne: id },
-      isActive: true
+      _id: { $ne: id }
     })
       .populate('category', 'name')
       .limit(parseInt(limit))
