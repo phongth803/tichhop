@@ -96,6 +96,8 @@ const ChatWindow = observer(({ onClose }) => {
       border='1px'
       borderColor={borderColor}
       overflow='hidden'
+      pointerEvents='auto'
+      position='relative'
     >
       {/* Header */}
       <HStack p={3} bg='blue.500' color='white' justifyContent='space-between'>
@@ -112,7 +114,25 @@ const ChatWindow = observer(({ onClose }) => {
       </HStack>
 
       {/* Messages */}
-      <VStack height='290px' overflowY='auto' p={3} spacing={3} alignItems='stretch'>
+      <VStack
+        height='290px'
+        overflowY='auto'
+        p={3}
+        spacing={3}
+        alignItems='stretch'
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '4px'
+          },
+          '&::-webkit-scrollbar-track': {
+            width: '6px'
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: 'gray.300',
+            borderRadius: '24px'
+          }
+        }}
+      >
         {chatStore.messages.map((msg) => (
           <Box key={msg._id} alignSelf={msg.sender._id === authStore.user._id ? 'flex-end' : 'flex-start'} maxW='80%'>
             <Box

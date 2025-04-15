@@ -97,11 +97,13 @@ const ChatBubble = observer(() => {
         aria-label='Open chat'
       />
 
-      <SlideFade in={isOpen} offsetY='20px'>
-        <Box position='absolute' bottom='70px' right='0' zIndex={1000}>
-          <ChatWindow onClose={onToggle} />
-        </Box>
-      </SlideFade>
+      {isOpen && (
+        <SlideFade in={isOpen} offsetY='20px'>
+          <Box position='absolute' bottom='70px' right='0' zIndex={1000} pointerEvents='auto'>
+            <ChatWindow onClose={onToggle} />
+          </Box>
+        </SlideFade>
+      )}
     </Box>
   )
 })
