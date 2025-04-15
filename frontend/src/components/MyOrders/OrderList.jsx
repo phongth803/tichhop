@@ -2,7 +2,17 @@ import React from 'react'
 import { Box, Text, Accordion } from '@chakra-ui/react'
 import OrderDetails from './OrderDetails'
 
-const OrderList = ({ orders, getStatusColor }) => {
+const OrderList = ({ orders, getStatusColor, defaultIndex, setDefaultIndex }) => {
+  const handleToggleOrder = (index) => {
+    setDefaultIndex((prev) => {
+      if (prev.includes(index)) {
+        return prev.filter((i) => i !== index)
+      } else {
+        return [...prev, index]
+      }
+    })
+  }
+
   if (orders.length === 0) {
     return (
       <Box textAlign='center' py={6}>
@@ -14,9 +24,14 @@ const OrderList = ({ orders, getStatusColor }) => {
   }
 
   return (
-    <Accordion allowMultiple>
-      {orders.map((order) => (
-        <OrderDetails key={order._id} order={order} getStatusColor={getStatusColor} />
+    <Accordion allowMultiple defaultIndex={defaultIndex}>
+      {orders.map((order, index) => (
+        <OrderDetails
+          key={order._id}
+          order={order}
+          getStatusColor={getStatusColor}
+          onToggle={() => handleToggleOrder(index)}
+        />
       ))}
     </Accordion>
   )

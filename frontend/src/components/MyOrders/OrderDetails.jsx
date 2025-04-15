@@ -22,7 +22,7 @@ import {
 import { StarIcon } from '@chakra-ui/icons'
 import RatingForm from '../RatingForm'
 
-const OrderDetails = ({ order, getStatusColor }) => {
+const OrderDetails = ({ order, getStatusColor, onToggle }) => {
   const isMobile = useBreakpointValue({ base: true, md: false })
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false)
@@ -87,7 +87,7 @@ const OrderDetails = ({ order, getStatusColor }) => {
   return (
     <AccordionItem border='1px' borderColor='gray.200' borderRadius='md' mb={2}>
       <h2>
-        <AccordionButton py={2}>
+        <AccordionButton py={2} onClick={onToggle}>
           <Box flex='1'>
             <OrderSummary />
           </Box>

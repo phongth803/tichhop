@@ -31,7 +31,7 @@ const RatingForm = ({
   const [rating, setRating] = useState(initialRating || 0)
   const [review, setReview] = useState(initialReview || '')
   const [hoveredRating, setHoveredRating] = useState(0)
-  const { productStore } = useStore()
+  const { productStore, userOrderStore } = useStore()
   const { loadingStates } = productStore
 
   useEffect(() => {
@@ -44,6 +44,7 @@ const RatingForm = ({
   const handleSubmit = async () => {
     try {
       await productStore.addRating(productId, { rating, review })
+      await userOrderStore.fetchOrders()
       toast.success('Rating successfully')
       onClose()
     } catch (error) {
