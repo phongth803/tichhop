@@ -26,17 +26,17 @@ class ChatStore {
   initializeSocket = () => {
     this.socket = io(import.meta.env.VITE_API_URL, {
       withCredentials: true,
+      transports: ['websocket', 'polling'],
       extraHeaders: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     })
 
     this.socket.on('connect', () => {
-      console.log('Socket connected')
+      // Socket connected
     })
 
     this.socket.on('newMessage', (data) => {
-      console.log('New message received:', data)
       // Check if message already exists
       const messageExists = this.messages.some((msg) => msg._id === data.message._id)
       if (!messageExists) {
@@ -59,7 +59,7 @@ class ChatStore {
     })
 
     this.socket.on('disconnect', () => {
-      console.log('Socket disconnected')
+      // Socket disconnected
     })
   }
 

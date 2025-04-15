@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite'
 import { Box, IconButton, useDisclosure, SlideFade, Icon, Badge, Text, useToast } from '@chakra-ui/react'
 import { FaComments } from 'react-icons/fa'
 import { useStore } from '@/stores/rootStore'
-import ChatWindow from '@/components/Chat/ChatWindow'
+import ChatWindow from '@/components/About/Chat/ChatWindow'
 import { useSound } from 'use-sound'
 import notificationSound from '@/assets/sounds/notification.mp3'
 

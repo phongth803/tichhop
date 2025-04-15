@@ -8,7 +8,7 @@ import Footer from './Footer'
 import BreadcrumbNav from '@/components/common/Breadcrumb'
 import Loading from '@/components/common/Loading'
 import ScrollToTop from '@/components/common/ScrollToTop'
-import ChatBubble from '@/components/chat/ChatBubble'
+import ChatBubble from '@/components/About/Chat/ChatBubble'
 
 const Layout = observer(() => {
   const {

@@ -14,7 +14,7 @@ import {
 import { useStore } from '../../stores/rootStore'
 import { useNavigate, useLocation, Outlet } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import ChatAdmin from '../Chat/ChatAdmin'
+import ChatAdmin from '../About/Chat/ChatAdmin'
 
 const AdminLayout = ({ children }) => {
   const { authStore } = useStore()
@@ -98,7 +98,7 @@ const AdminLayout = ({ children }) => {
           </Text>
           <HStack spacing={4}>
             <IconButton icon={<Icon as={MdNotifications} />} variant='ghost' aria-label='Notifications' />
-            <Avatar size='sm' src='/path-to-avatar.jpg' cursor='pointer' />
+            <Avatar size='sm' cursor='pointer' />
           </HStack>
         </Flex>
 
