@@ -101,6 +101,26 @@ entity "Rating" {
     createdAt: Date
 }
 
+entity "ChatConversation" {
+    *_id: ObjectId <<PK>>
+    --
+    *userId: ObjectId <<FK>>
+    participants: Array
+    lastMessage: ObjectId <<FK>>
+    createdAt: Date
+    updatedAt: Date
+}
+
+entity "ChatMessage" {
+    *_id: ObjectId <<PK>>
+    --
+    *conversation: ObjectId <<FK>>
+    *sender: ObjectId <<FK>>
+    content: String
+    isRead: Boolean
+    createdAt: Date
+}
+
 ' Định nghĩa relationships chính
 User ||--o{ Order : places
 User ||--o| Cart : has
@@ -109,6 +129,9 @@ Cart ||--o{ CartItem : contains
 CartItem }o--|| Product : refers_to
 Product ||--o{ Rating : has
 User ||--o{ Rating : gives
+User ||--o{ ChatConversation : has
+ChatConversation ||--o{ ChatMessage : contains
+User ||--o{ ChatMessage : sends
 
 ' Định nghĩa relationships với enum
 User .. UserRole

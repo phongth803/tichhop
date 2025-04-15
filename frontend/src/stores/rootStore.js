@@ -11,6 +11,7 @@ import AdminDashBoardStore from './admin/adminDashBoardStore'
 import AdminOrderStore from './admin/adminOrderStore'
 import AdminProductStore from './admin/adminProductStore'
 import OrderStore from './orderStore'
+import ChatStore from './chatStore'
 
 class RootStore {
   constructor() {
@@ -29,12 +30,15 @@ class RootStore {
     this.categoryStore = new CategoryStore(this)
     this.cartStore = new CartStore(this)
     this.userOrderStore = new OrderStore(this)
+    this.chatStore = new ChatStore(this)
     makeAutoObservable(this)
   }
 }
 
 export const rootStore = new RootStore()
-export const StoreContext = createContext(rootStore)
-export const useStore = () => useContext(StoreContext)
+
+const RootStoreContext = createContext(rootStore)
+
+export const useStore = () => useContext(RootStoreContext)
 
 export default rootStore

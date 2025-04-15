@@ -30,6 +30,12 @@ const io = new Server(httpServer, {
   }
 })
 
+// Add socket.io to request object
+app.use((req, res, next) => {
+  req.io = io
+  next()
+})
+
 // Middleware
 app.use(cors())
 app.use(morgan('dev'))
@@ -58,17 +64,6 @@ io.on('connection', socket => {
 
   socket.on('leave_conversation', conversationId => {
     socket.leave(conversationId)
-  })
-
-  socket.on('new_message', data => {
-    io.to(data.conversationId).emit('message_received', data)
-  })
-
-  socket.on('typing', data => {
-    socket.to(data.conversationId).emit('user_typing', {
-      userId: data.userId,
-      isTyping: data.isTyping
-    })
   })
 
   socket.on('disconnect', () => {

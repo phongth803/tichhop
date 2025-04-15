@@ -14,6 +14,7 @@ import {
 import { useStore } from '../../stores/rootStore'
 import { useNavigate, useLocation, Outlet } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import ChatAdmin from '../Chat/ChatAdmin'
 
 const AdminLayout = ({ children }) => {
   const { authStore } = useStore()
@@ -105,6 +106,7 @@ const AdminLayout = ({ children }) => {
           <Outlet />
         </Box>
       </Box>
+      <ChatAdmin />
     </Flex>
   )
 }
