@@ -21,13 +21,13 @@ import {
 
 const OrderItemsModal = ({ isOpen, onClose, items }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal isOpen={isOpen} onClose={onClose} size='xl'>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Order Items</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          <Table variant="simple">
+          <Table variant='simple'>
             <Thead>
               <Tr>
                 <Th>PRODUCT</Th>
@@ -41,16 +41,16 @@ const OrderItemsModal = ({ isOpen, onClose, items }) => {
                 <Tr key={index}>
                   <Td>
                     <HStack spacing={4}>
-                      <Image 
-                        src={item.product?.thumbnail || item.product?.images?.[0]} 
+                      <Image
+                        src={item.product?.thumbnail || item.product?.images?.[0]}
                         alt={item.product?.name}
-                        boxSize="60px"
-                        objectFit="cover"
-                        borderRadius="md"
+                        boxSize='60px'
+                        objectFit='cover'
+                        borderRadius='md'
                       />
-                      <VStack align="start" spacing={1}>
-                        <Text fontWeight="semibold">{item.product?.name}</Text>
-                        <Text fontSize="sm" color="gray.600" noOfLines={2}>
+                      <VStack align='start' spacing={1}>
+                        <Text fontWeight='semibold'>{item.product?.name}</Text>
+                        <Text fontSize='sm' color='gray.600' noOfLines={2}>
                           {item.product?.description}
                         </Text>
                       </VStack>
@@ -69,4 +69,4 @@ const OrderItemsModal = ({ isOpen, onClose, items }) => {
   )
 }
 
-export default OrderItemsModal 
+export default OrderItemsModal

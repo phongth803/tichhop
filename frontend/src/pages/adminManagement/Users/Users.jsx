@@ -133,41 +133,41 @@ const Users = observer(() => {
   const dataInTable = userList?.map((item) => {
     const baseData = {
       fullName: isMobile ? (
-        <VStack align="start" spacing={{ base: 0.5, md: 1 }} width="100%" maxW="100%">
-          <Text fontWeight="semibold" fontSize={{ base: 'sm', md: 'md' }} noOfLines={1}>
+        <VStack align='start' spacing={{ base: 0.5, md: 1 }} width='100%' maxW='100%'>
+          <Text fontWeight='semibold' fontSize={{ base: 'sm', md: 'md' }} noOfLines={1}>
             {`${item.firstName} ${item.lastName}`}
           </Text>
         </VStack>
       ) : (
-        <VStack align="start" spacing={{ base: 0.5, md: 1 }} width="100%" maxW="100%">
-          <Text fontWeight="semibold" fontSize={{ base: 'sm', md: 'md' }} noOfLines={1}>
+        <VStack align='start' spacing={{ base: 0.5, md: 1 }} width='100%' maxW='100%'>
+          <Text fontWeight='semibold' fontSize={{ base: 'sm', md: 'md' }} noOfLines={1}>
             {`${item.firstName} ${item.lastName}`}
           </Text>
-          <Text fontSize={{ base: 'xs', md: 'sm' }} color="gray.500" noOfLines={1}>
+          <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' noOfLines={1}>
             {item.email}
           </Text>
         </VStack>
       ),
       role: (
-        <Box minW="60px" maxW="80px">
-          {item.role === 'admin' ? 
-            <Badge colorScheme='purple' fontSize={{ base: 'xs', md: 'sm' }}>Admin</Badge> : 
-            <Badge colorScheme='green' fontSize={{ base: 'xs', md: 'sm' }}>User</Badge>}
+        <Box minW='60px' maxW='80px'>
+          {item.role === 'admin' ? (
+            <Badge colorScheme='purple' fontSize={{ base: 'xs', md: 'sm' }}>
+              Admin
+            </Badge>
+          ) : (
+            <Badge colorScheme='green' fontSize={{ base: 'xs', md: 'sm' }}>
+              User
+            </Badge>
+          )}
         </Box>
-      ),
+      )
     }
 
     if (isMobile) {
       return {
         ...baseData,
         expand: (
-          <Box 
-            display="flex" 
-            justifyContent="flex-end" 
-            width="100%" 
-            maxW="40px" 
-            ml="auto"
-          >
+          <Box display='flex' justifyContent='flex-end' width='100%' maxW='40px' ml='auto'>
             <IconButton
               icon={expandedRows.has(item._id) ? <ViewOffIcon /> : <ViewIcon />}
               size='sm'
@@ -181,22 +181,28 @@ const Users = observer(() => {
           </Box>
         ),
         expandedContent: expandedRows.has(item._id) && (
-          <Box 
-            bg="gray.50" 
+          <Box
+            bg='gray.50'
             p={{ base: 3, md: 4 }}
-            borderRadius="md"
+            borderRadius='md'
             mx={0}
             mb={{ base: 2, md: 4 }}
-            boxShadow="sm"
-            width="100%"
+            boxShadow='sm'
+            width='100%'
           >
             <SimpleGrid columns={2} spacing={{ base: 3, md: 4 }} mb={{ base: 3, md: 4 }}>
               <Box>
-                <Text fontSize={{ base: 'xs', md: 'sm' }} color="gray.500" mb={1}>Email</Text>
-                <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="medium" noOfLines={2}>{item.email}</Text>
+                <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' mb={1}>
+                  Email
+                </Text>
+                <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight='medium' noOfLines={2}>
+                  {item.email}
+                </Text>
               </Box>
               <Box>
-                <Text fontSize={{ base: 'xs', md: 'sm' }} color="gray.500" mb={1}>Status</Text>
+                <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' mb={1}>
+                  Status
+                </Text>
                 <Badge colorScheme={item.isActive ? 'green' : 'red'} fontSize={{ base: 'xs', md: 'sm' }}>
                   {item.isActive ? 'Active' : 'Inactive'}
                 </Badge>
@@ -204,18 +210,20 @@ const Users = observer(() => {
             </SimpleGrid>
 
             <Box mb={{ base: 3, md: 4 }}>
-              <Text fontSize={{ base: 'xs', md: 'sm' }} color="gray.500" mb={1}>Address</Text>
+              <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' mb={1}>
+                Address
+              </Text>
               <Text fontSize={{ base: 'sm', md: 'md' }}>{item.address || 'N/A'}</Text>
             </Box>
 
             <Divider mb={{ base: 3, md: 4 }} />
 
-            <HStack spacing={{ base: 2, md: 3 }} justify="flex-end">
+            <HStack spacing={{ base: 2, md: 3 }} justify='flex-end'>
               <Button
                 leftIcon={<EditIcon />}
                 size={{ base: 'xs', md: 'sm' }}
                 variant='ghost'
-                colorScheme="blue"
+                colorScheme='blue'
                 onClick={() => handleToggleEdit(item)}
               >
                 Edit
@@ -239,7 +247,11 @@ const Users = observer(() => {
       ...baseData,
       email: item.email,
       address: item.address || 'N/A',
-      status: <Badge colorScheme={item.isActive ? 'green' : 'red'} fontSize={{ base: 'xs', md: 'sm' }}>{item.isActive ? 'Active' : 'Inactive'}</Badge>,
+      status: (
+        <Badge colorScheme={item.isActive ? 'green' : 'red'} fontSize={{ base: 'xs', md: 'sm' }}>
+          {item.isActive ? 'Active' : 'Inactive'}
+        </Badge>
+      ),
       actions: (
         <HStack spacing={2}>
           <IconButton
@@ -284,7 +296,7 @@ const Users = observer(() => {
   }, [currentPage, itemsPerPage, debouncedSearchTerm])
 
   return (
-    <Box p={{ base: 0, md: 4 }} width="100%" overflowX={{ base: 'hidden', md: 'auto' }}>
+    <Box p={{ base: 0, md: 4 }} width='100%' overflowX={{ base: 'hidden', md: 'auto' }}>
       <Box px={{ base: 1, md: 2 }} mb={4}>
         <TaskBarAdmin
           title='Users'
@@ -330,7 +342,7 @@ const Users = observer(() => {
       {isListLoading ? (
         <Loading />
       ) : (
-        <Box width="100%" overflowX="auto" px={{ base: 1, md: 0 }}>
+        <Box width='100%' overflowX='auto' px={{ base: 1, md: 0 }}>
           <DataTable
             headers={headers}
             dataInTable={dataInTable}

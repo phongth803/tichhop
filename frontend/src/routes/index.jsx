@@ -145,8 +145,7 @@ const AppRoutes = observer(() => {
             </ProtectedRoute>
           }
         />
-      
-       
+
         <Route
           path='/admin/dashboard'
           element={

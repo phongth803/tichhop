@@ -100,10 +100,10 @@ const Cart = observer(() => {
             ))}
           </Box>
 
-          <Flex 
-            direction={{ base: 'column', md: 'row' }} 
-            justify='space-between' 
-            align={{ base: 'stretch', md: 'start' }} 
+          <Flex
+            direction={{ base: 'column', md: 'row' }}
+            justify='space-between'
+            align={{ base: 'stretch', md: 'start' }}
             gap={6}
           >
             <Link to='/products'>

@@ -23,10 +23,10 @@ const TaskBarAdmin = (props) => {
         </Button>
       )}
       {isAdd && (
-        <Button 
-          colorScheme='purple' 
-          minW={{ base: '100px', md: '120px' }} 
-          size={{ base: 'sm', md: 'md' }} 
+        <Button
+          colorScheme='purple'
+          minW={{ base: '100px', md: '120px' }}
+          size={{ base: 'sm', md: 'md' }}
           onClick={handleAdd}
         >
           {buttonText || 'Add'}
@@ -37,7 +37,7 @@ const TaskBarAdmin = (props) => {
 
   if (isMobile) {
     return (
-      <VStack spacing={4} align="stretch" mb={4} px={2}>
+      <VStack spacing={4} align='stretch' mb={4} px={2}>
         <Flex justify='space-between' align='center'>
           <Heading size='lg'>{title}</Heading>
           <ActionButtons />
@@ -51,7 +51,7 @@ const TaskBarAdmin = (props) => {
             value={searchValue}
             onChange={onSearchChange}
             borderRadius='md'
-            size="md"
+            size='md'
             _focus={{
               borderColor: 'purple.500',
               boxShadow: '0 0 0 1px purple.500'

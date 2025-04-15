@@ -117,10 +117,7 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
 
                 <FormControl isInvalid={errors.address}>
                   <FormLabel fontSize={{ base: 'md', md: 'sm' }}>Address</FormLabel>
-                  <Input 
-                    size={{ base: 'lg', md: 'md' }}
-                    {...register('address', {})} 
-                  />
+                  <Input size={{ base: 'lg', md: 'md' }} {...register('address', {})} />
                   <FormErrorMessage>{errors.address && errors.address.message}</FormErrorMessage>
                 </FormControl>
 
@@ -141,11 +138,7 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
 
                 <FormControl>
                   <FormLabel fontSize={{ base: 'md', md: 'sm' }}>Status</FormLabel>
-                  <Select 
-                    size={{ base: 'lg', md: 'md' }}
-                    {...register('isActive')} 
-                    defaultValue={true}
-                  >
+                  <Select size={{ base: 'lg', md: 'md' }} {...register('isActive')} defaultValue={true}>
                     <option value={true}>Active</option>
                     <option value={false}>Inactive</option>
                   </Select>
@@ -155,18 +148,13 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
           </ModalBody>
 
           <ModalFooter>
-            <Button 
-              variant='ghost' 
-              mr={3} 
-              onClick={onClose}
-              size={{ base: 'lg', md: 'md' }}
-            >
+            <Button variant='ghost' mr={3} onClick={onClose} size={{ base: 'lg', md: 'md' }}>
               Cancel
             </Button>
-            <Button 
-              colorScheme='purple' 
-              type='submit' 
-              isLoading={isSubmitting} 
+            <Button
+              colorScheme='purple'
+              type='submit'
+              isLoading={isSubmitting}
               isDisabled={!isDirty}
               size={{ base: 'lg', md: 'md' }}
             >

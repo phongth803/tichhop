@@ -54,8 +54,8 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
             {/* Sort Options */}
             <FormControl>
               <FormLabel fontWeight='bold'>Sort By</FormLabel>
-              <Select 
-                value={currentFilters.sort} 
+              <Select
+                value={currentFilters.sort}
                 onChange={(e) => handleFilterChange('sort', e.target.value)}
                 size={{ base: 'lg', md: 'md' }}
               >
@@ -68,8 +68,8 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
             {/* Category Filter */}
             <FormControl>
               <FormLabel fontWeight='bold'>Category</FormLabel>
-              <Select 
-                value={currentFilters.category} 
+              <Select
+                value={currentFilters.category}
                 onChange={(e) => handleFilterChange('category', e.target.value)}
                 size={{ base: 'lg', md: 'md' }}
               >
@@ -85,8 +85,8 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
             {/* Status Filter */}
             <FormControl>
               <FormLabel fontWeight='bold'>Status</FormLabel>
-              <Select 
-                value={currentFilters.status} 
+              <Select
+                value={currentFilters.status}
                 onChange={(e) => handleFilterChange('status', e.target.value)}
                 size={{ base: 'lg', md: 'md' }}
               >
@@ -99,7 +99,7 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
             {/* Price Range Filter */}
             <FormControl>
               <FormLabel fontWeight='bold'>Price Range</FormLabel>
-              <VStack spacing={2} w="100%">
+              <VStack spacing={2} w='100%'>
                 <Input
                   type='number'
                   placeholder='Min Price'
@@ -129,7 +129,7 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
               />
             </FormControl>
 
-            <Flex justify='space-between' mt={4} w="100%">
+            <Flex justify='space-between' mt={4} w='100%'>
               <Button colorScheme='gray' onClick={onClose} size={{ base: 'lg', md: 'md' }}>
                 Cancel
               </Button>

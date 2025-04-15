@@ -1,5 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { Box, HStack, IconButton, Input, InputGroup, InputLeftElement, Badge, Image, Text, VStack, SimpleGrid, Divider, Button } from '@chakra-ui/react'
+import {
+  Box,
+  HStack,
+  IconButton,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Badge,
+  Image,
+  Text,
+  VStack,
+  SimpleGrid,
+  Divider,
+  Button
+} from '@chakra-ui/react'
 import { EditIcon, DeleteIcon, SearchIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import DataTable from '@/components/common/DataTable'
 import ConfirmModal from '@/components/common/ConfirmModal'
@@ -154,13 +168,25 @@ const Products = observer(() => {
 
   const dataInTable = adminProductStore.productsList?.map((item) => {
     const baseData = {
-      thumbnail: <Image src={item.thumbnail} alt={item.name} boxSize={{ base: '40px', md: '50px' }} objectFit='cover' borderRadius="md" />,
-      name: (
-        <VStack align="start" spacing={{ base: 0.5, md: 1 }}>
-          <Text fontWeight="semibold" fontSize={{ base: 'sm', md: 'md' }} noOfLines={2}>{item.name}</Text>
-          <Text fontSize={{ base: 'xs', md: 'sm' }} color="gray.500">${item.price}</Text>
-        </VStack>
+      thumbnail: (
+        <Image
+          src={item.thumbnail}
+          alt={item.name}
+          boxSize={{ base: '40px', md: '50px' }}
+          objectFit='cover'
+          borderRadius='md'
+        />
       ),
+      name: (
+        <VStack align='start' spacing={{ base: 0.5, md: 1 }}>
+          <Text fontWeight='semibold' fontSize={{ base: 'sm', md: 'md' }} noOfLines={2}>
+            {item.name}
+          </Text>
+          <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500'>
+            ${item.price}
+          </Text>
+        </VStack>
+      )
     }
 
     if (isMobile) {
@@ -178,48 +204,61 @@ const Products = observer(() => {
           />
         ),
         expandedContent: expandedRows.has(item._id) && (
-          <Box 
-            bg="gray.50" 
-            p={{ base: 3, md: 4 }}
-            borderRadius="md"
-            mx={0}
-            mb={{ base: 2, md: 4 }}
-            boxShadow="sm"
-          >
+          <Box bg='gray.50' p={{ base: 3, md: 4 }} borderRadius='md' mx={0} mb={{ base: 2, md: 4 }} boxShadow='sm'>
             <SimpleGrid columns={2} spacing={{ base: 3, md: 4 }} mb={{ base: 3, md: 4 }}>
               <Box>
-                <Text fontSize={{ base: 'xs', md: 'sm' }} color="gray.500" mb={1}>Category</Text>
-                <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="medium">{item.category?.name || 'N/A'}</Text>
+                <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' mb={1}>
+                  Category
+                </Text>
+                <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight='medium'>
+                  {item.category?.name || 'N/A'}
+                </Text>
               </Box>
               <Box>
-                <Text fontSize={{ base: 'xs', md: 'sm' }} color="gray.500" mb={1}>Stock</Text>
-                <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="medium">{item.stock}</Text>
+                <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' mb={1}>
+                  Stock
+                </Text>
+                <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight='medium'>
+                  {item.stock}
+                </Text>
               </Box>
               <Box>
-                <Text fontSize={{ base: 'xs', md: 'sm' }} color="gray.500" mb={1}>Status</Text>
-                <Badge colorScheme={item.isActive ? 'green' : 'red'} borderRadius="md" fontSize={{ base: 'xs', md: 'sm' }}>
+                <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' mb={1}>
+                  Status
+                </Text>
+                <Badge
+                  colorScheme={item.isActive ? 'green' : 'red'}
+                  borderRadius='md'
+                  fontSize={{ base: 'xs', md: 'sm' }}
+                >
                   {item.isActive ? 'Active' : 'Inactive'}
                 </Badge>
               </Box>
               <Box>
-                <Text fontSize={{ base: 'xs', md: 'sm' }} color="gray.500" mb={1}>Discount</Text>
-                <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight="medium">{item.discount ? `${item.discount}%` : 'N/A'}</Text>
+                <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' mb={1}>
+                  Discount
+                </Text>
+                <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight='medium'>
+                  {item.discount ? `${item.discount}%` : 'N/A'}
+                </Text>
               </Box>
             </SimpleGrid>
 
             <Box mb={{ base: 3, md: 4 }}>
-              <Text fontSize={{ base: 'xs', md: 'sm' }} color="gray.500" mb={1}>Description</Text>
+              <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' mb={1}>
+                Description
+              </Text>
               <Text fontSize={{ base: 'sm', md: 'md' }}>{item.description}</Text>
             </Box>
 
             <Divider mb={{ base: 3, md: 4 }} />
 
-            <HStack spacing={{ base: 2, md: 3 }} justify="flex-end">
+            <HStack spacing={{ base: 2, md: 3 }} justify='flex-end'>
               <Button
                 leftIcon={<EditIcon />}
                 size={{ base: 'xs', md: 'sm' }}
                 variant='ghost'
-                colorScheme="blue"
+                colorScheme='blue'
                 onClick={() => handleToggleEdit(item)}
               >
                 Edit
@@ -245,7 +284,11 @@ const Products = observer(() => {
       price: `$${item.price}`,
       category: item.category?.name || 'N/A',
       stock: item.stock,
-      status: <Badge colorScheme={item.isActive ? 'green' : 'red'} borderRadius="md">{item.isActive ? 'Active' : 'Inactive'}</Badge>,
+      status: (
+        <Badge colorScheme={item.isActive ? 'green' : 'red'} borderRadius='md'>
+          {item.isActive ? 'Active' : 'Inactive'}
+        </Badge>
+      ),
       discount: item.discount ? `${item.discount}%` : 'N/A',
       actions: (
         <HStack spacing={2}>
@@ -253,7 +296,7 @@ const Products = observer(() => {
             icon={<EditIcon />}
             size='sm'
             variant='ghost'
-            colorScheme="blue"
+            colorScheme='blue'
             aria-label='Edit'
             onClick={() => handleToggleEdit(item)}
           />
@@ -286,7 +329,7 @@ const Products = observer(() => {
   }
 
   return (
-    <Box p={{ base: 0, md: 4 }} width="100%" overflowX={{ base: 'hidden', md: 'auto' }}>
+    <Box p={{ base: 0, md: 4 }} width='100%' overflowX={{ base: 'hidden', md: 'auto' }}>
       <Box px={2}>
         <TaskBarAdmin
           title='Products'
@@ -335,7 +378,7 @@ const Products = observer(() => {
       {adminProductStore.isListLoading ? (
         <Loading />
       ) : (
-        <Box width="100%" overflowX="auto">
+        <Box width='100%' overflowX='auto'>
           <DataTable
             headers={tableHeaders}
             dataInTable={dataInTable}

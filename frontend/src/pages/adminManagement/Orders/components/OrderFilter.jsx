@@ -27,7 +27,7 @@ const OrderFilter = ({ isOpen, onClose, onFilter, currentFilters }) => {
   }
 
   return (
-    <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+    <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
@@ -37,21 +37,18 @@ const OrderFilter = ({ isOpen, onClose, onFilter, currentFilters }) => {
             <VStack spacing={4}>
               <FormControl>
                 <FormLabel>Status</FormLabel>
-                <Select
-                  name="status"
-                  defaultValue={currentFilters.status}
-                >
-                  <option value="">All</option>
-                  <option value="pending">Pending</option>
-                  <option value="processing">Processing</option>
-                  <option value="delivered">Delivered</option>
-                  <option value="cancelled">Cancelled</option>
+                <Select name='status' defaultValue={currentFilters.status}>
+                  <option value=''>All</option>
+                  <option value='pending'>Pending</option>
+                  <option value='processing'>Processing</option>
+                  <option value='delivered'>Delivered</option>
+                  <option value='cancelled'>Cancelled</option>
                 </Select>
               </FormControl>
-              <Button width="full" type="submit" colorScheme="blue">
+              <Button width='full' type='submit' colorScheme='blue'>
                 Apply Filters
               </Button>
-              <Button width="full" variant="ghost" onClick={handleReset}>
+              <Button width='full' variant='ghost' onClick={handleReset}>
                 Reset Filters
               </Button>
             </VStack>
@@ -62,4 +59,4 @@ const OrderFilter = ({ isOpen, onClose, onFilter, currentFilters }) => {
   )
 }
 
-export default OrderFilter 
+export default OrderFilter

@@ -53,40 +53,36 @@ const Register = () => {
   }
 
   return (
-    <Container maxW="container.sm" py={{ base: 6, md: 10 }}>
-      <VStack spacing={8} align="stretch">
-        <Box textAlign="center">
-          <Heading 
-            fontSize={{ base: '2xl', md: '3xl' }} 
-            fontWeight="bold"
-            mb={3}
-          >
+    <Container maxW='container.sm' py={{ base: 6, md: 10 }}>
+      <VStack spacing={8} align='stretch'>
+        <Box textAlign='center'>
+          <Heading fontSize={{ base: '2xl', md: '3xl' }} fontWeight='bold' mb={3}>
             Create New Account
           </Heading>
-          <Text color="gray.600">
+          <Text color='gray.600'>
             Already have an account?{' '}
-            <Text 
-              as={RouterLink} 
-              to="/login" 
-              color="red.500" 
+            <Text
+              as={RouterLink}
+              to='/login'
+              color='red.500'
               _hover={{ textDecoration: 'underline' }}
-              display="inline-block"
+              display='inline-block'
             >
               Sign In
             </Text>
           </Text>
         </Box>
 
-        <Box 
-          as="form" 
+        <Box
+          as='form'
           onSubmit={handleSubmit(onSubmit)}
-          bg="white"
+          bg='white'
           p={{ base: 6, md: 8 }}
-          borderRadius="lg"
-          boxShadow="sm"
+          borderRadius='lg'
+          boxShadow='sm'
         >
           <VStack spacing={6}>
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} w="full">
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} w='full'>
               <FormControl isInvalid={errors.firstName}>
                 <FormLabel>First Name</FormLabel>
                 <Input
@@ -94,8 +90,8 @@ const Register = () => {
                     required: 'First name is required',
                     minLength: { value: 2, message: 'First name must be at least 2 characters' }
                   })}
-                  size="lg"
-                  bg="gray.50"
+                  size='lg'
+                  bg='gray.50'
                 />
                 <FormErrorMessage>{errors.firstName?.message}</FormErrorMessage>
               </FormControl>
@@ -107,8 +103,8 @@ const Register = () => {
                     required: 'Last name is required',
                     minLength: { value: 2, message: 'Last name must be at least 2 characters' }
                   })}
-                  size="lg"
-                  bg="gray.50"
+                  size='lg'
+                  bg='gray.50'
                 />
                 <FormErrorMessage>{errors.lastName?.message}</FormErrorMessage>
               </FormControl>
@@ -117,7 +113,7 @@ const Register = () => {
             <FormControl isInvalid={errors.email}>
               <FormLabel>Email</FormLabel>
               <Input
-                type="email"
+                type='email'
                 {...register('email', {
                   required: 'Email is required',
                   pattern: {
@@ -125,15 +121,15 @@ const Register = () => {
                     message: 'Invalid email address'
                   }
                 })}
-                size="lg"
-                bg="gray.50"
+                size='lg'
+                bg='gray.50'
               />
               <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
 
             <FormControl isInvalid={errors.password}>
               <FormLabel>Password</FormLabel>
-              <InputGroup size="lg">
+              <InputGroup size='lg'>
                 <Input
                   type={showPassword ? 'text' : 'password'}
                   {...register('password', {
@@ -143,11 +139,11 @@ const Register = () => {
                       message: 'Password must be at least 6 characters'
                     }
                   })}
-                  bg="gray.50"
+                  bg='gray.50'
                 />
                 <InputRightElement>
                   <IconButton
-                    variant="ghost"
+                    variant='ghost'
                     icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
@@ -159,7 +155,7 @@ const Register = () => {
 
             <FormControl isInvalid={errors.confirmPassword}>
               <FormLabel>Confirm Password</FormLabel>
-              <InputGroup size="lg">
+              <InputGroup size='lg'>
                 <Input
                   type={showConfirmPassword ? 'text' : 'password'}
                   {...register('confirmPassword', {
@@ -170,11 +166,11 @@ const Register = () => {
                       }
                     }
                   })}
-                  bg="gray.50"
+                  bg='gray.50'
                 />
                 <InputRightElement>
                   <IconButton
-                    variant="ghost"
+                    variant='ghost'
                     icon={showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
@@ -184,15 +180,7 @@ const Register = () => {
               <FormErrorMessage>{errors.confirmPassword?.message}</FormErrorMessage>
             </FormControl>
 
-            <Button
-              type="submit"
-              colorScheme="red"
-              size="lg"
-              fontSize="md"
-              isLoading={isSubmitting}
-              w="full"
-              mt={4}
-            >
+            <Button type='submit' colorScheme='red' size='lg' fontSize='md' isLoading={isSubmitting} w='full' mt={4}>
               Create Account
             </Button>
           </VStack>

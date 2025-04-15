@@ -26,7 +26,7 @@ const CartItem = ({ item, onQuantityChange, onRemove, isMobile }) => {
   if (isMobile) {
     return (
       <Box p={4} borderBottom='1px' borderColor='gray.100'>
-        <Grid templateColumns="80px 1fr" gap={4}>
+        <Grid templateColumns='80px 1fr' gap={4}>
           <GridItem>
             <Image
               src={item.productId.thumbnail}
@@ -39,8 +39,8 @@ const CartItem = ({ item, onQuantityChange, onRemove, isMobile }) => {
             />
           </GridItem>
           <GridItem>
-            <VStack align="stretch" spacing={2}>
-              <Flex justify="space-between" align="start">
+            <VStack align='stretch' spacing={2}>
+              <Flex justify='space-between' align='start'>
                 <Text fontWeight='medium' noOfLines={2} flex={1}>
                   {item.productId.name}
                 </Text>
@@ -57,7 +57,7 @@ const CartItem = ({ item, onQuantityChange, onRemove, isMobile }) => {
               <Text color='gray.700' fontWeight='medium'>
                 {formatPrice(item.productId.priceOnSale)}
               </Text>
-              <Flex justify="space-between" align="center">
+              <Flex justify='space-between' align='center'>
                 <NumberInput
                   value={item.quantity}
                   min={1}

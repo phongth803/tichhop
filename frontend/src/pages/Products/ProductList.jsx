@@ -131,7 +131,6 @@ const ProductList = observer(() => {
     updateUrl({ ...cleanFilters(newFilters) })
   }
 
-
   return (
     <Box bg='gray.50' minH='100vh'>
       <Container maxW='container.xl' py={8}>
@@ -161,8 +160,8 @@ const ProductList = observer(() => {
                 <ProductGrid products={productsList} />
                 {totalProducts > 0 && (
                   <Pagination
-                currentPage={currentPageState}
-                totalPages={Math.ceil(totalProducts / 20)}
+                    currentPage={currentPageState}
+                    totalPages={Math.ceil(totalProducts / 20)}
                     onPageChange={handlePageChange}
                   />
                 )}

@@ -50,8 +50,8 @@ const formatCurrency = (value) => {
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <Card p={2} bg="white" boxShadow="md">
-        <Text fontWeight="bold">{label}</Text>
+      <Card p={2} bg='white' boxShadow='md'>
+        <Text fontWeight='bold'>{label}</Text>
         {payload.map((entry, index) => (
           <Text key={index} color={entry.color}>
             {entry.name}: {entry.value}
@@ -109,19 +109,19 @@ const DashBoard = observer(() => {
     )
   }
 
-  const formattedRevenueData = revenueData?.map(item => ({
+  const formattedRevenueData = revenueData?.map((item) => ({
     ...item,
     revenue: Number(item.revenue),
     date: new Date(item.date).toLocaleDateString()
   }))
 
-  const formattedTopProducts = topProducts?.map(item => ({
+  const formattedTopProducts = topProducts?.map((item) => ({
     ...item,
     sales: Number(item.sales),
     name: item.name.length > 15 ? item.name.substring(0, 15) + '...' : item.name
   }))
 
-  const formattedCategoryDistribution = categoryDistribution?.map(item => ({
+  const formattedCategoryDistribution = categoryDistribution?.map((item) => ({
     ...item,
     value: Number(item.value),
     name: item.name || 'Unknown Category'
@@ -131,11 +131,7 @@ const DashBoard = observer(() => {
     <Box p={{ base: 2, md: 4 }}>
       {/* Time Range Filter */}
       <Box mb={4}>
-        <Select 
-          onChange={handleTimeRangeChange} 
-          w={{ base: 'full', md: '200px' }}
-          fontSize={{ base: 'sm', md: 'md' }}
-        >
+        <Select onChange={handleTimeRangeChange} w={{ base: 'full', md: '200px' }} fontSize={{ base: 'sm', md: 'md' }}>
           <option value=''>All Time</option>
           <option value='today'>Today</option>
           <option value='week'>Last 7 Days</option>
@@ -146,10 +142,10 @@ const DashBoard = observer(() => {
 
       {/* Stats Overview */}
       <SimpleGrid columns={{ base: 1, sm: 2, md: 4 }} spacing={{ base: 2, md: 4 }} mb={6}>
-        <StatCard 
-          label='Total Sales' 
-          value={formatCurrency(stats?.totalSales || 0)} 
-          percentage={stats?.percentageChange || 0} 
+        <StatCard
+          label='Total Sales'
+          value={formatCurrency(stats?.totalSales || 0)}
+          percentage={stats?.percentageChange || 0}
         />
         <StatCard
           label='Total Orders'
@@ -169,10 +165,7 @@ const DashBoard = observer(() => {
       </SimpleGrid>
 
       {/* Charts Grid */}
-      <Grid 
-        templateColumns={{ base: '1fr', lg: 'repeat(2, 1fr)' }} 
-        gap={{ base: 4, md: 6 }}
-      >
+      <Grid templateColumns={{ base: '1fr', lg: 'repeat(2, 1fr)' }} gap={{ base: 4, md: 6 }}>
         {/* Sales Trend Chart */}
         <Card>
           <CardHeader>
@@ -180,30 +173,21 @@ const DashBoard = observer(() => {
           </CardHeader>
           <CardBody>
             <Box height={chartHeight}>
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width='100%' height='100%'>
                 <LineChart data={formattedRevenueData}>
                   <CartesianGrid strokeDasharray='3 3' />
-                  <XAxis 
-                    dataKey='date' 
+                  <XAxis
+                    dataKey='date'
                     tick={{ fontSize: isMobile ? 10 : 12 }}
                     angle={isMobile ? -45 : 0}
                     textAnchor={isMobile ? 'end' : 'middle'}
                     height={isMobile ? 60 : 30}
                     interval={isMobile ? 1 : 0}
                   />
-                  <YAxis 
-                    tick={{ fontSize: isMobile ? 10 : 12 }}
-                    tickFormatter={(value) => formatCurrency(value)}
-                  />
+                  <YAxis tick={{ fontSize: isMobile ? 10 : 12 }} tickFormatter={(value) => formatCurrency(value)} />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend wrapperStyle={{ fontSize: isMobile ? 10 : 12 }} />
-                  <Line 
-                    type='monotone' 
-                    dataKey='revenue' 
-                    stroke='#8884d8' 
-                    name="Revenue"
-                    strokeWidth={2}
-                  />
+                  <Line type='monotone' dataKey='revenue' stroke='#8884d8' name='Revenue' strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
             </Box>
@@ -217,28 +201,21 @@ const DashBoard = observer(() => {
           </CardHeader>
           <CardBody>
             <Box height={chartHeight}>
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width='100%' height='100%'>
                 <BarChart data={formattedTopProducts}>
                   <CartesianGrid strokeDasharray='3 3' />
-                  <XAxis 
-                    dataKey='name' 
+                  <XAxis
+                    dataKey='name'
                     tick={{ fontSize: isMobile ? 10 : 12 }}
                     angle={isMobile ? -45 : 0}
                     textAnchor={isMobile ? 'end' : 'middle'}
                     height={isMobile ? 60 : 30}
                     interval={0}
                   />
-                  <YAxis 
-                    tick={{ fontSize: isMobile ? 10 : 12 }}
-                  />
+                  <YAxis tick={{ fontSize: isMobile ? 10 : 12 }} />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend wrapperStyle={{ fontSize: isMobile ? 10 : 12 }} />
-                  <Bar 
-                    dataKey='sales' 
-                    fill='#82ca9d' 
-                    name="Sales"
-                    radius={[4, 4, 0, 0]}
-                  />
+                  <Bar dataKey='sales' fill='#82ca9d' name='Sales' radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </Box>
@@ -246,39 +223,34 @@ const DashBoard = observer(() => {
         </Card>
 
         {/* Category Distribution */}
-        <Card gridColumn={{ base: "1", lg: "span 2" }}>
+        <Card gridColumn={{ base: '1', lg: 'span 2' }}>
           <CardHeader>
             <Heading size={isMobile ? 'sm' : 'md'}>Category Distribution</Heading>
           </CardHeader>
           <CardBody>
             <Box height={chartHeight}>
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width='100%' height='100%'>
                 <PieChart>
-                  <Pie 
-                    data={formattedCategoryDistribution} 
-                    dataKey='value' 
-                    nameKey='name' 
-                    cx='50%' 
-                    cy='50%' 
+                  <Pie
+                    data={formattedCategoryDistribution}
+                    dataKey='value'
+                    nameKey='name'
+                    cx='50%'
+                    cy='50%'
                     outerRadius={isMobile ? '80%' : '60%'}
-                    label={({ name, percent }) => 
-                      !isMobile ? `${name} (${(percent * 100).toFixed(0)}%)` : ''
-                    }
+                    label={({ name, percent }) => (!isMobile ? `${name} (${(percent * 100).toFixed(0)}%)` : '')}
                     labelLine={!isMobile}
                   >
                     {formattedCategoryDistribution?.map((entry, index) => (
-                      <Cell 
-                        key={`cell-${index}`} 
-                        fill={COLORS[index % COLORS.length]}
-                      />
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip content={<CustomTooltip />} />
-                  <Legend 
-                    layout={isMobile ? "horizontal" : "vertical"}
-                    align={isMobile ? "center" : "right"}
-                    verticalAlign={isMobile ? "bottom" : "middle"}
-                    wrapperStyle={{ 
+                  <Legend
+                    layout={isMobile ? 'horizontal' : 'vertical'}
+                    align={isMobile ? 'center' : 'right'}
+                    verticalAlign={isMobile ? 'bottom' : 'middle'}
+                    wrapperStyle={{
                       fontSize: isMobile ? 10 : 12,
                       padding: isMobile ? '10px 0' : '0 10px'
                     }}

@@ -36,7 +36,7 @@ const Orders = observer(() => {
   const [filters, setFilters] = useState({
     status: ''
   })
-  
+
   const debouncedSearchTerm = useDebounce(searchTerm, 500)
   const { orderStore } = useStore()
   const { orderList, loading, isListLoading, pagination, updateOrderStatus } = orderStore
@@ -95,117 +95,122 @@ const Orders = observer(() => {
     setIsItemsModalOpen(true)
   }
 
-  const dataInTable = orderList?.map((item) => {
-    const baseData = {
-      customerName: (
-        <Text fontWeight="semibold">
-          {`${item.user?.firstName} ${item.user?.lastName}`}
-        </Text>
-      ),
-      status: (
-        <Badge colorScheme={
-          item.status === 'delivered' ? 'green' :
-          item.status === 'pending' ? 'yellow' :
-          item.status === 'processing' ? 'blue' :
-          item.status === 'cancelled' ? 'red' : 'gray'
-        }>
-          {(item.status?.charAt(0).toUpperCase() + item.status?.slice(1)) || 'Unknown'}
-        </Badge>
-      )
-    }
-
-    if (isMobile) {
-      return {
-        ...baseData,
-        expand: (
-          <IconButton
-            icon={expandedRows.has(item._id) ? <ViewOffIcon /> : <ViewIcon />}
-            size='sm'
-            variant='ghost'
-            aria-label='View details'
-            color={expandedRows.has(item._id) ? 'purple.500' : 'gray.500'}
-            _hover={{ color: 'purple.500' }}
-            onClick={() => handleToggleExpand(item._id)}
-          />
-        ),
-        expandedContent: expandedRows.has(item._id) && (
-          <Box 
-            bg="gray.50" 
-            p={4}
-            borderRadius="md"
-            mx={0}
-            mb={4}
-            boxShadow="sm"
+  const dataInTable =
+    orderList?.map((item) => {
+      const baseData = {
+        customerName: <Text fontWeight='semibold'>{`${item.user?.firstName} ${item.user?.lastName}`}</Text>,
+        status: (
+          <Badge
+            colorScheme={
+              item.status === 'delivered'
+                ? 'green'
+                : item.status === 'pending'
+                  ? 'yellow'
+                  : item.status === 'processing'
+                    ? 'blue'
+                    : item.status === 'cancelled'
+                      ? 'red'
+                      : 'gray'
+            }
           >
-            <SimpleGrid columns={2} spacing={4} mb={4}>
-              <Box>
-                <Text fontSize="sm" color="gray.500" mb={1}>Total Amount</Text>
-                <Text fontSize="md" fontWeight="medium">${Number(item.totalAmount || 0).toFixed(2)}</Text>
-              </Box>
-              <Box>
-                <Text fontSize="sm" color="gray.500" mb={1}>Order Date</Text>
-                <Text fontSize="md" fontWeight="medium">
-                  {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'}
-                </Text>
-              </Box>
-            </SimpleGrid>
-
-            <Box mb={4}>
-              <Text fontSize="sm" color="gray.500" mb={1}>Items</Text>
-              <Link
-                color="blue.500"
-                onClick={() => handleViewItems(item)}
-                cursor="pointer"
-                _hover={{ textDecoration: 'underline' }}
-              >
-                View Items
-              </Link>
-            </Box>
-
-            <Divider mb={4} />
-
-            <HStack spacing={3} justify="flex-end">
-              <IconButton
-                icon={<EditIcon />}
-                size="sm"
-                variant="ghost"
-                colorScheme="blue"
-                aria-label="Update Status"
-                onClick={() => handleToggleStatus(item)}
-              />
-            </HStack>
-          </Box>
+            {item.status?.charAt(0).toUpperCase() + item.status?.slice(1) || 'Unknown'}
+          </Badge>
         )
       }
-    }
 
-    return {
-      ...baseData,
-      totalAmount: `$${Number(item.totalAmount || 0).toFixed(2)}`,
-      items: (
-        <Link
-          color="blue.500"
-          onClick={() => handleViewItems(item)}
-          cursor="pointer"
-          _hover={{ textDecoration: 'underline' }}
-        >
-          Items
-        </Link>
-      ),
-      createdAt: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A',
-      actions: (
-        <HStack spacing={2}>
-          <IconButton
-            icon={<EditIcon />}
-            size='sm'
-            variant='ghost'
-            aria-label='Update Status'
-            onClick={() => handleToggleStatus(item)}
-          />
-        </HStack>
-      )
-    }
-  }) || []
+      if (isMobile) {
+        return {
+          ...baseData,
+          expand: (
+            <IconButton
+              icon={expandedRows.has(item._id) ? <ViewOffIcon /> : <ViewIcon />}
+              size='sm'
+              variant='ghost'
+              aria-label='View details'
+              color={expandedRows.has(item._id) ? 'purple.500' : 'gray.500'}
+              _hover={{ color: 'purple.500' }}
+              onClick={() => handleToggleExpand(item._id)}
+            />
+          ),
+          expandedContent: expandedRows.has(item._id) && (
+            <Box bg='gray.50' p={4} borderRadius='md' mx={0} mb={4} boxShadow='sm'>
+              <SimpleGrid columns={2} spacing={4} mb={4}>
+                <Box>
+                  <Text fontSize='sm' color='gray.500' mb={1}>
+                    Total Amount
+                  </Text>
+                  <Text fontSize='md' fontWeight='medium'>
+                    ${Number(item.totalAmount || 0).toFixed(2)}
+                  </Text>
+                </Box>
+                <Box>
+                  <Text fontSize='sm' color='gray.500' mb={1}>
+                    Order Date
+                  </Text>
+                  <Text fontSize='md' fontWeight='medium'>
+                    {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'}
+                  </Text>
+                </Box>
+              </SimpleGrid>
+
+              <Box mb={4}>
+                <Text fontSize='sm' color='gray.500' mb={1}>
+                  Items
+                </Text>
+                <Link
+                  color='blue.500'
+                  onClick={() => handleViewItems(item)}
+                  cursor='pointer'
+                  _hover={{ textDecoration: 'underline' }}
+                >
+                  View Items
+                </Link>
+              </Box>
+
+              <Divider mb={4} />
+
+              <HStack spacing={3} justify='flex-end'>
+                <IconButton
+                  icon={<EditIcon />}
+                  size='sm'
+                  variant='ghost'
+                  colorScheme='blue'
+                  aria-label='Update Status'
+                  onClick={() => handleToggleStatus(item)}
+                />
+              </HStack>
+            </Box>
+          )
+        }
+      }
+
+      return {
+        ...baseData,
+        totalAmount: `$${Number(item.totalAmount || 0).toFixed(2)}`,
+        items: (
+          <Link
+            color='blue.500'
+            onClick={() => handleViewItems(item)}
+            cursor='pointer'
+            _hover={{ textDecoration: 'underline' }}
+          >
+            Items
+          </Link>
+        ),
+        createdAt: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A',
+        actions: (
+          <HStack spacing={2}>
+            <IconButton
+              icon={<EditIcon />}
+              size='sm'
+              variant='ghost'
+              aria-label='Update Status'
+              onClick={() => handleToggleStatus(item)}
+            />
+          </HStack>
+        )
+      }
+    }) || []
 
   const handleFilter = (newFilters) => {
     setFilters(newFilters)
@@ -229,7 +234,7 @@ const Orders = observer(() => {
   }, [currentPage, itemsPerPage, debouncedSearchTerm])
 
   return (
-    <Box p={{ base: 0, md: 4 }} width="100%" overflowX={{ base: 'hidden', md: 'auto' }}>
+    <Box p={{ base: 0, md: 4 }} width='100%' overflowX={{ base: 'hidden', md: 'auto' }}>
       <Box px={2}>
         <TaskBarAdmin
           title='Orders'
@@ -242,7 +247,7 @@ const Orders = observer(() => {
           isMobile={isMobile}
         />
       </Box>
-      
+
       <OrderStatusModal
         isOpen={isStatusModalOpen}
         onClose={() => setIsStatusModalOpen(false)}
@@ -266,7 +271,7 @@ const Orders = observer(() => {
       {isListLoading ? (
         <Loading />
       ) : (
-        <Box width="100%" overflowX="auto">
+        <Box width='100%' overflowX='auto'>
           <DataTable
             headers={headers}
             dataInTable={dataInTable}

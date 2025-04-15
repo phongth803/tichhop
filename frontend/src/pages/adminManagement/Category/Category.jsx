@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { 
-  Box, 
-  HStack, 
-  IconButton, 
-  Badge, 
-  Text, 
-  VStack,
-  SimpleGrid,
-  Divider
-} from '@chakra-ui/react'
+import { Box, HStack, IconButton, Badge, Text, VStack, SimpleGrid, Divider } from '@chakra-ui/react'
 import { EditIcon, DeleteIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import DataTable from '@/components/common/DataTable'
 import ConfirmModal from '@/components/common/ConfirmModal'
@@ -109,104 +100,92 @@ const Category = observer(() => {
     }
   }
 
-  const dataInTable = categoryList?.map((item) => {
-    const baseData = {
-      name: (
-        <Text fontWeight="semibold">
-          {item.name}
-        </Text>
-      ),
-      status: (
-        <Badge colorScheme={item.isActive ? 'green' : 'red'}>
-          {item.isActive ? 'Active' : 'Inactive'}
-        </Badge>
-      )
-    }
+  const dataInTable =
+    categoryList?.map((item) => {
+      const baseData = {
+        name: <Text fontWeight='semibold'>{item.name}</Text>,
+        status: <Badge colorScheme={item.isActive ? 'green' : 'red'}>{item.isActive ? 'Active' : 'Inactive'}</Badge>
+      }
 
-    if (isMobile) {
+      if (isMobile) {
+        return {
+          ...baseData,
+          expand: (
+            <IconButton
+              icon={expandedRows.has(item._id) ? <ViewOffIcon /> : <ViewIcon />}
+              size='sm'
+              variant='ghost'
+              aria-label='View details'
+              color={expandedRows.has(item._id) ? 'purple.500' : 'gray.500'}
+              _hover={{ color: 'purple.500' }}
+              onClick={() => handleToggleExpand(item._id)}
+            />
+          ),
+          expandedContent: expandedRows.has(item._id) && (
+            <Box bg='gray.50' p={4} borderRadius='md' mx={0} mb={4} boxShadow='sm'>
+              <Box mb={4}>
+                <Text fontSize='sm' color='gray.500' mb={1}>
+                  Description
+                </Text>
+                <Text fontSize='md'>{item.description || 'No description'}</Text>
+              </Box>
+
+              <Divider mb={4} />
+
+              <HStack spacing={3} justify='flex-end'>
+                <IconButton
+                  icon={<EditIcon />}
+                  size='sm'
+                  variant='ghost'
+                  colorScheme='blue'
+                  aria-label='Edit'
+                  onClick={() => handleToggleEdit(item)}
+                />
+                <IconButton
+                  icon={<DeleteIcon />}
+                  size='sm'
+                  variant='ghost'
+                  colorScheme='red'
+                  aria-label='Delete'
+                  onClick={() => handleToggleDelete(item)}
+                />
+              </HStack>
+            </Box>
+          )
+        }
+      }
+
       return {
         ...baseData,
-        expand: (
-          <IconButton
-            icon={expandedRows.has(item._id) ? <ViewOffIcon /> : <ViewIcon />}
-            size='sm'
-            variant='ghost'
-            aria-label='View details'
-            color={expandedRows.has(item._id) ? 'purple.500' : 'gray.500'}
-            _hover={{ color: 'purple.500' }}
-            onClick={() => handleToggleExpand(item._id)}
-          />
-        ),
-        expandedContent: expandedRows.has(item._id) && (
-          <Box 
-            bg="gray.50" 
-            p={4}
-            borderRadius="md"
-            mx={0}
-            mb={4}
-            boxShadow="sm"
-          >
-            <Box mb={4}>
-              <Text fontSize="sm" color="gray.500" mb={1}>Description</Text>
-              <Text fontSize="md">{item.description || 'No description'}</Text>
-            </Box>
-
-            <Divider mb={4} />
-
-            <HStack spacing={3} justify="flex-end">
-              <IconButton
-                icon={<EditIcon />}
-                size="sm"
-                variant="ghost"
-                colorScheme="blue"
-                aria-label="Edit"
-                onClick={() => handleToggleEdit(item)}
-              />
-              <IconButton
-                icon={<DeleteIcon />}
-                size="sm"
-                variant="ghost"
-                colorScheme="red"
-                aria-label="Delete"
-                onClick={() => handleToggleDelete(item)}
-              />
-            </HStack>
-          </Box>
+        description: item.description || 'No description',
+        actions: (
+          <HStack spacing={2}>
+            <IconButton
+              icon={<EditIcon />}
+              size='sm'
+              variant='ghost'
+              aria-label='Edit'
+              onClick={() => handleToggleEdit(item)}
+            />
+            <IconButton
+              icon={<DeleteIcon />}
+              size='sm'
+              variant='ghost'
+              aria-label='Delete'
+              colorScheme='red'
+              onClick={() => handleToggleDelete(item)}
+            />
+          </HStack>
         )
       }
-    }
-
-    return {
-      ...baseData,
-      description: item.description || 'No description',
-      actions: (
-        <HStack spacing={2}>
-          <IconButton
-            icon={<EditIcon />}
-            size='sm'
-            variant='ghost'
-            aria-label='Edit'
-            onClick={() => handleToggleEdit(item)}
-          />
-          <IconButton
-            icon={<DeleteIcon />}
-            size='sm'
-            variant='ghost'
-            aria-label='Delete'
-            colorScheme='red'
-            onClick={() => handleToggleDelete(item)}
-          />
-        </HStack>
-      )
-    }
-  }) || []
+    }) || []
 
   useEffect(() => {
     adminCategoryStore.getCategories({ all: true })
   }, [])
 
   return (
-    <Box p={{ base: 0, md: 4 }} width="100%" overflowX={{ base: 'hidden', md: 'auto' }}>
+    <Box p={{ base: 0, md: 4 }} width='100%' overflowX={{ base: 'hidden', md: 'auto' }}>
       <Box px={2}>
         <TaskBarAdmin
           title='Categories'
@@ -246,7 +225,7 @@ const Category = observer(() => {
       {loading ? (
         <Loading />
       ) : (
-        <Box width="100%" overflowX="auto">
+        <Box width='100%' overflowX='auto'>
           <DataTable
             headers={headers}
             dataInTable={dataInTable}
