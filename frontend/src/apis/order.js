@@ -29,3 +29,13 @@ export const getUserOrders = async (params) => {
     throw error
   }
 }
+
+export const createOrder = async (orderData) => {
+  try {
+    const response = await axiosInstance.post('/orders', orderData)
+    return response.data
+  } catch (error) {
+    console.error('Error creating order:', error)
+    throw error
+  }
+}
