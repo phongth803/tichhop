@@ -4,13 +4,14 @@ import Order from '../models/Order.js'
 
 // Helper function để transform product
 export const transformProduct = product => {
-  const productObj = product.toObject()
+  // Kiểm tra nếu là Mongoose Document thì convert sang object
+  const productObj = product.toObject ? product.toObject() : product
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
 
   return {
     ...productObj,
-    priceOnSale: product.price * (1 - (product.discount || 0) / 100),
-    isNew: product.createdAt > sevenDaysAgo
+    priceOnSale: productObj.price * (1 - (productObj.discount || 0) / 100),
+    isNew: new Date(productObj.createdAt) > sevenDaysAgo
   }
 }
 
@@ -85,15 +86,36 @@ export const getProducts = async (req, res) => {
     }
 
     const buildSortOptions = () => {
+      let sortOptions = {}
+
+      // Sắp xếp theo stock (1 cho còn hàng, -1 cho hết hàng)
+      sortOptions.stockStatus = -1
+
+      // Thêm điều kiện sắp xếp từ query
       switch (req.query.sort) {
         case 'price-asc':
-          return { price: 1 }
+          sortOptions.price = 1
+          break
         case 'price-desc':
-          return { price: -1 }
+          sortOptions.price = -1
+          break
         default:
-          return { createdAt: -1 }
+          sortOptions.createdAt = -1
       }
+
+      return sortOptions
     }
+
+    // Thêm field stockStatus tạm thời
+    await Product.updateMany({}, [
+      {
+        $set: {
+          stockStatus: {
+            $cond: { if: { $gt: ['$stock', 0] }, then: 1, else: 0 }
+          }
+        }
+      }
+    ])
 
     // Thực hiện queries song song
     const [total, products] = await Promise.all([
@@ -103,7 +125,11 @@ export const getProducts = async (req, res) => {
         .sort(buildSortOptions())
         .skip((page - 1) * limit)
         .limit(limit)
+        .lean()
     ])
+
+    // Xóa field stockStatus
+    await Product.updateMany({}, { $unset: { stockStatus: '' } })
 
     res.json({
       products: products.map(transformProduct),

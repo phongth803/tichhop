@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 import { useState } from 'react'
 
 const ProductCard = observer(
-  ({ _id, name, price, priceOnSale, thumbnail, discount, isNew, averageRating, ratings }) => {
+  ({ _id, name, price, priceOnSale, thumbnail, discount, isNew, averageRating, ratings, stock }) => {
     const { cartStore } = useStore()
     const navigate = useNavigate()
     const [isAddingToCart, setIsAddingToCart] = useState(false)
@@ -19,6 +19,9 @@ const ProductCard = observer(
 
     const handleAddToCart = async (e) => {
       e.stopPropagation()
+      if (stock === 0) {
+        return
+      }
       setIsAddingToCart(true)
       try {
         const success = await cartStore.addToCart(_id, 1)
@@ -83,6 +86,24 @@ const ProductCard = observer(
         }}
       >
         <Box position='relative'>
+          {stock === 0 && (
+            <Box
+              position='absolute'
+              top={0}
+              left={0}
+              right={0}
+              bottom={0}
+              bg='blackAlpha.400'
+              zIndex={2}
+              display='flex'
+              alignItems='center'
+              justifyContent='center'
+            >
+              <Badge bg='red.500' color='white' fontSize='lg' px={4} py={2} borderRadius='md'>
+                Out of Stock
+              </Badge>
+            </Box>
+          )}
           {discount !== 0 && (
             <Badge position='absolute' top={2} left={2} bg='red.500' color='white' borderRadius='md' zIndex={1}>
               -{discount}%
@@ -159,18 +180,19 @@ const ProductCard = observer(
           <Button
             w='full'
             mt={3}
-            bg='black'
+            bg={stock === 0 ? 'gray.400' : 'black'}
             color='white'
             className='add-to-cart'
             opacity={0}
             transform='translateY(20px)'
             transition='all 0.3s'
-            _hover={{ bg: 'gray.800' }}
+            _hover={{ bg: stock === 0 ? 'gray.400' : 'gray.800' }}
             isLoading={isAddingToCart}
             loadingText='Adding...'
             onClick={handleAddToCart}
+            cursor={stock === 0 ? 'not-allowed' : 'pointer'}
           >
-            Add To Cart
+            {stock === 0 ? 'Out of Stock' : 'Add To Cart'}
           </Button>
         </Box>
       </Box>

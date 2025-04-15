@@ -133,8 +133,22 @@ const ProductInfo = ({ product }) => {
       </Text>
 
       <HStack spacing={4} mb={8}>
-        <NumberInput value={quantity} min={1} max={product.stock} onChange={(_, value) => setQuantity(value)} w='140px'>
-          <HStack spacing={0} border='1px' borderColor='gray.500' borderRadius='md' w='fit-content' overflow='hidden'>
+        <NumberInput
+          value={quantity}
+          min={1}
+          max={product.stock}
+          onChange={(_, value) => setQuantity(value)}
+          w='140px'
+          isDisabled={product.stock === 0}
+        >
+          <HStack
+            spacing={0}
+            border='1px'
+            borderColor={product.stock === 0 ? 'gray.300' : 'gray.500'}
+            borderRadius='md'
+            w='fit-content'
+            overflow='hidden'
+          >
             <IconButton
               icon={<Text fontSize='xl'>−</Text>}
               variant='unstyled'
@@ -142,7 +156,7 @@ const ProductInfo = ({ product }) => {
               alignItems='center'
               justifyContent='center'
               borderRight='1px'
-              borderColor='gray.500'
+              borderColor={product.stock === 0 ? 'gray.300' : 'gray.500'}
               borderRightRadius='none'
               aria-label='Decrease quantity'
               h='40px'
@@ -152,7 +166,7 @@ const ProductInfo = ({ product }) => {
                 setQuantity(newValue)
                 setInputValue(newValue.toString())
               }}
-              isDisabled={quantity <= 1}
+              isDisabled={quantity <= 1 || product.stock === 0}
               _hover={{
                 bg: 'gray.50'
               }}
@@ -173,6 +187,11 @@ const ProductInfo = ({ product }) => {
               p={0}
               border='none'
               borderRadius='none'
+              isDisabled={product.stock === 0}
+              _disabled={{
+                bg: 'gray.100',
+                cursor: 'not-allowed'
+              }}
               _focus={{
                 border: 'none',
                 outline: 'none'
@@ -196,7 +215,7 @@ const ProductInfo = ({ product }) => {
               alignItems='center'
               justifyContent='center'
               borderLeft='1px'
-              borderColor='gray.500'
+              borderColor={product.stock === 0 ? 'gray.300' : 'gray.500'}
               borderLeftRadius='none'
               aria-label='Increase quantity'
               h='40px'
@@ -206,7 +225,7 @@ const ProductInfo = ({ product }) => {
                 setQuantity(newValue)
                 setInputValue(newValue.toString())
               }}
-              isDisabled={quantity >= product.stock}
+              isDisabled={quantity >= product.stock || product.stock === 0}
               _hover={{
                 bg: 'gray.50'
               }}
@@ -218,8 +237,19 @@ const ProductInfo = ({ product }) => {
           </HStack>
         </NumberInput>
 
-        <Button colorScheme='red' w='140px' h='42px' onClick={handleBuyNow}>
-          Buy Now
+        <Button
+          colorScheme='red'
+          w='140px'
+          h='42px'
+          onClick={handleBuyNow}
+          isDisabled={product.stock === 0}
+          _disabled={{
+            bg: 'gray.400',
+            cursor: 'not-allowed',
+            _hover: { bg: 'gray.400' }
+          }}
+        >
+          {product.stock === 0 ? 'Out of Stock' : 'Buy Now'}
         </Button>
       </HStack>
 
