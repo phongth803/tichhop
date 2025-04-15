@@ -7,14 +7,20 @@ import { transformProduct } from './productController.js'
 const transformCartData = cart => {
   if (!cart) return null
 
-  const items = cart.items.map(item => {
-    const transformedProduct = transformProduct(item.productId)
-    return {
-      ...item.toObject(),
-      productId: transformedProduct,
-      subtotal: transformedProduct.priceOnSale * item.quantity
-    }
-  })
+  const items = cart.items
+    .map(item => {
+      if (!item || !item.productId) return null
+
+      const transformedProduct = transformProduct(item.productId)
+      if (!transformedProduct) return null
+
+      return {
+        ...item.toObject(),
+        productId: transformedProduct,
+        subtotal: transformedProduct.priceOnSale * item.quantity
+      }
+    })
+    .filter(item => item !== null)
 
   const totalAmount = items.reduce((total, item) => total + item.subtotal, 0)
 
@@ -28,6 +34,10 @@ const transformCartData = cart => {
 
 export const getCart = async (req, res) => {
   try {
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({ message: 'User not authenticated' })
+    }
+
     let cart = await Cart.findOne({ user: req.user._id }).populate({
       path: 'items',
       populate: { path: 'productId' }
@@ -38,9 +48,18 @@ export const getCart = async (req, res) => {
       await cart.save()
     }
 
-    res.json(transformCartData(cart))
+    const transformedCart = transformCartData(cart)
+    if (!transformedCart) {
+      return res.status(500).json({ message: 'Error transforming cart data' })
+    }
+
+    res.json(transformedCart)
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching cart' })
+    console.error('Error in getCart:', error)
+    res.status(500).json({
+      message: 'Error fetching cart',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    })
   }
 }
 
