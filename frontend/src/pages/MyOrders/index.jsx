@@ -8,6 +8,7 @@ import OrderList from '@/components/MyOrders/OrderList'
 const MyOrders = observer(() => {
   const { userOrderStore } = useStore()
   const [tabIndex, setTabIndex] = useState(0)
+  const [defaultIndex, setDefaultIndex] = useState([])
   const isMobile = useBreakpointValue({ base: true, md: false })
 
   const handleTabChange = (index) => {
@@ -85,19 +86,44 @@ const MyOrders = observer(() => {
 
         <TabPanels>
           <TabPanel px={{ base: 0, md: 4 }}>
-            <OrderList orders={userOrderStore.orders} getStatusColor={getStatusColor} />
+            <OrderList
+              orders={userOrderStore.orders}
+              getStatusColor={getStatusColor}
+              defaultIndex={defaultIndex}
+              setDefaultIndex={setDefaultIndex}
+            />
           </TabPanel>
           <TabPanel px={{ base: 0, md: 4 }}>
-            <OrderList orders={userOrderStore.orders} getStatusColor={getStatusColor} />
+            <OrderList
+              orders={userOrderStore.orders}
+              getStatusColor={getStatusColor}
+              defaultIndex={defaultIndex}
+              setDefaultIndex={setDefaultIndex}
+            />
           </TabPanel>
           <TabPanel px={{ base: 0, md: 4 }}>
-            <OrderList orders={userOrderStore.orders} getStatusColor={getStatusColor} />
+            <OrderList
+              orders={userOrderStore.orders}
+              getStatusColor={getStatusColor}
+              defaultIndex={defaultIndex}
+              setDefaultIndex={setDefaultIndex}
+            />
           </TabPanel>
           <TabPanel px={{ base: 0, md: 4 }}>
-            <OrderList orders={userOrderStore.orders} getStatusColor={getStatusColor} />
+            <OrderList
+              orders={userOrderStore.orders}
+              getStatusColor={getStatusColor}
+              defaultIndex={defaultIndex}
+              setDefaultIndex={setDefaultIndex}
+            />
           </TabPanel>
           <TabPanel px={{ base: 0, md: 4 }}>
-            <OrderList orders={userOrderStore.orders} getStatusColor={getStatusColor} />
+            <OrderList
+              orders={userOrderStore.orders}
+              getStatusColor={getStatusColor}
+              defaultIndex={defaultIndex}
+              setDefaultIndex={setDefaultIndex}
+            />
           </TabPanel>
         </TabPanels>
       </Tabs>
