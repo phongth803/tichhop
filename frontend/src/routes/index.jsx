@@ -20,10 +20,8 @@ import Cart from '../pages/Cart/Cart'
 import AdminLayout from '../components/layout/AdminLayout'
 import Users from '../pages/adminManagement/Users/Users'
 import Products from '../pages/adminManagement/Products/Products'
-import FlashSales from '../pages/adminManagement/FlashSales/FlashSales'
 import Orders from '../pages/adminManagement/Orders/Orders'
 import Category from '../pages/adminManagement/Category/Category'
-import Settings from '../pages/adminManagement/Settings/Settings'
 import DashBoard from '../pages/adminManagement/DashBoard/DashBoard'
 
 const ProtectedRoute = ({ children, admin = false }) => {
@@ -132,14 +130,6 @@ const AppRoutes = observer(() => {
           }
         />
         <Route
-          path='/admin/flash-sales'
-          element={
-            <ProtectedRoute admin={true}>
-              <FlashSales />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path='/admin/orders'
           element={
             <ProtectedRoute admin={true}>
@@ -155,14 +145,8 @@ const AppRoutes = observer(() => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path='/admin/settings'
-          element={
-            <ProtectedRoute admin={true}>
-              <Settings />
-            </ProtectedRoute>
-          }
-        />
+      
+       
         <Route
           path='/admin/dashboard'
           element={

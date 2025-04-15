@@ -13,7 +13,11 @@ import {
   InputRightElement,
   IconButton,
   FormErrorMessage,
-  Box
+  Box,
+  Container,
+  VStack,
+  useBreakpointValue,
+  SimpleGrid
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useStore } from '../../stores/rootStore'
@@ -21,8 +25,10 @@ import { toast } from 'react-toastify'
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const { authStore } = useStore()
   const navigate = useNavigate()
+  const isMobile = useBreakpointValue({ base: true, md: false })
 
   const {
     register,
@@ -37,56 +43,81 @@ const Register = () => {
       const payload = { email, password, firstName, lastName }
       const isRegister = await authStore.register(payload)
       if (isRegister) {
-        toast.success('Register successful')
+        toast.success('Registration successful!')
         navigate('/')
       }
     } catch (error) {
       console.log(error)
-      toast.error(error.response.data.message)
+      toast.error(error.response.data.message || 'Registration failed')
     }
   }
 
   return (
-    <Box px={6}>
-      <Stack spacing={8}>
-        <Stack spacing={3}>
-          <Heading fontSize='3xl' fontWeight='bold'>
-            Sign Up
+    <Container maxW="container.sm" py={{ base: 6, md: 10 }}>
+      <VStack spacing={8} align="stretch">
+        <Box textAlign="center">
+          <Heading 
+            fontSize={{ base: '2xl', md: '3xl' }} 
+            fontWeight="bold"
+            mb={3}
+          >
+            Create New Account
           </Heading>
-          <Text color='gray.600'>
+          <Text color="gray.600">
             Already have an account?{' '}
-            <Text as={RouterLink} to='/login' color='blue.500' _hover={{ textDecoration: 'underline' }}>
+            <Text 
+              as={RouterLink} 
+              to="/login" 
+              color="red.500" 
+              _hover={{ textDecoration: 'underline' }}
+              display="inline-block"
+            >
               Sign In
             </Text>
           </Text>
-        </Stack>
+        </Box>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={6}>
-            <FormControl isInvalid={errors.firstName}>
-              <FormLabel>First Name</FormLabel>
-              <Input
-                {...register('firstName', {
-                  required: 'First name is required'
-                })}
-              />
-              <FormErrorMessage>{errors.firstName?.message}</FormErrorMessage>
-            </FormControl>
+        <Box 
+          as="form" 
+          onSubmit={handleSubmit(onSubmit)}
+          bg="white"
+          p={{ base: 6, md: 8 }}
+          borderRadius="lg"
+          boxShadow="sm"
+        >
+          <VStack spacing={6}>
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6} w="full">
+              <FormControl isInvalid={errors.firstName}>
+                <FormLabel>First Name</FormLabel>
+                <Input
+                  {...register('firstName', {
+                    required: 'First name is required',
+                    minLength: { value: 2, message: 'First name must be at least 2 characters' }
+                  })}
+                  size="lg"
+                  bg="gray.50"
+                />
+                <FormErrorMessage>{errors.firstName?.message}</FormErrorMessage>
+              </FormControl>
 
-            <FormControl isInvalid={errors.lastName}>
-              <FormLabel>Last Name</FormLabel>
-              <Input
-                {...register('lastName', {
-                  required: 'Last name is required'
-                })}
-              />
-              <FormErrorMessage>{errors.lastName?.message}</FormErrorMessage>
-            </FormControl>
+              <FormControl isInvalid={errors.lastName}>
+                <FormLabel>Last Name</FormLabel>
+                <Input
+                  {...register('lastName', {
+                    required: 'Last name is required',
+                    minLength: { value: 2, message: 'Last name must be at least 2 characters' }
+                  })}
+                  size="lg"
+                  bg="gray.50"
+                />
+                <FormErrorMessage>{errors.lastName?.message}</FormErrorMessage>
+              </FormControl>
+            </SimpleGrid>
 
             <FormControl isInvalid={errors.email}>
               <FormLabel>Email</FormLabel>
               <Input
-                type='email'
+                type="email"
                 {...register('email', {
                   required: 'Email is required',
                   pattern: {
@@ -94,13 +125,15 @@ const Register = () => {
                     message: 'Invalid email address'
                   }
                 })}
+                size="lg"
+                bg="gray.50"
               />
-              <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
+              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
             </FormControl>
 
             <FormControl isInvalid={errors.password}>
               <FormLabel>Password</FormLabel>
-              <InputGroup>
+              <InputGroup size="lg">
                 <Input
                   type={showPassword ? 'text' : 'password'}
                   {...register('password', {
@@ -110,42 +143,62 @@ const Register = () => {
                       message: 'Password must be at least 6 characters'
                     }
                   })}
+                  bg="gray.50"
                 />
                 <InputRightElement>
                   <IconButton
-                    variant='ghost'
+                    variant="ghost"
                     icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   />
                 </InputRightElement>
               </InputGroup>
-              <FormErrorMessage>{errors.password && errors.password.message}</FormErrorMessage>
+              <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
             </FormControl>
 
             <FormControl isInvalid={errors.confirmPassword}>
               <FormLabel>Confirm Password</FormLabel>
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                {...register('confirmPassword', {
-                  required: 'Please confirm your password',
-                  validate: (val) => {
-                    if (watch('password') !== val) {
-                      return 'Passwords do not match'
+              <InputGroup size="lg">
+                <Input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  {...register('confirmPassword', {
+                    required: 'Please confirm your password',
+                    validate: (val) => {
+                      if (watch('password') !== val) {
+                        return 'Passwords do not match'
+                      }
                     }
-                  }
-                })}
-              />
-              <FormErrorMessage>{errors.confirmPassword && errors.confirmPassword.message}</FormErrorMessage>
+                  })}
+                  bg="gray.50"
+                />
+                <InputRightElement>
+                  <IconButton
+                    variant="ghost"
+                    icon={showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  />
+                </InputRightElement>
+              </InputGroup>
+              <FormErrorMessage>{errors.confirmPassword?.message}</FormErrorMessage>
             </FormControl>
 
-            <Button type='submit' colorScheme='red' size='lg' fontSize='md' isLoading={isSubmitting}>
+            <Button
+              type="submit"
+              colorScheme="red"
+              size="lg"
+              fontSize="md"
+              isLoading={isSubmitting}
+              w="full"
+              mt={4}
+            >
               Create Account
             </Button>
-          </Stack>
-        </form>
-      </Stack>
-    </Box>
+          </VStack>
+        </Box>
+      </VStack>
+    </Container>
   )
 }
 

@@ -43,7 +43,7 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
   }
 
   return (
-    <Drawer isOpen={isOpen} placement='right' onClose={onClose} size='sm'>
+    <Drawer isOpen={isOpen} placement='right' onClose={onClose} size={{ base: 'full', md: 'sm' }}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
@@ -54,7 +54,11 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
             {/* Sort Options */}
             <FormControl>
               <FormLabel fontWeight='bold'>Sort By</FormLabel>
-              <Select value={currentFilters.sort} onChange={(e) => handleFilterChange('sort', e.target.value)}>
+              <Select 
+                value={currentFilters.sort} 
+                onChange={(e) => handleFilterChange('sort', e.target.value)}
+                size={{ base: 'lg', md: 'md' }}
+              >
                 <option value='newest'>Newest</option>
                 <option value='price-asc'>Price: Low to High</option>
                 <option value='price-desc'>Price: High to Low</option>
@@ -64,7 +68,11 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
             {/* Category Filter */}
             <FormControl>
               <FormLabel fontWeight='bold'>Category</FormLabel>
-              <Select value={currentFilters.category} onChange={(e) => handleFilterChange('category', e.target.value)}>
+              <Select 
+                value={currentFilters.category} 
+                onChange={(e) => handleFilterChange('category', e.target.value)}
+                size={{ base: 'lg', md: 'md' }}
+              >
                 <option value=''>All Categories</option>
                 {categories?.map((category) => (
                   <option key={category._id} value={category._id}>
@@ -77,7 +85,11 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
             {/* Status Filter */}
             <FormControl>
               <FormLabel fontWeight='bold'>Status</FormLabel>
-              <Select value={currentFilters.status} onChange={(e) => handleFilterChange('status', e.target.value)}>
+              <Select 
+                value={currentFilters.status} 
+                onChange={(e) => handleFilterChange('status', e.target.value)}
+                size={{ base: 'lg', md: 'md' }}
+              >
                 <option value=''>All Status</option>
                 <option value='active'>Active</option>
                 <option value='inactive'>Inactive</option>
@@ -87,13 +99,14 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
             {/* Price Range Filter */}
             <FormControl>
               <FormLabel fontWeight='bold'>Price Range</FormLabel>
-              <VStack spacing={2}>
+              <VStack spacing={2} w="100%">
                 <Input
                   type='number'
                   placeholder='Min Price'
                   value={currentFilters.minPrice}
                   onChange={(e) => handleFilterChange('minPrice', e.target.value)}
                   min={0}
+                  size={{ base: 'lg', md: 'md' }}
                 />
                 <Input
                   type='number'
@@ -101,6 +114,7 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
                   value={currentFilters.maxPrice}
                   onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
                   min={0}
+                  size={{ base: 'lg', md: 'md' }}
                 />
               </VStack>
             </FormControl>
@@ -111,11 +125,15 @@ const ProductFilter = ({ isOpen, onClose, onFilter, currentFilters, categories }
               <Switch
                 isChecked={currentFilters.onSale}
                 onChange={(e) => handleFilterChange('onSale', e.target.checked)}
+                size={{ base: 'lg', md: 'md' }}
               />
             </FormControl>
 
-            <Flex justify='flex-end' mt={4}>
-              <Button colorScheme='red' onClick={handleReset}>
+            <Flex justify='space-between' mt={4} w="100%">
+              <Button colorScheme='gray' onClick={onClose} size={{ base: 'lg', md: 'md' }}>
+                Cancel
+              </Button>
+              <Button colorScheme='red' onClick={handleReset} size={{ base: 'lg', md: 'md' }}>
                 Reset Filters
               </Button>
             </Flex>

@@ -43,19 +43,20 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size={{ base: 'full', md: '2xl' }}>
       <ModalOverlay />
-      <ModalContent maxW='800px'>
+      <ModalContent maxW={{ base: '100%', md: '800px' }}>
         <form onSubmit={handleSubmit(onSubmitHandler)}>
           <ModalHeader>{isEdit ? 'Edit User' : 'Add New User'}</ModalHeader>
           <ModalCloseButton />
 
           <ModalBody>
             <VStack spacing={4}>
-              <Grid templateColumns='repeat(2, 1fr)' gap={5} w='100%'>
+              <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={5} w='100%'>
                 <FormControl isInvalid={errors.firstName}>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel fontSize={{ base: 'md', md: 'sm' }}>First Name</FormLabel>
                   <Input
+                    size={{ base: 'lg', md: 'md' }}
                     {...register('firstName', {
                       required: 'First name is required',
                       minLength: {
@@ -68,8 +69,9 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
                 </FormControl>
 
                 <FormControl isInvalid={errors.lastName}>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel fontSize={{ base: 'md', md: 'sm' }}>Last Name</FormLabel>
                   <Input
+                    size={{ base: 'lg', md: 'md' }}
                     {...register('lastName', {
                       required: 'Last name is required',
                       minLength: {
@@ -82,9 +84,10 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
                 </FormControl>
 
                 <FormControl isInvalid={errors.email}>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel fontSize={{ base: 'md', md: 'sm' }}>Email</FormLabel>
                   <Input
                     type='email'
+                    size={{ base: 'lg', md: 'md' }}
                     {...register('email', {
                       required: 'Email is required',
                       pattern: {
@@ -97,9 +100,10 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
                 </FormControl>
 
                 <FormControl isInvalid={errors.password}>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel fontSize={{ base: 'md', md: 'sm' }}>Password</FormLabel>
                   <Input
                     type='password'
+                    size={{ base: 'lg', md: 'md' }}
                     {...register('password', {
                       required: 'Password is required',
                       minLength: {
@@ -112,14 +116,18 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
                 </FormControl>
 
                 <FormControl isInvalid={errors.address}>
-                  <FormLabel>Address</FormLabel>
-                  <Input {...register('address', {})} />
+                  <FormLabel fontSize={{ base: 'md', md: 'sm' }}>Address</FormLabel>
+                  <Input 
+                    size={{ base: 'lg', md: 'md' }}
+                    {...register('address', {})} 
+                  />
                   <FormErrorMessage>{errors.address && errors.address.message}</FormErrorMessage>
                 </FormControl>
 
                 <FormControl isInvalid={errors.role}>
-                  <FormLabel>Role</FormLabel>
+                  <FormLabel fontSize={{ base: 'md', md: 'sm' }}>Role</FormLabel>
                   <Select
+                    size={{ base: 'lg', md: 'md' }}
                     {...register('role', {
                       required: 'Role is required'
                     })}
@@ -132,8 +140,12 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel>Status</FormLabel>
-                  <Select {...register('isActive')} defaultValue={true}>
+                  <FormLabel fontSize={{ base: 'md', md: 'sm' }}>Status</FormLabel>
+                  <Select 
+                    size={{ base: 'lg', md: 'md' }}
+                    {...register('isActive')} 
+                    defaultValue={true}
+                  >
                     <option value={true}>Active</option>
                     <option value={false}>Inactive</option>
                   </Select>
@@ -143,10 +155,21 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
           </ModalBody>
 
           <ModalFooter>
-            <Button variant='ghost' mr={3} onClick={onClose}>
+            <Button 
+              variant='ghost' 
+              mr={3} 
+              onClick={onClose}
+              size={{ base: 'lg', md: 'md' }}
+            >
               Cancel
             </Button>
-            <Button colorScheme='purple' type='submit' isLoading={isSubmitting} isDisabled={!isDirty}>
+            <Button 
+              colorScheme='purple' 
+              type='submit' 
+              isLoading={isSubmitting} 
+              isDisabled={!isDirty}
+              size={{ base: 'lg', md: 'md' }}
+            >
               {isEdit ? 'Update User' : 'Add User'}
             </Button>
           </ModalFooter>
