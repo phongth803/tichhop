@@ -78,7 +78,7 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params
-    const { firstName, lastName, email, password, address, role, isActive } = req.body
+    const { firstName, lastName, email, password, address, phone, role, isActive } = req.body
 
     const user = await User.findById(id)
     if (!user) {
@@ -90,6 +90,7 @@ export const updateUser = async (req, res) => {
     if (email) user.email = email
     if (password) user.password = password
     if (address !== undefined) user.address = address
+    if (phone !== undefined) user.phone = phone
     if (role) user.role = role
     if (isActive !== undefined) user.isActive = isActive
 

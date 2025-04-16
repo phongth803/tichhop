@@ -115,6 +115,8 @@ router.post('/', auth, adminAuth, createUser)
  *                 type: string
  *               address:
  *                 type: string
+ *               phone:
+ *                 type: string
  *               role:
  *                 type: string
  *     responses:

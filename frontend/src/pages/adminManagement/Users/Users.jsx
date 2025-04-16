@@ -83,6 +83,7 @@ const Users = observer(() => {
         { key: 'fullName', label: 'Full Name' },
         { key: 'role', label: 'Role' },
         { key: 'email', label: 'Email' },
+        { key: 'phone', label: 'Phone' },
         { key: 'address', label: 'Address' },
         { key: 'status', label: 'Status' },
         { key: 'actions', label: 'Actions' }
@@ -209,12 +210,24 @@ const Users = observer(() => {
               </Box>
             </SimpleGrid>
 
-            <Box mb={{ base: 3, md: 4 }}>
-              <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' mb={1}>
-                Address
-              </Text>
-              <Text fontSize={{ base: 'sm', md: 'md' }}>{item.address || 'N/A'}</Text>
-            </Box>
+            <SimpleGrid columns={2} spacing={{ base: 3, md: 4 }} mb={{ base: 3, md: 4 }}>
+              <Box>
+                <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' mb={1}>
+                  Phone
+                </Text>
+                <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight='medium'>
+                  {item.phone || '-'}
+                </Text>
+              </Box>
+              <Box>
+                <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' mb={1}>
+                  Address
+                </Text>
+                <Text fontSize={{ base: 'sm', md: 'md' }} fontWeight='medium'>
+                  {item.address || '-'}
+                </Text>
+              </Box>
+            </SimpleGrid>
 
             <Divider mb={{ base: 3, md: 4 }} />
 
@@ -246,7 +259,8 @@ const Users = observer(() => {
     return {
       ...baseData,
       email: item.email,
-      address: item.address || 'N/A',
+      phone: item.phone || '-',
+      address: item.address || '-',
       status: (
         <Badge colorScheme={item.isActive ? 'green' : 'red'} fontSize={{ base: 'xs', md: 'sm' }}>
           {item.isActive ? 'Active' : 'Inactive'}

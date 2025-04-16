@@ -28,6 +28,7 @@ entity "User" {
     password: String
     firstName: String
     lastName: String
+    phone: String
     address: String
     role: UserRole <<enum>>
     isActive: Boolean

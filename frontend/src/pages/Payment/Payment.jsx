@@ -127,8 +127,18 @@ const Payment = observer(() => {
         return // Exit early if order creation fails
       }
 
-      // If order creation was successful, proceed with navigation
       if (orderResponse && orderResponse._id) {
+        try {
+          // Update user profile with address and phone
+          await authStore.updateProfile({
+            address: formData.address,
+            phone: formData.phoneNumber
+          })
+        } catch (error) {
+          console.error('Failed to update user profile:', error)
+          toast.warning('Order placed successfully, but failed to save your contact information for future orders.')
+        }
+
         toast.success('Order placed successfully!')
 
         // Force a cart refresh before navigation

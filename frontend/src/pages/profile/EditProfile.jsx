@@ -55,6 +55,7 @@ const EditProfile = () => {
       lastName: user?.lastName || '',
       email: user?.email || '',
       address: user?.address || '',
+      phone: user?.phone || '',
       currentPassword: '',
       newPassword: '',
       confirmPassword: ''
@@ -71,6 +72,7 @@ const EditProfile = () => {
       setValue('lastName', user.lastName || '')
       setValue('email', user.email || '')
       setValue('address', user.address || '')
+      setValue('phone', user.phone || '')
     }
 
     return () => {
@@ -126,6 +128,7 @@ const EditProfile = () => {
       lastName: user?.lastName || '',
       email: user?.email || '',
       address: user?.address || '',
+      phone: user?.phone || '',
       currentPassword: '',
       newPassword: '',
       confirmPassword: ''
@@ -151,6 +154,7 @@ const EditProfile = () => {
         firstName: data.firstName.trim(),
         lastName: data.lastName.trim(),
         address: data.address?.trim(),
+        phone: data.phone?.trim(),
         ...(isChangingPassword && {
           currentPassword: data.currentPassword,
           newPassword: data.newPassword
@@ -296,10 +300,31 @@ const EditProfile = () => {
                     <FormHelperText color='gray.500'>Email cannot be changed</FormHelperText>
                   </FormControl>
 
-                  <FormControl isInvalid={errors.address}>
-                    <FormLabel htmlFor='address' color='gray.700'>
-                      Address
+                  <FormControl isInvalid={errors.phone}>
+                    <FormLabel htmlFor='phone' color='gray.700'>
+                      Phone Number
                     </FormLabel>
+                    <Input
+                      id='phone'
+                      {...register('phone', {
+                        pattern: {
+                          value: /^[0-9]{10,11}$/,
+                          message: 'Phone number must be 10-11 digits'
+                        }
+                      })}
+                      placeholder='Enter your phone number'
+                      bg='gray.100'
+                      border='none'
+                    />
+                    <FormErrorMessage>{errors.phone && errors.phone.message}</FormErrorMessage>
+                  </FormControl>
+                </Grid>
+
+                <Box mb={6}>
+                  <Text fontSize='md' fontWeight='medium' mb={4}>
+                    Address
+                  </Text>
+                  <FormControl isInvalid={errors.address}>
                     <Input
                       id='address'
                       {...register('address')}
@@ -309,7 +334,7 @@ const EditProfile = () => {
                     />
                     <FormErrorMessage>{errors.address && errors.address.message}</FormErrorMessage>
                   </FormControl>
-                </Grid>
+                </Box>
 
                 <Box mb={6}>
                   <Text fontSize='md' fontWeight='medium' mb={4}>
