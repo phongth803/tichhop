@@ -29,7 +29,7 @@ const Home = observer(() => {
   const bannerCountdown = useCountdown(INITIAL_COUNTDOWN.BANNER)
   const slideInterval = useRef(null)
 
-  const { productStore, categoryStore } = useStore()
+  const { productStore, categoryStore, cartStore } = useStore()
   const { exploreProducts, bestSellingProducts, flashSaleProducts, loadingStates } = productStore
   const { categories, loading: categoriesLoading } = categoryStore
 
@@ -42,7 +42,8 @@ const Home = observer(() => {
           productStore.getExploreProducts(),
           productStore.getBestSellingProducts(),
           productStore.getFlashSaleProducts(),
-          categoryStore.getCategories()
+          categoryStore.getCategories(),
+          cartStore.fetchCart()
         ])
       } catch (error) {
         console.error('Failed to load data:', error)
