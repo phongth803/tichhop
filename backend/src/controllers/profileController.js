@@ -1,8 +1,8 @@
 import User from '../models/User.js'
 
-const updateUserInfo = async (user, { firstName, lastName, address }) => {
+const updateUserInfo = async (user, { firstName, lastName, address, phone }) => {
   // Kiểm tra có dữ liệu gửi lên không
-  if (firstName === undefined && lastName === undefined && address === undefined) {
+  if (firstName === undefined && lastName === undefined && address === undefined && phone === undefined) {
     return {
       message: 'No profile information to update',
       isInfoUpdated: false
@@ -27,6 +27,15 @@ const updateUserInfo = async (user, { firstName, lastName, address }) => {
   if (address !== undefined) {
     // Cho phép address là empty string để xóa address
     user.address = address.trim()
+  }
+
+  if (phone !== undefined) {
+    // Cho phép phone là empty string để xóa phone
+    const trimmedPhone = phone.trim()
+    if (trimmedPhone && !/^[0-9]{10,11}$/.test(trimmedPhone)) {
+      throw new Error('Invalid phone number format')
+    }
+    user.phone = trimmedPhone
   }
 
   await user.save()
@@ -78,7 +87,7 @@ const updateUserPassword = async (user, { currentPassword, newPassword }) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { firstName, lastName, address, currentPassword, newPassword } = req.body
+    const { firstName, lastName, address, phone, currentPassword, newPassword } = req.body
     const userId = req.user._id
 
     // Kiểm tra có dữ liệu gửi lên không
@@ -105,11 +114,12 @@ export const updateProfile = async (req, res) => {
 
     try {
       // Xử lý cập nhật thông tin và mật khẩu riêng biệt
-      const infoUpdate = firstName !== undefined || lastName !== undefined || address !== undefined
+      const infoUpdate =
+        firstName !== undefined || lastName !== undefined || address !== undefined || phone !== undefined
       const passwordUpdate = currentPassword !== undefined || newPassword !== undefined
 
       if (infoUpdate) {
-        const infoResult = await updateUserInfo(user, { firstName, lastName, address })
+        const infoResult = await updateUserInfo(user, { firstName, lastName, address, phone })
         result = { ...result, ...infoResult }
       }
 
@@ -136,6 +146,7 @@ export const updateProfile = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         address: user.address,
+        phone: user.phone,
         role: user.role
       }
 

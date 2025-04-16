@@ -99,6 +99,21 @@ const UserActionModal = ({ isOpen, onClose, onSubmit, isEdit, initialData }) => 
                   <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
                 </FormControl>
 
+                <FormControl isInvalid={errors.phone}>
+                  <FormLabel fontSize={{ base: 'md', md: 'sm' }}>Phone</FormLabel>
+                  <Input
+                    type='tel'
+                    size={{ base: 'lg', md: 'md' }}
+                    {...register('phone', {
+                      pattern: {
+                        value: /^[0-9]{10,11}$/,
+                        message: 'Phone number must be 10-11 digits'
+                      }
+                    })}
+                  />
+                  <FormErrorMessage>{errors.phone && errors.phone.message}</FormErrorMessage>
+                </FormControl>
+
                 <FormControl isInvalid={errors.password}>
                   <FormLabel fontSize={{ base: 'md', md: 'sm' }}>Password</FormLabel>
                   <Input

@@ -30,7 +30,7 @@ const CartSummary = ({ totalAmount, isMobile }) => (
         <Text>Total</Text>
         <Text color='green.500'>{formatPrice(totalAmount)}</Text>
       </Flex>
-      <Button colorScheme='red' size='lg' as={Link} to='/checkout' mt={4}>
+      <Button colorScheme='red' size='lg' as={Link} to='/payment' mt={4}>
         Proceed to Checkout
       </Button>
     </VStack>
