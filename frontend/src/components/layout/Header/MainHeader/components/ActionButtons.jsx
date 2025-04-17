@@ -4,10 +4,17 @@ import { FiUser, FiShoppingCart } from 'react-icons/fi'
 import { useStore } from '@/stores/rootStore'
 import ProfileMenu from './ProfileMenu'
 import { observer } from 'mobx-react-lite'
+import { useEffect } from 'react'
 
 const ActionButtons = observer(({ isMobile }) => {
   const { authStore, cartStore } = useStore()
   const { isAuthenticated } = authStore
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      cartStore.setCart(null)
+    }
+  }, [isAuthenticated, cartStore])
 
   return (
     <HStack spacing={4}>
@@ -15,7 +22,7 @@ const ActionButtons = observer(({ isMobile }) => {
         <Button as={Link} to='/cart' variant='ghost' p={2}>
           <Icon as={FiShoppingCart} boxSize={5} />
         </Button>
-        {cartStore.cart?.items?.length > 0 && (
+        {isAuthenticated && cartStore.cart?.items?.length > 0 && (
           <Badge position='absolute' top='-2' right='-2' color='white' bg='red.500' borderRadius='full' fontSize='xs'>
             {cartStore.cart.items.length}
           </Badge>

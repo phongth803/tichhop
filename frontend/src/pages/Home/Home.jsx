@@ -29,7 +29,7 @@ const Home = observer(() => {
   const bannerCountdown = useCountdown(INITIAL_COUNTDOWN.BANNER)
   const slideInterval = useRef(null)
 
-  const { productStore, categoryStore, cartStore } = useStore()
+  const { productStore, categoryStore, cartStore, authStore } = useStore()
   const { exploreProducts, bestSellingProducts, flashSaleProducts, loadingStates } = productStore
   const { categories, loading: categoriesLoading } = categoryStore
 
@@ -38,12 +38,15 @@ const Home = observer(() => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        if (authStore.isAuthenticated) {
+          await cartStore.fetchCart()
+        }
+
         await Promise.all([
           productStore.getExploreProducts(),
           productStore.getBestSellingProducts(),
           productStore.getFlashSaleProducts(),
-          categoryStore.getCategories(),
-          cartStore.fetchCart()
+          categoryStore.getCategories()
         ])
       } catch (error) {
         console.error('Failed to load data:', error)

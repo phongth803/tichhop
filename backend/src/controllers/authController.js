@@ -39,7 +39,9 @@ export const register = async (req, res) => {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      role: user.role
+      role: user.role,
+      address: user.address,
+      phone: user.phone
     }
 
     res.status(201).json({
@@ -99,7 +101,9 @@ export const login = async (req, res) => {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      role: user.role
+      role: user.role,
+      address: user.address,
+      phone: user.phone
     }
 
     res.json({
