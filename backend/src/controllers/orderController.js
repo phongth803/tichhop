@@ -1,6 +1,7 @@
 import Order from '../models/Order.js'
 import Cart from '../models/Cart.js'
 import CartItem from '../models/CartItem.js'
+import Product from '../models/Product.js'
 
 export const createOrder = async (req, res) => {
   try {
@@ -9,7 +10,7 @@ export const createOrder = async (req, res) => {
       return
     }
 
-    const { shippingAddress } = req.body
+    const { shippingAddress, paymentStatus, paymentMethod } = req.body
     const cart = await Cart.findOne({ user: req.user._id })
 
     if (!cart) {
@@ -24,22 +25,43 @@ export const createOrder = async (req, res) => {
       return
     }
 
+    // Check if all products have sufficient stock
+    for (const item of cartItems) {
+      if (item.productId.stock < item.quantity) {
+        res.status(400).json({
+          message: `Insufficient stock for product: ${item.productId.name}. Available: ${item.productId.stock}`
+        })
+        return
+      }
+    }
+
+    // Calculate total amount first using cartItems (which has full product info)
+    const totalAmount = cartItems.reduce((total, item) => {
+      const priceOnSale = item.productId.price * (1 - (item.productId.discount || 0) / 100)
+      return total + priceOnSale * item.quantity
+    }, 0)
+
     const orderItems = cartItems.map(item => ({
       product: item.productId._id,
       quantity: item.quantity,
-      price: item.productId.price
+      price: item.productId.price * (1 - (item.productId.discount || 0) / 100) // Save the discounted price
     }))
-
-    const totalAmount = orderItems.reduce((total, item) => total + item.price * item.quantity, 0)
 
     const order = new Order({
       user: req.user._id,
       items: orderItems,
       totalAmount,
-      shippingAddress
+      shippingAddress,
+      paymentStatus: paymentStatus,
+      paymentMethod: paymentMethod
     })
 
     await order.save()
+
+    // Update product stock
+    for (const item of cartItems) {
+      await Product.findByIdAndUpdate(item.productId._id, { $inc: { stock: -item.quantity } })
+    }
 
     // Clear cart after order creation
     await CartItem.deleteMany({ cartId: cart._id })

@@ -40,6 +40,16 @@ const orderSchema = new mongoose.Schema(
       state: String,
       zipCode: String,
       country: String
+    },
+    paymentMethod: {
+      type: String,
+      enum: ['card', 'cod'],
+      default: 'cod'
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['pending', 'paid'],
+      default: 'pending'
     }
   },
   { timestamps: true }

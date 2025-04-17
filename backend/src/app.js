@@ -17,6 +17,7 @@ import contactRoutes from './routes/contactRoutes.js'
 import userRoutes from './routes/user.js'
 import dashboardRoutes from './routes/dashboardRoutes.js'
 import chatRoutes from './routes/chatRoutes.js'
+import stripeRoutes from './routes/stripe.js'
 dotenv.config()
 
 const app = express()
@@ -51,6 +52,7 @@ app.use('/api/contact', contactRoutes)
 app.use('/api/admin/users', userRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/chat', chatRoutes)
+app.use('/api/stripe', stripeRoutes)
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs))
 

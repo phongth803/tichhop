@@ -4,9 +4,12 @@ export const sendContactEmail = async (req, res) => {
   try {
     const { name, email, phone, message } = req.body
 
+    // Split ADMIN_EMAIL by comma to support multiple admin emails
+    const adminEmails = process.env.ADMIN_EMAIL.split(',').map(email => email.trim())
+
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: process.env.ADMIN_EMAIL,
+      to: adminEmails,
       subject: `New Contact Message from ${name}`,
       html: `
         <h3>New Contact Message</h3>

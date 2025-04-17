@@ -24,6 +24,7 @@ import Products from '../pages/adminManagement/Products/Products'
 import Orders from '../pages/adminManagement/Orders/Orders'
 import Category from '../pages/adminManagement/Category/Category'
 import DashBoard from '../pages/adminManagement/DashBoard/DashBoard'
+import PaymentSuccess from '../pages/Payment/PaymentSuccess'
 
 const ProtectedRoute = ({ children, admin = false }) => {
   const {
@@ -116,6 +117,14 @@ const AppRoutes = observer(() => {
           element={
             <ProtectedRoute>
               <MyOrders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/payment-success'
+          element={
+            <ProtectedRoute>
+              <PaymentSuccess />
             </ProtectedRoute>
           }
         />
