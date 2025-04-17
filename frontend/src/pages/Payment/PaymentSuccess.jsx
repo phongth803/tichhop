@@ -2,12 +2,11 @@ import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Box, Container, VStack, Text, Button, Icon } from '@chakra-ui/react'
 import { CheckCircleIcon } from '@chakra-ui/icons'
-import { formatPrice } from '@/components/common/FormatPrice'
 
 const PaymentSuccess = () => {
   const location = useLocation()
   const navigate = useNavigate()
-  const { orderId, totalAmount } = location.state || {}
+  const { orderId } = location.state || {}
 
   return (
     <Container maxW='container.md' py={16}>
@@ -20,12 +19,6 @@ const PaymentSuccess = () => {
           </Text>
 
           <Text fontSize='lg'>Thank you for your purchase. Your order has been confirmed.</Text>
-
-          {totalAmount && (
-            <Text fontSize='xl' fontWeight='medium'>
-              Total Amount: {formatPrice(totalAmount)}
-            </Text>
-          )}
 
           {orderId && <Text color='gray.600'>Order ID: {orderId}</Text>}
 

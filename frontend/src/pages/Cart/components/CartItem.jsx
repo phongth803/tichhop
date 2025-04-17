@@ -18,10 +18,41 @@ import {
 import { FiTrash2 } from 'react-icons/fi'
 import { useStore } from '@/stores/rootStore'
 import { formatPrice } from '@/components/common/FormatPrice'
+import { useState, useEffect } from 'react'
+import { toast } from 'react-toastify'
+import { useDebounce } from '@/hooks/useDebounce'
 
 const CartItem = ({ item, onQuantityChange, onRemove, isMobile }) => {
   const { cartStore } = useStore()
   const isLoading = cartStore.isItemLoading(item.productId._id)
+  const [inputValue, setInputValue] = useState(item.quantity.toString())
+  const debouncedValue = useDebounce(inputValue, 500)
+
+  const validateQuantity = (value) => {
+    const val = parseInt(value)
+    if (!value || isNaN(val) || val < 1) {
+      return 1
+    }
+    return Math.min(Math.max(val, 1), item.productId.stock)
+  }
+
+  useEffect(() => {
+    const numVal = parseInt(debouncedValue)
+    if (!isNaN(numVal)) {
+      if (numVal > item.productId.stock) {
+        toast.error(`Only ${item.productId.stock} items left in stock`)
+        const validValue = validateQuantity(item.productId.stock)
+        setInputValue(validValue.toString())
+        onQuantityChange(item.productId._id, validValue)
+      } else {
+        onQuantityChange(item.productId._id, numVal)
+      }
+    }
+  }, [debouncedValue])
+
+  const handleQuantityChange = (value) => {
+    setInputValue(value)
+  }
 
   if (isMobile) {
     return (
@@ -59,12 +90,12 @@ const CartItem = ({ item, onQuantityChange, onRemove, isMobile }) => {
               </Text>
               <Flex justify='space-between' align='center'>
                 <NumberInput
-                  value={item.quantity}
+                  value={inputValue}
                   min={1}
-                  max={99}
+                  max={item.productId.stock}
                   w='100px'
                   size='sm'
-                  onChange={(value) => onQuantityChange(item.productId._id, parseInt(value))}
+                  onChange={(_, value) => handleQuantityChange(value)}
                   isDisabled={isLoading}
                 >
                   <NumberInputField textAlign='center' />
@@ -106,13 +137,13 @@ const CartItem = ({ item, onQuantityChange, onRemove, isMobile }) => {
       </Box>
       <Box flex={1} textAlign='center'>
         <NumberInput
-          value={item.quantity}
+          value={inputValue}
           min={1}
-          max={99}
+          max={item.productId.stock}
           w='100px'
           mx='auto'
           size='sm'
-          onChange={(value) => onQuantityChange(item.productId._id, parseInt(value))}
+          onChange={(_, value) => handleQuantityChange(value)}
           isDisabled={isLoading}
         >
           <NumberInputField textAlign='center' />

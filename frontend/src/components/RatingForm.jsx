@@ -56,7 +56,7 @@ const RatingForm = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Đánh giá sản phẩm</ModalHeader>
+        <ModalHeader>Rating Product</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
           <VStack spacing={4} align='stretch'>
@@ -64,14 +64,14 @@ const RatingForm = ({
               <Image src={productImage} alt={productName} boxSize='100px' objectFit='cover' borderRadius='md' />
               <VStack align='start'>
                 <Text fontWeight='bold'>{productName}</Text>
-                <Text color='blue.600' fontWeight='bold'>
+                <Text color='red.500' fontWeight='bold'>
                   {productPrice}
                 </Text>
               </VStack>
             </HStack>
 
             <Box>
-              <Text mb={2}>Chất lượng sản phẩm:</Text>
+              <Text mb={2}>Product quality:</Text>
               <HStack spacing={1}>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <StarIcon
@@ -89,22 +89,22 @@ const RatingForm = ({
             </Box>
 
             <Box>
-              <Text mb={2}>Nhận xét của bạn:</Text>
+              <Text mb={2}>Your review:</Text>
               <Textarea
                 value={review}
                 onChange={(e) => setReview(e.target.value)}
-                placeholder='Hãy chia sẻ cảm nhận của bạn về sản phẩm...'
+                placeholder='Share your feedback about the product...'
                 size='sm'
               />
             </Box>
 
             <Button
-              colorScheme='blue'
+              colorScheme='red'
               onClick={handleSubmit}
               isDisabled={loadingStates.rating}
               isLoading={loadingStates.rating}
             >
-              {initialRating ? 'Cập nhật đánh giá' : 'Gửi đánh giá'}
+              {initialRating ? 'Update rating' : 'Submit rating'}
             </Button>
           </VStack>
         </ModalBody>

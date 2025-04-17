@@ -2,6 +2,7 @@ import Order from '../models/Order.js'
 import Cart from '../models/Cart.js'
 import CartItem from '../models/CartItem.js'
 import Product from '../models/Product.js'
+import mongoose from 'mongoose'
 
 export const createOrder = async (req, res) => {
   try {
@@ -201,20 +202,63 @@ export const cancelOrder = async (req, res) => {
       return
     }
 
+    // Tìm đơn hàng và populate thông tin sản phẩm
     const order = await Order.findOne({
       _id: req.params.id,
       user: req.user._id,
       status: 'pending'
-    })
+    }).populate('items.product')
 
     if (!order) {
       res.status(404).json({ message: 'Order not found or cannot be cancelled' })
       return
     }
-    order.status = 'cancelled'
-    await order.save()
-    res.json(order)
+
+    // Bắt đầu session để đảm bảo tính toàn vẹn dữ liệu
+    const session = await mongoose.startSession()
+    session.startTransaction()
+
+    try {
+      // Cập nhật stock cho từng sản phẩm
+      for (const item of order.items) {
+        const product = await Product.findById(item.product)
+        if (!product) {
+          throw new Error(`Product ${item.product} not found`)
+        }
+
+        product.stock += item.quantity
+        await product.save({ session })
+      }
+
+      // Cập nhật trạng thái đơn hàng
+      order.status = 'cancelled'
+      await order.save({ session })
+
+      // Commit transaction
+      await session.commitTransaction()
+
+      // Trả về đơn hàng đã được populate đầy đủ thông tin
+      const updatedOrder = await Order.findById(order._id).populate({
+        path: 'items.product',
+        populate: {
+          path: 'ratings',
+          select: 'rating review user'
+        }
+      })
+
+      res.json(updatedOrder)
+    } catch (error) {
+      // Rollback nếu có lỗi
+      await session.abortTransaction()
+      throw error
+    } finally {
+      session.endSession()
+    }
   } catch (error) {
-    res.status(400).json({ message: 'Error cancelling order' })
+    console.error('Error cancelling order:', error)
+    res.status(400).json({
+      message: 'Error cancelling order',
+      error: error.message
+    })
   }
 }
