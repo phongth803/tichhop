@@ -244,15 +244,23 @@ export const getCategoryDistribution = async (req, res) => {
           }
         },
         {
+          $lookup: {
+            from: 'productcategories',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'categoryInfo'
+          }
+        },
+        { $unwind: '$categoryInfo' },
+        {
           $project: {
             _id: 0,
-            name: '$_id',
+            name: '$categoryInfo.name',
             value: 1
           }
         },
         { $sort: { value: -1 } }
       ])
-
       res.json(distribution)
     } else {
       // Phân bố theo số lượng sản phẩm đã bán
@@ -280,9 +288,18 @@ export const getCategoryDistribution = async (req, res) => {
           }
         },
         {
+          $lookup: {
+            from: 'productcategories',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'categoryInfo'
+          }
+        },
+        { $unwind: '$categoryInfo' },
+        {
           $project: {
             _id: 0,
-            name: '$_id',
+            name: '$categoryInfo.name',
             value: 1
           }
         },
