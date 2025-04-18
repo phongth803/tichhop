@@ -45,7 +45,7 @@ const OrderFilter = ({ isOpen, onClose, onFilter, currentFilters }) => {
                   <option value='cancelled'>Cancelled</option>
                 </Select>
               </FormControl>
-              <Button width='full' type='submit' colorScheme='blue'>
+              <Button width='full' type='submit' colorScheme='purple'>
                 Apply Filters
               </Button>
               <Button width='full' variant='ghost' onClick={handleReset}>

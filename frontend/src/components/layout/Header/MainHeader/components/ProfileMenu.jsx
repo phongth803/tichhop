@@ -27,11 +27,6 @@ const ProfileMenu = () => {
       onClick: () => navigate('/my-orders')
     },
     {
-      label: 'My Cancellations',
-      icon: FiXCircle,
-      onClick: () => navigate('/cancellations')
-    },
-    {
       label: 'My Reviews',
       icon: FiStar,
       onClick: () => navigate('/reviews')

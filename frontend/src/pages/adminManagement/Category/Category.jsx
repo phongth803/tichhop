@@ -7,7 +7,7 @@ import { useStore } from '@/stores/rootStore'
 import { observer } from 'mobx-react-lite'
 import TaskBarAdmin from '@/components/common/TaskBarAdmin'
 import { toast } from 'react-toastify'
-import FilterModal from '@/components/common/FilterModal'
+import Loading from '@/components/common/Loading'
 import CategoryModal from './components/CategoryModal'
 import useIsMobile from '@/hooks/useIsMobile'
 

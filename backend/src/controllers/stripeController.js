@@ -12,8 +12,9 @@ export const createPaymentIntent = async (req, res) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount), // ensure amount is an integer
       currency: 'usd',
+      payment_method_types: ['card'],
       automatic_payment_methods: {
-        enabled: true
+        enabled: false
       }
     })
 

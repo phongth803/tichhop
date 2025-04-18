@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react'
+import { Box, Flex, Grid } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
 
 import { ITEMS_PER_PAGE } from '../constants/home'
@@ -41,13 +41,21 @@ const FlashSales = ({ countdown, flashSaleProducts, currentIndex, handlePrev, ha
               width={`${100 / Math.ceil(flashSaleProducts.length / itemsPerPage)}%`}
               px={{ base: 2, md: 4 }}
             >
-              <Flex gap={{ base: 2, md: 6 }} flexDir={{ base: 'column', sm: 'row' }}>
+              <Grid
+                templateColumns={{
+                  base: 'repeat(1, 1fr)',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                  lg: 'repeat(4, 1fr)'
+                }}
+                gap={{ base: 2, md: 6 }}
+              >
                 {flashSaleProducts.slice(pageIndex * itemsPerPage, (pageIndex + 1) * itemsPerPage).map((product) => (
-                  <Box key={product._id} flex={1}>
+                  <Box key={product._id}>
                     <ProductCard {...product} />
                   </Box>
                 ))}
-              </Flex>
+              </Grid>
             </Box>
           ))}
         </Box>
