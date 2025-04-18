@@ -138,14 +138,14 @@ const Users = observer(() => {
           <Text fontWeight='semibold' fontSize={{ base: 'sm', md: 'md' }} noOfLines={1}>
             {`${item.firstName} ${item.lastName}`}
           </Text>
+          <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' noOfLines={1}>
+            {item.email}
+          </Text>
         </VStack>
       ) : (
         <VStack align='start' spacing={{ base: 0.5, md: 1 }} width='100%' maxW='100%'>
           <Text fontWeight='semibold' fontSize={{ base: 'sm', md: 'md' }} noOfLines={1}>
             {`${item.firstName} ${item.lastName}`}
-          </Text>
-          <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' noOfLines={1}>
-            {item.email}
           </Text>
         </VStack>
       ),
