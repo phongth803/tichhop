@@ -10,7 +10,15 @@ import {
   VStack,
   Card,
   CardBody,
-  IconButton
+  IconButton,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  Button
 } from '@chakra-ui/react'
 import { StarIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { observer } from 'mobx-react-lite'
@@ -25,6 +33,9 @@ const MyReviews = observer(() => {
   const { productStore } = useStore()
   const [selectedProduct, setSelectedProduct] = React.useState(null)
   const [isRatingModalOpen, setIsRatingModalOpen] = React.useState(false)
+  const [ratingToDelete, setRatingToDelete] = React.useState(null)
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = React.useRef()
 
   useEffect(() => {
     loadReviews()
@@ -45,6 +56,16 @@ const MyReviews = observer(() => {
     } catch (error) {
       toast.error(error.message)
     }
+  }
+
+  const handleDeleteClick = (ratingId) => {
+    setRatingToDelete(ratingId)
+    onOpen()
+  }
+
+  const handleConfirmDelete = () => {
+    handleDelete(ratingToDelete)
+    onClose()
   }
 
   const handleEdit = (rating) => {
@@ -109,7 +130,7 @@ const MyReviews = observer(() => {
                         size='sm'
                         colorScheme='red'
                         icon={<DeleteIcon />}
-                        onClick={() => handleDelete(rating._id)}
+                        onClick={() => handleDeleteClick(rating._id)}
                       />
                     </HStack>
                   </VStack>
@@ -135,6 +156,29 @@ const MyReviews = observer(() => {
           initialReview={selectedProduct.ratings[0].review}
         />
       )}
+
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              Delete Review
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure you want to delete this review? This action cannot be undone.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme='red' onClick={handleConfirmDelete} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Container>
   )
 })
