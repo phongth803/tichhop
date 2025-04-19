@@ -145,22 +145,22 @@ const DashBoard = observer(() => {
         <StatCard
           label='Total Sales'
           value={formatCurrency(stats?.totalSales || 0)}
-          percentage={stats?.percentageChange || 0}
+          percentage={stats?.percentageChange.toFixed(2) || 0}
         />
         <StatCard
           label='Total Orders'
           value={stats?.totalOrders?.toString() || '0'}
-          percentage={stats?.orderPercentageChange || 0}
+          percentage={stats?.orderPercentageChange.toFixed(2) || 0}
         />
         <StatCard
           label='Total Customers'
           value={stats?.totalCustomers?.toString() || '0'}
-          percentage={stats?.customerPercentageChange || 0}
+          percentage={stats?.customerPercentageChange.toFixed(2) || 0}
         />
         <StatCard
           label='Average Order Value'
           value={formatCurrency(stats?.averageOrderValue || 0)}
-          percentage={stats?.aovPercentageChange || 0}
+          percentage={stats?.aovPercentageChange.toFixed(2) || 0}
         />
       </SimpleGrid>
 
@@ -174,20 +174,47 @@ const DashBoard = observer(() => {
           <CardBody>
             <Box height={chartHeight}>
               <ResponsiveContainer width='100%' height='100%'>
-                <LineChart data={formattedRevenueData}>
+                <LineChart
+                  data={formattedRevenueData}
+                  margin={{
+                    top: 20,
+                    right: 30,
+                    left: 20,
+                    bottom: 60
+                  }}
+                >
                   <CartesianGrid strokeDasharray='3 3' />
                   <XAxis
                     dataKey='date'
                     tick={{ fontSize: isMobile ? 10 : 12 }}
-                    angle={isMobile ? -45 : 0}
-                    textAnchor={isMobile ? 'end' : 'middle'}
-                    height={isMobile ? 60 : 30}
-                    interval={isMobile ? 1 : 0}
+                    angle={-45}
+                    textAnchor='end'
+                    height={60}
+                    interval={0}
                   />
-                  <YAxis tick={{ fontSize: isMobile ? 10 : 12 }} tickFormatter={(value) => formatCurrency(value)} />
+                  <YAxis
+                    tick={{ fontSize: isMobile ? 10 : 12 }}
+                    tickFormatter={(value) => formatCurrency(value)}
+                    width={80}
+                  />
                   <Tooltip content={<CustomTooltip />} />
-                  <Legend wrapperStyle={{ fontSize: isMobile ? 10 : 12 }} />
-                  <Line type='monotone' dataKey='revenue' stroke='#8884d8' name='Revenue' strokeWidth={2} />
+                  <Legend
+                    verticalAlign='top'
+                    align='right'
+                    wrapperStyle={{
+                      fontSize: isMobile ? 10 : 12,
+                      marginTop: '-25px'
+                    }}
+                  />
+                  <Line
+                    type='monotone'
+                    dataKey='revenue'
+                    stroke='#8884d8'
+                    name='Revenue'
+                    strokeWidth={2}
+                    dot={{ r: 3 }}
+                    activeDot={{ r: 5 }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </Box>
@@ -202,20 +229,35 @@ const DashBoard = observer(() => {
           <CardBody>
             <Box height={chartHeight}>
               <ResponsiveContainer width='100%' height='100%'>
-                <BarChart data={formattedTopProducts}>
+                <BarChart
+                  data={formattedTopProducts}
+                  margin={{
+                    top: 20,
+                    right: 30,
+                    left: 20,
+                    bottom: 60
+                  }}
+                >
                   <CartesianGrid strokeDasharray='3 3' />
                   <XAxis
                     dataKey='name'
                     tick={{ fontSize: isMobile ? 10 : 12 }}
-                    angle={isMobile ? -45 : 0}
-                    textAnchor={isMobile ? 'end' : 'middle'}
-                    height={isMobile ? 60 : 30}
+                    angle={-45}
+                    textAnchor='end'
+                    height={60}
                     interval={0}
                   />
-                  <YAxis tick={{ fontSize: isMobile ? 10 : 12 }} />
+                  <YAxis tick={{ fontSize: isMobile ? 10 : 12 }} width={50} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Legend wrapperStyle={{ fontSize: isMobile ? 10 : 12 }} />
-                  <Bar dataKey='sales' fill='#82ca9d' name='Sales' radius={[4, 4, 0, 0]} />
+                  <Legend
+                    verticalAlign='top'
+                    align='right'
+                    wrapperStyle={{
+                      fontSize: isMobile ? 10 : 12,
+                      marginTop: '-25px'
+                    }}
+                  />
+                  <Bar dataKey='sales' fill='#82ca9d' name='Sales' radius={[4, 4, 0, 0]} maxBarSize={50} />
                 </BarChart>
               </ResponsiveContainer>
             </Box>

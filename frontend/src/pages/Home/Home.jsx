@@ -38,16 +38,18 @@ const Home = observer(() => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        if (authStore.isAuthenticated) {
-          await cartStore.fetchCart()
-        }
-
-        await Promise.all([
+        const promises = [
           productStore.getExploreProducts(),
           productStore.getBestSellingProducts(),
           productStore.getFlashSaleProducts(),
           categoryStore.getCategories()
-        ])
+        ]
+
+        if (authStore.isAuthenticated) {
+          promises.push(cartStore.fetchCart())
+        }
+
+        await Promise.all(promises)
       } catch (error) {
         console.error('Failed to load data:', error)
       }

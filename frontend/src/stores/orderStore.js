@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { getUserOrders } from '../apis/order'
+import { getUserOrders, createOrder, cancelOrder } from '../apis/order'
 
 class OrderStore {
   orders = []
@@ -31,6 +31,37 @@ class OrderStore {
     } catch (error) {
       this.setError(error.message)
       console.error('Error fetching orders:', error)
+    } finally {
+      this.setLoading(false)
+    }
+  }
+
+  createOrder = async (orderData) => {
+    this.setLoading(true)
+    this.setError(null)
+    try {
+      const response = await createOrder(orderData)
+      return response
+    } catch (error) {
+      this.setError(error.message)
+      console.error('Error creating order:', error)
+      throw error
+    } finally {
+      this.setLoading(false)
+    }
+  }
+
+  cancelOrder = async (orderId) => {
+    this.setLoading(true)
+    this.setError(null)
+    try {
+      const response = await cancelOrder(orderId)
+      await this.fetchOrders() // Refresh list after cancellation
+      return response
+    } catch (error) {
+      this.setError(error.message)
+      console.error('Error cancelling order:', error)
+      throw error
     } finally {
       this.setLoading(false)
     }

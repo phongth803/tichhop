@@ -2,8 +2,6 @@ import {
   Box,
   Container,
   Grid,
-  GridItem,
-  Stack,
   Text,
   Input,
   Button,
@@ -17,7 +15,8 @@ import {
   FormControl,
   FormErrorMessage,
   FormHelperText,
-  FormLabel
+  FormLabel,
+  Stack
 } from '@chakra-ui/react'
 import { useStore } from '@/stores/rootStore'
 import { useForm } from 'react-hook-form'
@@ -25,12 +24,6 @@ import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
 import { debounce } from 'lodash'
-
-const SidebarItem = ({ label, isActive, onClick }) => (
-  <Text cursor='pointer' color={isActive ? 'red.500' : 'gray.500'} onClick={onClick} mb={2}>
-    {label}
-  </Text>
-)
 
 const EditProfile = () => {
   const { authStore } = useStore()
@@ -197,233 +190,186 @@ const EditProfile = () => {
 
   return (
     <>
-      <Container maxW='container.xl' py={8}>
-        {/* Welcome Message */}
-        <Box display='flex' justifyContent='flex-end' mb={8}>
-          <Text>
-            Welcome!{' '}
-            <Text as='span' color='red.500'>
-              {user?.firstName} {user?.lastName}
-            </Text>
+      <Container maxW='container.lg' py={8}>
+        <Box bg='white' p={6} borderRadius='md' boxShadow='sm'>
+          <Text fontSize='2xl' color='red.500' mb={6}>
+            Edit Your Profile
           </Text>
-        </Box>
 
-        <Grid templateColumns={{ base: '1fr', md: '250px 1fr' }} gap={8}>
-          {/* Sidebar */}
-          <GridItem>
-            <Stack spacing={6}>
-              <Box>
-                <Text fontSize='lg' fontWeight='medium' mb={3}>
-                  Manage My Account
-                </Text>
-                <Stack spacing={2}>
-                  <SidebarItem label='My Profile' isActive={true} />
-                  <SidebarItem label='Address Book' onClick={() => navigate('/address-book')} />
-                  <SidebarItem label='My Payment Options' onClick={() => navigate('/payment-options')} />
-                </Stack>
-              </Box>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid templateColumns='repeat(2, 1fr)' gap={6} mb={6}>
+              <FormControl isInvalid={errors.firstName}>
+                <FormLabel htmlFor='firstName' color='gray.700'>
+                  First Name
+                </FormLabel>
+                <Input
+                  id='firstName'
+                  {...register('firstName', {
+                    required: 'First name is required',
+                    minLength: { value: 2, message: 'First name must be at least 2 characters' }
+                  })}
+                  placeholder='Enter your first name'
+                  bg='gray.100'
+                  border='none'
+                />
+                <FormErrorMessage>{errors.firstName && errors.firstName.message}</FormErrorMessage>
+              </FormControl>
 
-              <Box>
-                <Text fontSize='lg' fontWeight='medium' mb={3} onClick={() => navigate('/my-orders')}>
-                  My Orders
-                </Text>
-                <Stack spacing={2}>
-                  <SidebarItem label='My Returns' onClick={() => navigate('/returns')} />
-                  <SidebarItem label='My Cancellations' onClick={() => navigate('/cancellations')} />
-                </Stack>
-              </Box>
+              <FormControl isInvalid={errors.lastName}>
+                <FormLabel htmlFor='lastName' color='gray.700'>
+                  Last Name
+                </FormLabel>
+                <Input
+                  id='lastName'
+                  {...register('lastName', {
+                    required: 'Last name is required',
+                    minLength: { value: 2, message: 'Last name must be at least 2 characters' }
+                  })}
+                  placeholder='Enter your last name'
+                  bg='gray.100'
+                  border='none'
+                />
+                <FormErrorMessage>{errors.lastName && errors.lastName.message}</FormErrorMessage>
+              </FormControl>
 
-              <Box>
-                <Text fontSize='lg' fontWeight='medium'>
-                  My Wishlist
-                </Text>
-              </Box>
-            </Stack>
-          </GridItem>
+              <FormControl isInvalid={errors.email}>
+                <FormLabel htmlFor='email' color='gray.700'>
+                  Email Address
+                </FormLabel>
+                <Input
+                  id='email'
+                  {...register('email')}
+                  placeholder='Your email address'
+                  bg='gray.100'
+                  border='none'
+                  isReadOnly
+                  title='Email cannot be changed'
+                />
+                <FormHelperText color='gray.500'>Email cannot be changed</FormHelperText>
+              </FormControl>
 
-          {/* Main Content */}
-          <GridItem>
-            <Box bg='white' p={6} borderRadius='md' boxShadow='sm'>
-              <Text fontSize='2xl' color='red.500' mb={6}>
-                Edit Your Profile
+              <FormControl isInvalid={errors.phone}>
+                <FormLabel htmlFor='phone' color='gray.700'>
+                  Phone Number
+                </FormLabel>
+                <Input
+                  id='phone'
+                  {...register('phone', {
+                    pattern: {
+                      value: /^[0-9]{10,11}$/,
+                      message: 'Phone number must be 10-11 digits'
+                    }
+                  })}
+                  placeholder='Enter your phone number'
+                  bg='gray.100'
+                  border='none'
+                />
+                <FormErrorMessage>{errors.phone && errors.phone.message}</FormErrorMessage>
+              </FormControl>
+            </Grid>
+
+            <Box mb={6}>
+              <Text fontSize='md' fontWeight='medium' mb={4}>
+                Address
               </Text>
-
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <Grid templateColumns='repeat(2, 1fr)' gap={6} mb={6}>
-                  <FormControl isInvalid={errors.firstName}>
-                    <FormLabel htmlFor='firstName' color='gray.700'>
-                      First Name
-                    </FormLabel>
-                    <Input
-                      id='firstName'
-                      {...register('firstName', {
-                        required: 'First name is required',
-                        minLength: { value: 2, message: 'First name must be at least 2 characters' }
-                      })}
-                      placeholder='Enter your first name'
-                      bg='gray.100'
-                      border='none'
-                    />
-                    <FormErrorMessage>{errors.firstName && errors.firstName.message}</FormErrorMessage>
-                  </FormControl>
-
-                  <FormControl isInvalid={errors.lastName}>
-                    <FormLabel htmlFor='lastName' color='gray.700'>
-                      Last Name
-                    </FormLabel>
-                    <Input
-                      id='lastName'
-                      {...register('lastName', {
-                        required: 'Last name is required',
-                        minLength: { value: 2, message: 'Last name must be at least 2 characters' }
-                      })}
-                      placeholder='Enter your last name'
-                      bg='gray.100'
-                      border='none'
-                    />
-                    <FormErrorMessage>{errors.lastName && errors.lastName.message}</FormErrorMessage>
-                  </FormControl>
-
-                  <FormControl isInvalid={errors.email}>
-                    <FormLabel htmlFor='email' color='gray.700'>
-                      Email Address
-                    </FormLabel>
-                    <Input
-                      id='email'
-                      {...register('email')}
-                      placeholder='Your email address'
-                      bg='gray.100'
-                      border='none'
-                      isReadOnly
-                      title='Email cannot be changed'
-                    />
-                    <FormHelperText color='gray.500'>Email cannot be changed</FormHelperText>
-                  </FormControl>
-
-                  <FormControl isInvalid={errors.phone}>
-                    <FormLabel htmlFor='phone' color='gray.700'>
-                      Phone Number
-                    </FormLabel>
-                    <Input
-                      id='phone'
-                      {...register('phone', {
-                        pattern: {
-                          value: /^[0-9]{10,11}$/,
-                          message: 'Phone number must be 10-11 digits'
-                        }
-                      })}
-                      placeholder='Enter your phone number'
-                      bg='gray.100'
-                      border='none'
-                    />
-                    <FormErrorMessage>{errors.phone && errors.phone.message}</FormErrorMessage>
-                  </FormControl>
-                </Grid>
-
-                <Box mb={6}>
-                  <Text fontSize='md' fontWeight='medium' mb={4}>
-                    Address
-                  </Text>
-                  <FormControl isInvalid={errors.address}>
-                    <Input
-                      id='address'
-                      {...register('address')}
-                      placeholder='Enter your address'
-                      bg='gray.100'
-                      border='none'
-                    />
-                    <FormErrorMessage>{errors.address && errors.address.message}</FormErrorMessage>
-                  </FormControl>
-                </Box>
-
-                <Box mb={6}>
-                  <Text fontSize='md' fontWeight='medium' mb={4}>
-                    Password Changes
-                  </Text>
-                  <Stack spacing={4}>
-                    <FormControl isInvalid={errors.currentPassword || passwordError}>
-                      <Input
-                        id='currentPassword'
-                        type='password'
-                        {...register('currentPassword', {
-                          validate: (value) => {
-                            if (watch('newPassword') || watch('confirmPassword')) {
-                              return value ? true : 'Current password is required when changing password'
-                            }
-                            return true
-                          }
-                        })}
-                        placeholder='Current Password'
-                        bg='gray.100'
-                        border='none'
-                        onChange={() => {
-                          if (passwordError) setPasswordError('')
-                        }}
-                      />
-                      <FormErrorMessage>{errors.currentPassword?.message || passwordError}</FormErrorMessage>
-                    </FormControl>
-
-                    <FormControl isInvalid={errors.newPassword}>
-                      <Input
-                        id='newPassword'
-                        type='password'
-                        {...register('newPassword', {
-                          validate: (value) => {
-                            if (watch('currentPassword')) {
-                              if (!value) return 'New password is required'
-                              if (value.length < 6) return 'Password must be at least 6 characters'
-                            }
-                            return true
-                          }
-                        })}
-                        placeholder='New Password'
-                        bg='gray.100'
-                        border='none'
-                      />
-                      <FormErrorMessage>{errors.newPassword && errors.newPassword.message}</FormErrorMessage>
-                    </FormControl>
-
-                    <FormControl isInvalid={errors.confirmPassword}>
-                      <Input
-                        id='confirmPassword'
-                        type='password'
-                        {...register('confirmPassword', {
-                          validate: (value) => {
-                            if (watch('newPassword')) {
-                              if (!value) return 'Please confirm your new password'
-                              if (value !== watch('newPassword')) return 'Passwords do not match'
-                            }
-                            return true
-                          }
-                        })}
-                        placeholder='Confirm New Password'
-                        bg='gray.100'
-                        border='none'
-                      />
-                      <FormErrorMessage>{errors.confirmPassword && errors.confirmPassword.message}</FormErrorMessage>
-                    </FormControl>
-                  </Stack>
-                </Box>
-                <Box display='flex' justifyContent='flex-end' gap={4}>
-                  <Button variant='ghost' onClick={handleCancel} isDisabled={isSubmitting}>
-                    Cancel
-                  </Button>
-                  <Button
-                    type='submit'
-                    bg='red.500'
-                    color='white'
-                    _hover={{ bg: 'red.600' }}
-                    px={6}
-                    isLoading={isSubmitting}
-                    loadingText='Saving...'
-                  >
-                    Save Changes
-                  </Button>
-                </Box>
-              </form>
+              <FormControl isInvalid={errors.address}>
+                <Input
+                  id='address'
+                  {...register('address')}
+                  placeholder='Enter your address'
+                  bg='gray.100'
+                  border='none'
+                />
+                <FormErrorMessage>{errors.address && errors.address.message}</FormErrorMessage>
+              </FormControl>
             </Box>
-          </GridItem>
-        </Grid>
+
+            <Box mb={6}>
+              <Text fontSize='md' fontWeight='medium' mb={4}>
+                Password Changes
+              </Text>
+              <Stack spacing={4}>
+                <FormControl isInvalid={errors.currentPassword || passwordError}>
+                  <Input
+                    id='currentPassword'
+                    type='password'
+                    {...register('currentPassword', {
+                      validate: (value) => {
+                        if (watch('newPassword') || watch('confirmPassword')) {
+                          return value ? true : 'Current password is required when changing password'
+                        }
+                        return true
+                      }
+                    })}
+                    placeholder='Current Password'
+                    bg='gray.100'
+                    border='none'
+                    onChange={() => {
+                      if (passwordError) setPasswordError('')
+                    }}
+                  />
+                  <FormErrorMessage>{errors.currentPassword?.message || passwordError}</FormErrorMessage>
+                </FormControl>
+
+                <FormControl isInvalid={errors.newPassword}>
+                  <Input
+                    id='newPassword'
+                    type='password'
+                    {...register('newPassword', {
+                      validate: (value) => {
+                        if (watch('currentPassword')) {
+                          if (!value) return 'New password is required'
+                          if (value.length < 6) return 'Password must be at least 6 characters'
+                        }
+                        return true
+                      }
+                    })}
+                    placeholder='New Password'
+                    bg='gray.100'
+                    border='none'
+                  />
+                  <FormErrorMessage>{errors.newPassword && errors.newPassword.message}</FormErrorMessage>
+                </FormControl>
+
+                <FormControl isInvalid={errors.confirmPassword}>
+                  <Input
+                    id='confirmPassword'
+                    type='password'
+                    {...register('confirmPassword', {
+                      validate: (value) => {
+                        if (watch('newPassword')) {
+                          if (!value) return 'Please confirm your new password'
+                          if (value !== watch('newPassword')) return 'Passwords do not match'
+                        }
+                        return true
+                      }
+                    })}
+                    placeholder='Confirm New Password'
+                    bg='gray.100'
+                    border='none'
+                  />
+                  <FormErrorMessage>{errors.confirmPassword && errors.confirmPassword.message}</FormErrorMessage>
+                </FormControl>
+              </Stack>
+            </Box>
+            <Box display='flex' justifyContent='flex-end' gap={4}>
+              <Button variant='ghost' onClick={handleCancel} isDisabled={isSubmitting}>
+                Cancel
+              </Button>
+              <Button
+                type='submit'
+                bg='red.500'
+                color='white'
+                _hover={{ bg: 'red.600' }}
+                px={6}
+                isLoading={isSubmitting}
+                loadingText='Saving...'
+              >
+                Save Changes
+              </Button>
+            </Box>
+          </form>
+        </Box>
       </Container>
 
       <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>

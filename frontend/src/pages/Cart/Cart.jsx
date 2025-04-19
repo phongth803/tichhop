@@ -31,7 +31,7 @@ const Cart = observer(() => {
             Your cart is empty
           </Text>
           <Link to='/products'>
-            <Button size='lg' colorScheme='blue'>
+            <Button size='lg' colorScheme='red'>
               Continue Shopping
             </Button>
           </Link>

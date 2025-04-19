@@ -1,16 +1,17 @@
 import { Box, Text } from '@chakra-ui/react'
-import { FiBook, FiMusic, FiGift, FiHeart, FiMonitor, FiPackage } from 'react-icons/fi'
+import { FiMonitor, FiSmartphone, FiWatch, FiSpeaker, FiTablet, FiHeadphones, FiPackage } from 'react-icons/fi'
 import { ITEMS_PER_PAGE } from '../constants/home'
 import SectionHeader from './SectionHeader'
 import NavigationButtons from './NavigationButtons'
 
 // Map các từ khóa cơ bản
 const CATEGORY_ICONS = {
-  book: FiBook,
-  music: FiMusic,
-  toy: FiGift,
-  health: FiHeart,
-  game: FiMonitor
+  laptop: FiMonitor,
+  mobile: FiSmartphone,
+  smartwatch: FiWatch,
+  speaker: FiSpeaker,
+  tablet: FiTablet,
+  headphone: FiHeadphones
 }
 
 // Hàm tự động tìm icon dựa theo tên category

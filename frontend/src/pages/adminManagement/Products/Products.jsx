@@ -104,7 +104,18 @@ const Products = observer(() => {
       const isSuccess = await adminProductStore.updateProduct(selectedProduct._id, data)
       if (isSuccess) {
         toast.success('Product updated successfully')
-        adminProductStore.getProductsList()
+        const params = {
+          page: currentPage,
+          limit: itemsPerPage,
+          search: debouncedSearchTerm,
+          category: filters.category,
+          status: filters.status,
+          minPrice: debouncedMinPrice,
+          maxPrice: debouncedMaxPrice,
+          onSale: filters.onSale,
+          sort: filters.sort
+        }
+        adminProductStore.getProductsList(params)
         setIsEdit(false)
         setSelectedProduct(null)
       }
@@ -177,13 +188,19 @@ const Products = observer(() => {
           borderRadius='md'
         />
       ),
-      name: (
+      name: isMobile ? (
         <VStack align='start' spacing={{ base: 0.5, md: 1 }}>
           <Text fontWeight='semibold' fontSize={{ base: 'sm', md: 'md' }} noOfLines={2}>
             {item.name}
           </Text>
           <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500'>
             ${item.price}
+          </Text>
+        </VStack>
+      ) : (
+        <VStack align='start' spacing={{ base: 0.5, md: 1 }}>
+          <Text fontWeight='semibold' fontSize={{ base: 'sm', md: 'md' }} noOfLines={2}>
+            {item.name}
           </Text>
         </VStack>
       )

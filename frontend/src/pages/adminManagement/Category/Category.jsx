@@ -7,7 +7,7 @@ import { useStore } from '@/stores/rootStore'
 import { observer } from 'mobx-react-lite'
 import TaskBarAdmin from '@/components/common/TaskBarAdmin'
 import { toast } from 'react-toastify'
-import FilterModal from '@/components/common/FilterModal'
+import Loading from '@/components/common/Loading'
 import CategoryModal from './components/CategoryModal'
 import useIsMobile from '@/hooks/useIsMobile'
 
@@ -20,9 +20,19 @@ const Category = observer(() => {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [expandedRows, setExpandedRows] = useState(new Set())
+  const [searchTerm, setSearchTerm] = useState('')
   const { adminCategoryStore } = useStore()
   const { categoryList, loading, addCategory, deleteCategory, updateCategory } = adminCategoryStore
   const isMobile = useIsMobile()
+
+  // Filter categories based on name only
+  const filteredCategories =
+    categoryList?.filter((category) => category.name.toLowerCase().includes(searchTerm.toLowerCase())) || []
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value)
+    setCurrentPage(1)
+  }
 
   const handleToggleExpand = (itemId) => {
     setExpandedRows((prev) => {
@@ -101,7 +111,7 @@ const Category = observer(() => {
   }
 
   const dataInTable =
-    categoryList?.map((item) => {
+    filteredCategories?.map((item) => {
       const baseData = {
         name: <Text fontWeight='semibold'>{item.name}</Text>,
         status: <Badge colorScheme={item.isActive ? 'green' : 'red'}>{item.isActive ? 'Active' : 'Inactive'}</Badge>
@@ -194,6 +204,9 @@ const Category = observer(() => {
           handleAdd={() => setIsAddModalOpen(true)}
           buttonText='Add Category'
           isMobile={isMobile}
+          searchPlaceholder='Search by name...'
+          searchValue={searchTerm}
+          onSearchChange={handleSearch}
         />
       </Box>
 
@@ -231,7 +244,7 @@ const Category = observer(() => {
             dataInTable={dataInTable}
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
-            totalPages={Math.ceil(categoryList?.length / itemsPerPage)}
+            totalPages={Math.ceil(filteredCategories?.length / itemsPerPage)}
             onPageChange={(page, newItemsPerPage) => {
               setCurrentPage(page)
               setItemsPerPage(newItemsPerPage)

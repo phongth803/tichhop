@@ -39,3 +39,13 @@ export const createOrder = async (orderData) => {
     throw error
   }
 }
+
+export const cancelOrder = async (orderId) => {
+  try {
+    const response = await axiosInstance.put(`/orders/${orderId}/cancel`)
+    return response.data
+  } catch (error) {
+    console.error('Error cancelling order:', error)
+    throw error
+  }
+}

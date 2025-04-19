@@ -42,7 +42,7 @@ const OrderStatusModal = ({ isOpen, onClose, onSubmit, initialData }) => {
             <Button variant='ghost' mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme='blue' type='submit'>
+            <Button colorScheme='purple' type='submit'>
               Update Status
             </Button>
           </ModalFooter>

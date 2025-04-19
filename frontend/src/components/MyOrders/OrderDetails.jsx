@@ -17,15 +17,28 @@ import {
   Stack,
   useBreakpointValue,
   Button,
-  Tooltip
+  Tooltip,
+  Flex
 } from '@chakra-ui/react'
 import { StarIcon } from '@chakra-ui/icons'
+import { toast } from 'react-toastify'
 import RatingForm from '../RatingForm'
+import { useStore } from '@/stores/rootStore'
 
 const OrderDetails = ({ order, getStatusColor, onToggle }) => {
   const isMobile = useBreakpointValue({ base: true, md: false })
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false)
+  const { userOrderStore } = useStore()
+
+  const handleCancelOrder = async () => {
+    try {
+      await userOrderStore.cancelOrder(order._id)
+      toast.success('Order cancelled successfully')
+    } catch (error) {
+      toast.error('Cannot cancel order. Please try again later')
+    }
+  }
 
   const OrderSummary = () =>
     isMobile ? (
@@ -74,7 +87,7 @@ const OrderDetails = ({ order, getStatusColor, onToggle }) => {
 
     const rating = product.ratings[0]
     return (
-      <Tooltip label={`Bạn đã đánh giá ${rating.rating} sao`}>
+      <Tooltip label={`You have rated ${rating.rating} stars`}>
         <HStack spacing={1}>
           {[1, 2, 3, 4, 5].map((star) => (
             <StarIcon key={star} w={4} h={4} color={star <= rating.rating ? 'yellow.400' : 'gray.300'} />
@@ -96,6 +109,17 @@ const OrderDetails = ({ order, getStatusColor, onToggle }) => {
       </h2>
       <AccordionPanel pb={4}>
         <VStack spacing={3} align='stretch'>
+          <Flex justify='space-between' align='center'>
+            <Badge colorScheme={order.paymentStatus === 'paid' ? 'green' : 'yellow'} fontSize='sm' px={2} py={1}>
+              Payment: {order.paymentStatus.toUpperCase()}
+            </Badge>
+            {order.status === 'pending' && (
+              <Button colorScheme='red' size='sm' onClick={handleCancelOrder} isLoading={userOrderStore.loading}>
+                Cancel Order
+              </Button>
+            )}
+          </Flex>
+
           {order.items.map((item, index) => (
             <Box key={index} p={3} borderWidth='1px' borderRadius='lg'>
               <Stack direction={{ base: 'row', sm: 'row' }} spacing={3} width='100%'>
@@ -123,13 +147,13 @@ const OrderDetails = ({ order, getStatusColor, onToggle }) => {
                       {renderRating(item.product)}
                       <Button
                         size='sm'
-                        colorScheme='blue'
+                        colorScheme='red'
                         onClick={() => {
                           setSelectedProduct(item.product)
                           setIsRatingModalOpen(true)
                         }}
                       >
-                        {item.product.ratings?.length > 0 ? 'Sửa đánh giá' : 'Đánh giá'}
+                        {item.product.ratings?.length > 0 ? 'Update rating' : 'Rating'}
                       </Button>
                     </HStack>
                   )}

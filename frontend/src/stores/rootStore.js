@@ -12,6 +12,7 @@ import AdminOrderStore from './admin/adminOrderStore'
 import AdminProductStore from './admin/adminProductStore'
 import OrderStore from './orderStore'
 import ChatStore from './chatStore'
+import StripeStore from './stripeStore'
 
 class RootStore {
   constructor() {
@@ -31,6 +32,7 @@ class RootStore {
     this.cartStore = new CartStore(this)
     this.userOrderStore = new OrderStore(this)
     this.chatStore = new ChatStore(this)
+    this.stripeStore = new StripeStore(this)
     makeAutoObservable(this)
   }
 }
