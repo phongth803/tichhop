@@ -12,7 +12,7 @@ import {
   getFlashSaleProducts,
   getRelatedProducts
 } from '../controllers/productController.js'
-import { addRating } from '../controllers/ratingController.js'
+import { addRating, getMyRatings, updateRating, deleteRating } from '../controllers/ratingController.js'
 import { upload } from '../config/cloudinary.js'
 
 const router = express.Router()
@@ -298,6 +298,7 @@ const router = express.Router()
 
 // Routes
 router.get('/', getProducts)
+router.get('/my-ratings', auth, getMyRatings)
 router.get('/best-selling', getBestSellingProducts)
 router.get('/flash-sale', getFlashSaleProducts)
 router.get('/:id', getProduct)
@@ -308,5 +309,7 @@ router.delete('/:id', auth, adminAuth, deleteProduct)
 router.post('/:id/images', auth, adminAuth, upload.array('images', 5), uploadImages)
 router.delete('/:id/images/:imageUrl', auth, adminAuth, deleteImage)
 router.post('/:id/ratings', auth, addRating)
+router.put('/ratings/:id', auth, updateRating)
+router.delete('/ratings/:id', auth, deleteRating)
 
 export default router

@@ -98,3 +98,30 @@ export const addProductRating = async (productId, ratingData) => {
     throw error
   }
 }
+
+export const getMyRatings = async () => {
+  try {
+    const response = await axiosInstance.get('/products/my-ratings')
+    return response
+  } catch (error) {
+    throw error
+  }
+}
+
+export const updateRating = async (ratingId, ratingData) => {
+  try {
+    const response = await axiosInstance.put(`/products/ratings/${ratingId}`, ratingData)
+    return response
+  } catch (error) {
+    throw error
+  }
+}
+
+export const deleteRating = async (ratingId) => {
+  try {
+    const response = await axiosInstance.delete(`/products/ratings/${ratingId}`)
+    return response
+  } catch (error) {
+    throw error
+  }
+}

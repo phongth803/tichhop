@@ -5,7 +5,10 @@ import {
   getFlashSaleProducts,
   getProduct,
   getRelatedProducts,
-  addProductRating
+  addProductRating,
+  getMyRatings,
+  updateRating,
+  deleteRating
 } from '../apis/products'
 
 export const DEFAULT_FILTERS = {
@@ -26,6 +29,7 @@ class ProductStore {
   exploreProducts = []
   bestSellingProducts = []
   flashSaleProducts = []
+  myRatings = []
 
   currentProduct = null
   relatedProducts = []
@@ -37,7 +41,8 @@ class ProductStore {
     flashSale: false,
     detail: false,
     related: false,
-    rating: false
+    rating: false,
+    myRatings: false
   }
 
   constructor(rootStore) {
@@ -86,6 +91,10 @@ class ProductStore {
   resetFilters = () => {
     this.filters = { ...DEFAULT_FILTERS }
     this.currentPage = 1
+  }
+
+  setMyRatings(ratings) {
+    this.myRatings = ratings
   }
 
   async getProductsList() {
@@ -183,6 +192,55 @@ class ProductStore {
       return response
     } catch (error) {
       console.error('Error adding rating:', error)
+      throw error
+    } finally {
+      this.setLoadingState('rating', false)
+    }
+  }
+
+  async fetchMyRatings() {
+    try {
+      this.setLoadingState('myRatings', true)
+      const response = await getMyRatings()
+      this.setMyRatings(response.data.data)
+      return response.data.data
+    } catch (error) {
+      console.error('Error getting my ratings:', error)
+      this.setMyRatings([])
+      throw error
+    } finally {
+      this.setLoadingState('myRatings', false)
+    }
+  }
+
+  async updateRating(ratingId, ratingData) {
+    try {
+      this.setLoadingState('rating', true)
+      const response = await updateRating(ratingId, ratingData)
+      await this.fetchMyRatings() // Refresh ratings list
+      if (this.currentProduct) {
+        await this.getProductDetail(this.currentProduct._id) // Refresh current product if viewing
+      }
+      return response
+    } catch (error) {
+      console.error('Error updating rating:', error)
+      throw error
+    } finally {
+      this.setLoadingState('rating', false)
+    }
+  }
+
+  async deleteRating(ratingId) {
+    try {
+      this.setLoadingState('rating', true)
+      const response = await deleteRating(ratingId)
+      await this.fetchMyRatings() // Refresh ratings list
+      if (this.currentProduct) {
+        await this.getProductDetail(this.currentProduct._id) // Refresh current product if viewing
+      }
+      return response
+    } catch (error) {
+      console.error('Error deleting rating:', error)
       throw error
     } finally {
       this.setLoadingState('rating', false)

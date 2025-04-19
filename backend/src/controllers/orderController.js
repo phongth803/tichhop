@@ -188,6 +188,9 @@ export const updateOrderStatus = async (req, res) => {
     }
 
     order.status = status
+    if (status === 'delivered') {
+      order.paymentStatus = 'paid'
+    }
     await order.save()
     res.json(order)
   } catch (error) {
