@@ -18,7 +18,14 @@ import {
   useBreakpointValue,
   Button,
   Tooltip,
-  Flex
+  Flex,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay
 } from '@chakra-ui/react'
 import { StarIcon } from '@chakra-ui/icons'
 import { toast } from 'react-toastify'
@@ -31,6 +38,8 @@ const OrderDetails = observer(({ order, getStatusColor, onToggle }) => {
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false)
   const { userOrderStore, authStore } = useStore()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = React.useRef()
 
   const handleCancelOrder = async () => {
     try {
@@ -39,6 +48,15 @@ const OrderDetails = observer(({ order, getStatusColor, onToggle }) => {
     } catch (error) {
       toast.error('Cannot cancel order. Please try again later')
     }
+  }
+
+  const handleCancelClick = () => {
+    onOpen()
+  }
+
+  const handleConfirmCancel = () => {
+    handleCancelOrder()
+    onClose()
   }
 
   const OrderSummary = () =>
@@ -123,7 +141,7 @@ const OrderDetails = observer(({ order, getStatusColor, onToggle }) => {
               Payment: {order.paymentStatus.toUpperCase()}
             </Badge>
             {order.status === 'pending' && (
-              <Button colorScheme='red' size='sm' onClick={handleCancelOrder} isLoading={userOrderStore.loading}>
+              <Button colorScheme='red' size='sm' onClick={handleCancelClick}>
                 Cancel Order
               </Button>
             )}
@@ -196,6 +214,27 @@ const OrderDetails = observer(({ order, getStatusColor, onToggle }) => {
           initialReview={selectedProduct.ratings?.find((rating) => rating.user === authStore.user?._id)?.review}
         />
       )}
+
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              Cancel Order
+            </AlertDialogHeader>
+
+            <AlertDialogBody>Are you sure you want to cancel this order? This action cannot be undone.</AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme='red' onClick={handleConfirmCancel} ml={3}>
+                Confirm
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </AccordionItem>
   )
 })

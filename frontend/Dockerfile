@@ -13,9 +13,11 @@ RUN yarn install --frozen-lockfile
 # Copy source code
 COPY . .
 
-# Create .env file from build args
-ARG FRONTEND_ENV
-RUN echo "$FRONTEND_ENV" > .env
+# Set environment variables from build args
+ARG VITE_STRIPE_PUBLISHABLE_KEY
+ARG VITE_API_URL
+ENV VITE_STRIPE_PUBLISHABLE_KEY=$VITE_STRIPE_PUBLISHABLE_KEY
+ENV VITE_API_URL=$VITE_API_URL
 
 # Build the application with Vite
 RUN yarn build

@@ -43,7 +43,8 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
           build-args: |
-            FRONTEND_ENV=${{ secrets.FRONTEND_ENV }}
+            VITE_STRIPE_PUBLISHABLE_KEY=${{ secrets.VITE_STRIPE_PUBLISHABLE_KEY }}
+            VITE_API_URL=${{ secrets.VITE_API_URL }}
 
       - name: Trigger Backend Deployment
         run: |

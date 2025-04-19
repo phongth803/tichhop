@@ -1,4 +1,5 @@
 import transporter from '../config/nodemailer.js'
+import sendToN8n from '../service/sendToN8n.js'
 
 export const sendContactEmail = async (req, res) => {
   try {
@@ -22,6 +23,7 @@ export const sendContactEmail = async (req, res) => {
     }
 
     await transporter.sendMail(mailOptions)
+    // await sendToN8n('contact', { name, email, phone, message })
     res.status(200).json({ message: 'Message sent successfully' })
   } catch (error) {
     res.status(500).json({ message: 'Error sending message' })

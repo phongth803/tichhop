@@ -1,5 +1,7 @@
 import Product from '../models/Product.js'
 import Rating from '../models/Rating.js'
+import sendToN8n from '../service/sendToN8n.js'
+import User from '../models/User.js'
 
 export const addRating = async (req, res) => {
   try {
@@ -22,6 +24,9 @@ export const addRating = async (req, res) => {
         message: 'Product not found'
       })
     }
+
+    // Get user info
+    const user = await User.findById(req.user.id)
 
     // Check if user already rated
     const existingRating = await Rating.findOne({
@@ -56,6 +61,19 @@ export const addRating = async (req, res) => {
     product.averageRating = totalRatings / allRatings.length
 
     await product.save()
+
+    // Send to N8N if rating is low
+    if (rating <= 2) {
+      await sendToN8n('low_rating', {
+        productId: product._id,
+        productName: product.name,
+        rating,
+        review,
+        userName: user.firstName + ' ' + user.lastName,
+        userEmail: user.email,
+        reviewMessage: savedRating.review
+      })
+    }
 
     // Populate the rating with product details before sending response
     const populatedRating = await Rating.findById(savedRating._id).populate(
@@ -112,6 +130,9 @@ export const updateRating = async (req, res) => {
       })
     }
 
+    // Get user info
+    const user = await User.findById(req.user.id)
+
     // Find and update rating
     const updatedRating = await Rating.findOneAndUpdate(
       { _id: ratingId, user: req.user.id },
@@ -133,6 +154,19 @@ export const updateRating = async (req, res) => {
       const totalRatings = allRatings.reduce((acc, item) => acc + item.rating, 0)
       product.averageRating = totalRatings / allRatings.length
       await product.save()
+
+      // Send to N8N if rating is low
+      if (rating <= 2) {
+        await sendToN8n('low_rating', {
+          productId: product._id,
+          productName: product.name,
+          rating,
+          review,
+          userName: user.firstName + ' ' + user.lastName,
+          userEmail: user.email,
+          reviewMessage: updatedRating.review
+        })
+      }
     }
 
     res.status(200).json({
