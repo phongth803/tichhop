@@ -18,16 +18,7 @@ import { StarIcon } from '@chakra-ui/icons'
 import { useStore } from '../stores/rootStore'
 import { toast } from 'react-toastify'
 
-const RatingForm = ({
-  isOpen,
-  onClose,
-  productId,
-  productName,
-  productImage,
-  productPrice,
-  initialRating,
-  initialReview
-}) => {
+const RatingForm = ({ isOpen, onClose, productId, productName, productImage, initialRating, initialReview }) => {
   const [rating, setRating] = useState(initialRating || 0)
   const [review, setReview] = useState(initialReview || '')
   const [hoveredRating, setHoveredRating] = useState(0)
@@ -64,9 +55,6 @@ const RatingForm = ({
               <Image src={productImage} alt={productName} boxSize='100px' objectFit='cover' borderRadius='md' />
               <VStack align='start'>
                 <Text fontWeight='bold'>{productName}</Text>
-                <Text color='red.500' fontWeight='bold'>
-                  {productPrice}
-                </Text>
               </VStack>
             </HStack>
 

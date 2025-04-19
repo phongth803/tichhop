@@ -24,12 +24,13 @@ import { StarIcon } from '@chakra-ui/icons'
 import { toast } from 'react-toastify'
 import RatingForm from '../RatingForm'
 import { useStore } from '@/stores/rootStore'
+import { observer } from 'mobx-react-lite'
 
-const OrderDetails = ({ order, getStatusColor, onToggle }) => {
+const OrderDetails = observer(({ order, getStatusColor, onToggle }) => {
   const isMobile = useBreakpointValue({ base: true, md: false })
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false)
-  const { userOrderStore } = useStore()
+  const { userOrderStore, authStore } = useStore()
 
   const handleCancelOrder = async () => {
     try {
@@ -80,17 +81,25 @@ const OrderDetails = ({ order, getStatusColor, onToggle }) => {
       </Grid>
     )
 
+  const hasUserRated = (product) => {
+    return product.ratings?.some((rating) => rating.user === authStore.user?._id)
+  }
+
   const renderRating = (product) => {
     if (!product.ratings || product.ratings.length === 0) {
       return null
     }
 
-    const rating = product.ratings[0]
+    const userRating = product.ratings.find((rating) => rating.user === authStore.user?._id)
+    if (!userRating) {
+      return null
+    }
+
     return (
-      <Tooltip label={`You have rated ${rating.rating} stars`}>
+      <Tooltip label={`You have rated ${userRating.rating} stars`}>
         <HStack spacing={1}>
           {[1, 2, 3, 4, 5].map((star) => (
-            <StarIcon key={star} w={4} h={4} color={star <= rating.rating ? 'yellow.400' : 'gray.300'} />
+            <StarIcon key={star} w={4} h={4} color={star <= userRating.rating ? 'yellow.400' : 'gray.300'} />
           ))}
         </HStack>
       </Tooltip>
@@ -145,16 +154,18 @@ const OrderDetails = ({ order, getStatusColor, onToggle }) => {
                   {order.status === 'delivered' && (
                     <HStack spacing={2}>
                       {renderRating(item.product)}
-                      <Button
-                        size='sm'
-                        colorScheme='red'
-                        onClick={() => {
-                          setSelectedProduct(item.product)
-                          setIsRatingModalOpen(true)
-                        }}
-                      >
-                        {item.product.ratings?.length > 0 ? 'Update rating' : 'Rating'}
-                      </Button>
+                      {!hasUserRated(item.product) && (
+                        <Button
+                          size='sm'
+                          colorScheme='red'
+                          onClick={() => {
+                            setSelectedProduct(item.product)
+                            setIsRatingModalOpen(true)
+                          }}
+                        >
+                          Rating
+                        </Button>
+                      )}
                     </HStack>
                   )}
                 </VStack>
@@ -181,12 +192,12 @@ const OrderDetails = ({ order, getStatusColor, onToggle }) => {
           productName={selectedProduct.name}
           productImage={selectedProduct.thumbnail || selectedProduct.images?.[0]}
           productPrice={selectedProduct.price}
-          initialRating={selectedProduct.ratings?.[0]?.rating}
-          initialReview={selectedProduct.ratings?.[0]?.review}
+          initialRating={selectedProduct.ratings?.find((rating) => rating.user === authStore.user?._id)?.rating}
+          initialReview={selectedProduct.ratings?.find((rating) => rating.user === authStore.user?._id)?.review}
         />
       )}
     </AccordionItem>
   )
-}
+})
 
 export default OrderDetails

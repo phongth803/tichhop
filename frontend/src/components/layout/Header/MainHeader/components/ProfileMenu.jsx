@@ -29,7 +29,7 @@ const ProfileMenu = () => {
     {
       label: 'My Reviews',
       icon: FiStar,
-      onClick: () => navigate('/reviews')
+      onClick: () => navigate('/my-reviews')
     },
     {
       label: 'Logout',

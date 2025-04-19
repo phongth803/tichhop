@@ -6,6 +6,7 @@ import EditProfile from '../pages/profile/EditProfile'
 import { useStore } from '@/stores/rootStore'
 import { useEffect } from 'react'
 import MyOrders from '../pages/MyOrders'
+import MyReviews from '../pages/MyReviews'
 
 // Public pages
 import Home from '../pages/Home'
@@ -125,6 +126,14 @@ const AppRoutes = observer(() => {
           element={
             <ProtectedRoute>
               <PaymentSuccess />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/my-reviews'
+          element={
+            <ProtectedRoute>
+              <MyReviews />
             </ProtectedRoute>
           }
         />

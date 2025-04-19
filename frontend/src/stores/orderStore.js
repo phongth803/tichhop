@@ -5,6 +5,7 @@ class OrderStore {
   orders = []
   loading = false
   error = null
+  currentFilter = ''
 
   constructor() {
     makeAutoObservable(this)
@@ -22,12 +23,18 @@ class OrderStore {
     this.orders = orders
   }
 
-  fetchOrders = async (status = '') => {
+  setCurrentFilter = (filter) => {
+    this.currentFilter = filter
+  }
+
+  fetchOrders = async (status = null) => {
     this.setLoading(true)
     this.setError(null)
     try {
-      const data = await getUserOrders({ status })
+      const filterToUse = status === null ? this.currentFilter : status === '' ? '' : status
+      const data = await getUserOrders({ status: filterToUse })
       this.setOrders(data)
+      this.setCurrentFilter(filterToUse)
     } catch (error) {
       this.setError(error.message)
       console.error('Error fetching orders:', error)
@@ -56,7 +63,7 @@ class OrderStore {
     this.setError(null)
     try {
       const response = await cancelOrder(orderId)
-      await this.fetchOrders() // Refresh list after cancellation
+      await this.fetchOrders()
       return response
     } catch (error) {
       this.setError(error.message)
